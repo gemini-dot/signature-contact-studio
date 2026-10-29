@@ -206,6 +206,7 @@ function Editor() {
               {text("instagram", "Instagram")}
               {text("x", "X")}
             </div>
+            {!logoLocked && (<>
             <label className="block text-sm">
               <span className="mb-1 block text-muted-foreground">URL du logo (hébergé)</span>
               <input value={isRemote ? d.logoSrc : d.logoSrc ? "" : d.logoUrl} placeholder={d.logoSrc ? "Fichier importé" : "https://…/logo.png"}
@@ -216,7 +217,8 @@ function Editor() {
               ou importer un fichier
               <input type="file" accept="image/*" onChange={(e) => onLogo(e.target.files?.[0])} className="mt-1 block text-sm" />
             </label>
-            {d.logoUrl && (
+            </>)}
+            {d.logoUrl && !logoLocked && (
               <div className="grid gap-3 rounded-xl border border-border p-3">
                 <label className="block text-sm">
                   <span className="flex justify-between text-muted-foreground">Taille du logo <span>{d.logoSize} px</span></span>
@@ -245,10 +247,12 @@ function Editor() {
                 )}
               </div>
             )}
+            {!colorLocked && (
             <label className="flex items-center gap-3 text-sm">
               Couleur principale
               <input type="color" value={d.accent} onChange={(e) => set("accent", e.target.value)} className="h-8 w-12 rounded" />
             </label>
+            )}
           </Card>
           <Card title="Options">
             {toggle("bannerOn", "Signature vivante (bannière)")}
