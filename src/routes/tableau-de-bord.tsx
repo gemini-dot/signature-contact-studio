@@ -22,7 +22,7 @@ const presets = [
 ];
 
 function Dashboard() {
-  const [text, setText] = useState(presets[0]);
+  const [text, setText] = useState<string>(presets[0]!);
   return (
     <section className="mx-auto max-w-6xl px-5 py-16">
       <p className="text-xs uppercase tracking-[0.2em] text-gold">Aperçu — version de démonstration</p>

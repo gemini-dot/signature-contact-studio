@@ -169,7 +169,7 @@ function Editor() {
               ))}
             </div>
             <ol className="space-y-2 text-sm">
-              {guides[guide].map((s, i) => (
+              {(guides[guide] ?? []).map((s, i) => (
                 <li key={i} className="flex gap-3">
                   <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">{i + 1}</span>
                   <span className="pt-0.5">{s}</span>

@@ -76,11 +76,11 @@ function contactLines(d: SignatureData, color: string, sep = "<br>") {
 }
 
 function socials(d: SignatureData) {
-  const list = [
+  const list = ([
     ["LinkedIn", d.linkedin],
     ["Instagram", d.instagram],
     ["X", d.x],
-  ].filter(([, v]) => v);
+  ] as [string, string][]).filter(([, v]) => v);
   if (!list.length) return "";
   return list
     .map(([n, v]) => `<a href="${esc(url(v))}" style="color:${d.accent};text-decoration:none;font-weight:600;margin-right:10px;">${n}</a>`)
