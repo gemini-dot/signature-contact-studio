@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 const safe = (r: unknown) => (typeof r === "string" && r.startsWith("/") && !r.startsWith("//") ? r : "/compte");
 
 export const Route = createFileRoute("/connexion")({
-  validateSearch: (s: Record<string, unknown>) => ({ redirect: typeof s.redirect === "string" ? s.redirect : undefined }),
+  validateSearch: (s: Record<string, unknown>): { redirect?: string } => (typeof s.redirect === "string" ? { redirect: s.redirect } : {}),
   head: () => ({
     meta: [
       { title: "Connexion — Signature.Contact" },

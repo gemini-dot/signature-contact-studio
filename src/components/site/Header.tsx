@@ -1,5 +1,9 @@
 import { Link } from "@tanstack/react-router";
-import { Moon, Sun, Globe } from "lucide-react";
+import { Moon, Sun, Globe, LogOut } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/use-auth";
 import { useEffect, useState } from "react";
 
 const LANGS = [
@@ -37,6 +41,15 @@ export function Logo() {
 export function Header() {
   const [dark, setDark] = useState(false);
   const [lang, setLang] = useState("fr");
+  const { user, isAdmin } = useAuth();
+  const qc = useQueryClient();
+  const navigate = useNavigate();
+  const signOut = async () => {
+    await qc.cancelQueries();
+    qc.clear();
+    await supabase.auth.signOut();
+    navigate({ to: "/connexion", replace: true });
+  };
 
   useEffect(() => {
     const saved = localStorage.getItem("theme") === "dark";
@@ -56,7 +69,12 @@ export function Header() {
         <nav className="hidden items-center gap-7 md:flex">
           <Link to="/editeur" className={nav} activeProps={{ className: "text-foreground" }}>Éditeur</Link>
           <Link to="/tarifs" className={nav} activeProps={{ className: "text-foreground" }}>Tarifs</Link>
-          <Link to="/tableau-de-bord" className={nav} activeProps={{ className: "text-foreground" }}>Tableau de bord</Link>
+          {user ? (
+            <Link to="/compte" className={nav} activeProps={{ className: "text-foreground" }}>Mon espace</Link>
+          ) : (
+            <Link to="/connexion" className={nav} activeProps={{ className: "text-foreground" }}>Connexion</Link>
+          )}
+          {isAdmin && <Link to="/admin" className={nav} activeProps={{ className: "text-foreground" }}>Admin</Link>}
         </nav>
         <div className="flex items-center gap-2">
           <label className="flex items-center gap-1 rounded-full border border-border px-2 py-1 text-xs">
@@ -70,6 +88,11 @@ export function Header() {
               {LANGS.map((l) => <option key={l.code} value={l.code}>{l.code.toUpperCase()}</option>)}
             </select>
           </label>
+          {user && (
+            <button aria-label="Se déconnecter" title="Se déconnecter" onClick={signOut} className="rounded-full border border-border p-2 hover:bg-accent">
+              <LogOut className="h-4 w-4" />
+            </button>
+          )}
           <button
             aria-label="Mode sombre"
             onClick={() => setDark((d) => !d)}

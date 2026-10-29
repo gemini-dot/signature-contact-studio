@@ -29,7 +29,7 @@ function MySignatures() {
     <div>
       <div className="flex items-center justify-between">
         <p className="text-muted-foreground">{data.length} signature(s) enregistrée(s)</p>
-        <Link to="/editeur" search={{ id: undefined }} className="rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground">Nouvelle signature</Link>
+        <Link to="/editeur" className="rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground">Nouvelle signature</Link>
       </div>
       {isLoading ? <p className="mt-6 text-sm text-muted-foreground">Chargement…</p> : data.length === 0 ? (
         <div className="mt-6 rounded-3xl border border-dashed border-border p-10 text-center text-muted-foreground">
