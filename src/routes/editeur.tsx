@@ -123,6 +123,21 @@ function Editor() {
               ou importer un fichier (aperçu uniquement)
               <input type="file" accept="image/*" onChange={(e) => onLogo(e.target.files?.[0])} className="mt-1 block text-sm" />
             </label>
+            {d.logoUrl && (
+              <div className="grid gap-3 rounded-xl border border-border p-3">
+                <label className="block text-sm">
+                  <span className="flex justify-between text-muted-foreground">Taille du logo <span>{d.logoSize} px</span></span>
+                  <input type="range" min={LOGO_MIN} max={LOGO_MAX} value={d.logoSize} onChange={(e) => set("logoSize", clampLogoSize(Number(e.target.value)))} className="mt-1 w-full accent-primary" />
+                </label>
+                <div className="flex flex-wrap items-center gap-2 text-sm">
+                  <span className="text-muted-foreground">Forme :</span>
+                  {([["arrondi","Arrondi"],["carre","Carré"],["cercle","Cercle (photo)"]] as const).map(([v,l]) => (
+                    <button key={v} type="button" onClick={() => set("logoShape", v)} className={`rounded-full border px-3 py-1 ${d.logoShape === v ? "border-primary bg-primary text-primary-foreground" : "border-border"}`}>{l}</button>
+                  ))}
+                  <button type="button" onClick={() => { set("logoSize", 72); set("logoShape", "arrondi"); }} className="ml-auto text-xs text-muted-foreground underline">Réinitialiser</button>
+                </div>
+              </div>
+            )}
             <label className="flex items-center gap-3 text-sm">
               Couleur principale
               <input type="color" value={d.accent} onChange={(e) => set("accent", e.target.value)} className="h-8 w-12 rounded" />
