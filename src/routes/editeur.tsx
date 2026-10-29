@@ -1,4 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { supabase } from "@/integrations/supabase/client";
+import type { Json } from "@/integrations/supabase/types";
+import { useAuth } from "@/hooks/use-auth";
+import { Save, Lock } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import { Copy, Code2 } from "lucide-react";
@@ -6,6 +10,7 @@ import { SignaturePreview } from "@/components/site/SignaturePreview";
 import { defaultSignature, LOGO_MIN, LOGO_MAX, clampLogoSize, cropRect, ZOOM_MAX, renderSignature, templates, type SignatureData, type TemplateId } from "@/lib/signature";
 
 export const Route = createFileRoute("/editeur")({
+  validateSearch: (s: Record<string, unknown>): { id?: string } => (typeof s['id'] === "string" ? { id: s['id'] } : {}),
   head: () => ({
     meta: [
       { title: "Éditeur de signature — Signature.Contact" },
@@ -57,8 +62,58 @@ function Editor() {
   }, []);
   useEffect(() => { localStorage.setItem(STORAGE, JSON.stringify({ d, tpl })); }, [d, tpl]);
 
+  const { id } = Route.useSearch();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const [sigId, setSigId] = useState<string | undefined>(id);
+  const [sigName, setSigName] = useState("Ma signature");
+  const [team, setTeam] = useState<{ owner_id: string; lock_logo: boolean; lock_colors: boolean; base_data: Record<string, string>; is_admin: boolean } | null>(null);
+
+  useEffect(() => {
+    if (!id || !user) return;
+    supabase.from("signatures").select("*").eq("id", id).maybeSingle().then(({ data }) => {
+      if (!data) return;
+      setD({ ...defaultSignature, ...(data.data as Partial<SignatureData>) });
+      setTpl(data.template as TemplateId);
+      setSigName(data.name);
+      setSigId(data.id);
+    });
+  }, [id, user]);
+
+  // Modèle d'équipe : logo et couleurs imposés aux membres quand l'admin les verrouille.
+  useEffect(() => {
+    if (!user) { setTeam(null); return; }
+    (async () => {
+      const { data: t } = await supabase.from("teams").select("*").limit(1).maybeSingle();
+      if (!t) { setTeam(null); return; }
+      const { data: m } = await supabase.from("team_members").select("role").eq("team_id", t.id).eq("user_id", user.id).maybeSingle();
+      setTeam({ owner_id: t.owner_id, lock_logo: t.lock_logo, lock_colors: t.lock_colors, base_data: (t.base_data ?? {}) as Record<string, string>, is_admin: t.owner_id === user.id || m?.role === "admin" });
+    })();
+  }, [user]);
+  const logoLocked = !!team && !team.is_admin && team.lock_logo;
+  const colorLocked = !!team && !team.is_admin && team.lock_colors;
+  const view: SignatureData = {
+    ...d,
+    ...(logoLocked ? { logoUrl: team!.base_data['logoUrl'] ?? "", logoSrc: "" } : {}),
+    ...(colorLocked && team!.base_data['accent'] ? { accent: team!.base_data['accent'] } : {}),
+  };
+
+  const saveSig = async () => {
+    if (!user) { navigate({ to: "/connexion", search: { redirect: "/editeur" } }); return; }
+    const payload = { name: sigName || "Ma signature", template: tpl, data: view as unknown as Json, updated_at: new Date().toISOString() };
+    if (sigId) {
+      const { error } = await supabase.from("signatures").update(payload).eq("id", sigId);
+      if (error) { toast.error(error.message); return; }
+    } else {
+      const { data, error } = await supabase.from("signatures").insert({ ...payload, user_id: user.id }).select("id").single();
+      if (error) { toast.error(error.message); return; }
+      setSigId(data.id);
+    }
+    toast.success("Signature enregistrée dans votre espace");
+  };
+
   const set = <K extends keyof SignatureData>(k: K, v: SignatureData[K]) => setD((p) => ({ ...p, [k]: v }));
-  const html = renderSignature(tpl, d);
+  const html = renderSignature(tpl, view);
 
   const copyRich = async () => {
     try {
@@ -152,6 +207,7 @@ function Editor() {
               {text("instagram", "Instagram")}
               {text("x", "X")}
             </div>
+            {!logoLocked && (<>
             <label className="block text-sm">
               <span className="mb-1 block text-muted-foreground">URL du logo (hébergé)</span>
               <input value={isRemote ? d.logoSrc : d.logoSrc ? "" : d.logoUrl} placeholder={d.logoSrc ? "Fichier importé" : "https://…/logo.png"}
@@ -162,7 +218,8 @@ function Editor() {
               ou importer un fichier
               <input type="file" accept="image/*" onChange={(e) => onLogo(e.target.files?.[0])} className="mt-1 block text-sm" />
             </label>
-            {d.logoUrl && (
+            </>)}
+            {d.logoUrl && !logoLocked && (
               <div className="grid gap-3 rounded-xl border border-border p-3">
                 <label className="block text-sm">
                   <span className="flex justify-between text-muted-foreground">Taille du logo <span>{d.logoSize} px</span></span>
@@ -191,10 +248,12 @@ function Editor() {
                 )}
               </div>
             )}
+            {!colorLocked && (
             <label className="flex items-center gap-3 text-sm">
               Couleur principale
               <input type="color" value={d.accent} onChange={(e) => set("accent", e.target.value)} className="h-8 w-12 rounded" />
             </label>
+            )}
           </Card>
           <Card title="Options">
             {toggle("bannerOn", "Signature vivante (bannière)")}
@@ -215,7 +274,14 @@ function Editor() {
               </button>
             ))}
           </div>
-          <SignaturePreview template={tpl} data={d} />
+          <SignaturePreview template={tpl} data={view} />
+          {(logoLocked || colorLocked) && (
+            <p className="flex items-center gap-2 text-xs text-muted-foreground"><Lock className="h-3.5 w-3.5 text-gold" /> {logoLocked && colorLocked ? "Le logo et les couleurs" : logoLocked ? "Le logo" : "Les couleurs"} sont imposés par votre équipe.</p>
+          )}
+          <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-border bg-card p-3">
+            <input value={sigName} onChange={(e) => setSigName(e.target.value)} aria-label="Nom de la signature" className="min-w-0 flex-1 rounded-xl border border-input bg-background px-3 py-2 text-sm" />
+            <button onClick={saveSig} className="inline-flex items-center gap-2 rounded-full bg-gold px-4 py-2 text-sm font-medium text-gold-foreground"><Save className="h-4 w-4" /> {user ? "Enregistrer" : "Se connecter pour enregistrer"}</button>
+          </div>
           <div className="flex flex-wrap gap-3">
             <button onClick={copyRich} className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 font-medium text-primary-foreground hover:bg-primary/90">
               <Copy className="h-4 w-4" /> Copier la signature

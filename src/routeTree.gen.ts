@@ -10,16 +10,28 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as CguRouteImport } from './routes/cgu'
 import { Route as ConfidentialiteRouteImport } from './routes/confidentialite'
+import { Route as ConnexionRouteImport } from './routes/connexion'
 import { Route as EditeurRouteImport } from './routes/editeur'
 import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
+import { Route as ReinitialiserMotDePasseRouteImport } from './routes/reinitialiser-mot-de-passe'
 import { Route as TableauDeBordRouteImport } from './routes/tableau-de-bord'
 import { Route as TarifsRouteImport } from './routes/tarifs'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedCompteRouteImport } from './routes/_authenticated/compte'
+import { Route as AuthenticatedCompteIndexRouteImport } from './routes/_authenticated/compte.index'
+import { Route as AuthenticatedCompteAbonnementRouteImport } from './routes/_authenticated/compte.abonnement'
+import { Route as AuthenticatedCompteEquipeRouteImport } from './routes/_authenticated/compte.equipe'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CguRoute = CguRouteImport.update({
@@ -32,6 +44,11 @@ const ConfidentialiteRoute = ConfidentialiteRouteImport.update({
   path: '/confidentialite',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ConnexionRoute = ConnexionRouteImport.update({
+  id: '/connexion',
+  path: '/connexion',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EditeurRoute = EditeurRouteImport.update({
   id: '/editeur',
   path: '/editeur',
@@ -40,6 +57,11 @@ const EditeurRoute = EditeurRouteImport.update({
 const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
   id: '/mentions-legales',
   path: '/mentions-legales',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReinitialiserMotDePasseRoute = ReinitialiserMotDePasseRouteImport.update({
+  id: '/reinitialiser-mot-de-passe',
+  path: '/reinitialiser-mot-de-passe',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TableauDeBordRoute = TableauDeBordRouteImport.update({
@@ -52,34 +74,83 @@ const TarifsRoute = TarifsRouteImport.update({
   path: '/tarifs',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedCompteRoute = AuthenticatedCompteRouteImport.update({
+  id: '/compte',
+  path: '/compte',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedCompteIndexRoute =
+  AuthenticatedCompteIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedCompteRoute,
+  } as any)
+const AuthenticatedCompteAbonnementRoute =
+  AuthenticatedCompteAbonnementRouteImport.update({
+    id: '/abonnement',
+    path: '/abonnement',
+    getParentRoute: () => AuthenticatedCompteRoute,
+  } as any)
+const AuthenticatedCompteEquipeRoute =
+  AuthenticatedCompteEquipeRouteImport.update({
+    id: '/equipe',
+    path: '/equipe',
+    getParentRoute: () => AuthenticatedCompteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/cgu': typeof CguRoute
   '/confidentialite': typeof ConfidentialiteRoute
+  '/connexion': typeof ConnexionRoute
   '/editeur': typeof EditeurRoute
   '/mentions-legales': typeof MentionsLegalesRoute
+  '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
   '/tarifs': typeof TarifsRoute
+  '/admin': typeof AuthenticatedAdminRoute
+  '/compte': typeof AuthenticatedCompteRouteWithChildren
+  '/compte/abonnement': typeof AuthenticatedCompteAbonnementRoute
+  '/compte/equipe': typeof AuthenticatedCompteEquipeRoute
+  '/compte/': typeof AuthenticatedCompteIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/cgu': typeof CguRoute
   '/confidentialite': typeof ConfidentialiteRoute
+  '/connexion': typeof ConnexionRoute
   '/editeur': typeof EditeurRoute
   '/mentions-legales': typeof MentionsLegalesRoute
+  '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
   '/tarifs': typeof TarifsRoute
+  '/admin': typeof AuthenticatedAdminRoute
+  '/compte/abonnement': typeof AuthenticatedCompteAbonnementRoute
+  '/compte/equipe': typeof AuthenticatedCompteEquipeRoute
+  '/compte': typeof AuthenticatedCompteIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/cgu': typeof CguRoute
   '/confidentialite': typeof ConfidentialiteRoute
+  '/connexion': typeof ConnexionRoute
   '/editeur': typeof EditeurRoute
   '/mentions-legales': typeof MentionsLegalesRoute
+  '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
   '/tarifs': typeof TarifsRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/compte': typeof AuthenticatedCompteRouteWithChildren
+  '/_authenticated/compte/abonnement': typeof AuthenticatedCompteAbonnementRoute
+  '/_authenticated/compte/equipe': typeof AuthenticatedCompteEquipeRoute
+  '/_authenticated/compte/': typeof AuthenticatedCompteIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -87,36 +158,60 @@ export interface FileRouteTypes {
     | '/'
     | '/cgu'
     | '/confidentialite'
+    | '/connexion'
     | '/editeur'
     | '/mentions-legales'
+    | '/reinitialiser-mot-de-passe'
     | '/tableau-de-bord'
     | '/tarifs'
+    | '/admin'
+    | '/compte'
+    | '/compte/abonnement'
+    | '/compte/equipe'
+    | '/compte/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/cgu'
     | '/confidentialite'
+    | '/connexion'
     | '/editeur'
     | '/mentions-legales'
+    | '/reinitialiser-mot-de-passe'
     | '/tableau-de-bord'
     | '/tarifs'
+    | '/admin'
+    | '/compte/abonnement'
+    | '/compte/equipe'
+    | '/compte'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/cgu'
     | '/confidentialite'
+    | '/connexion'
     | '/editeur'
     | '/mentions-legales'
+    | '/reinitialiser-mot-de-passe'
     | '/tableau-de-bord'
     | '/tarifs'
+    | '/_authenticated/admin'
+    | '/_authenticated/compte'
+    | '/_authenticated/compte/abonnement'
+    | '/_authenticated/compte/equipe'
+    | '/_authenticated/compte/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   CguRoute: typeof CguRoute
   ConfidentialiteRoute: typeof ConfidentialiteRoute
+  ConnexionRoute: typeof ConnexionRoute
   EditeurRoute: typeof EditeurRoute
   MentionsLegalesRoute: typeof MentionsLegalesRoute
+  ReinitialiserMotDePasseRoute: typeof ReinitialiserMotDePasseRoute
   TableauDeBordRoute: typeof TableauDeBordRoute
   TarifsRoute: typeof TarifsRoute
 }
@@ -128,6 +223,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cgu': {
@@ -144,6 +246,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ConfidentialiteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/connexion': {
+      id: '/connexion'
+      path: '/connexion'
+      fullPath: '/connexion'
+      preLoaderRoute: typeof ConnexionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/editeur': {
       id: '/editeur'
       path: '/editeur'
@@ -156,6 +265,13 @@ declare module '@tanstack/react-router' {
       path: '/mentions-legales'
       fullPath: '/mentions-legales'
       preLoaderRoute: typeof MentionsLegalesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reinitialiser-mot-de-passe': {
+      id: '/reinitialiser-mot-de-passe'
+      path: '/reinitialiser-mot-de-passe'
+      fullPath: '/reinitialiser-mot-de-passe'
+      preLoaderRoute: typeof ReinitialiserMotDePasseRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tableau-de-bord': {
@@ -172,15 +288,81 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TarifsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/compte': {
+      id: '/_authenticated/compte'
+      path: '/compte'
+      fullPath: '/compte'
+      preLoaderRoute: typeof AuthenticatedCompteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/compte/': {
+      id: '/_authenticated/compte/'
+      path: '/'
+      fullPath: '/compte/'
+      preLoaderRoute: typeof AuthenticatedCompteIndexRouteImport
+      parentRoute: typeof AuthenticatedCompteRoute
+    }
+    '/_authenticated/compte/abonnement': {
+      id: '/_authenticated/compte/abonnement'
+      path: '/abonnement'
+      fullPath: '/compte/abonnement'
+      preLoaderRoute: typeof AuthenticatedCompteAbonnementRouteImport
+      parentRoute: typeof AuthenticatedCompteRoute
+    }
+    '/_authenticated/compte/equipe': {
+      id: '/_authenticated/compte/equipe'
+      path: '/equipe'
+      fullPath: '/compte/equipe'
+      preLoaderRoute: typeof AuthenticatedCompteEquipeRouteImport
+      parentRoute: typeof AuthenticatedCompteRoute
+    }
   }
 }
 
+interface AuthenticatedCompteRouteChildren {
+  AuthenticatedCompteAbonnementRoute: typeof AuthenticatedCompteAbonnementRoute
+  AuthenticatedCompteEquipeRoute: typeof AuthenticatedCompteEquipeRoute
+  AuthenticatedCompteIndexRoute: typeof AuthenticatedCompteIndexRoute
+}
+
+const AuthenticatedCompteRouteChildren: AuthenticatedCompteRouteChildren = {
+  AuthenticatedCompteAbonnementRoute: AuthenticatedCompteAbonnementRoute,
+  AuthenticatedCompteEquipeRoute: AuthenticatedCompteEquipeRoute,
+  AuthenticatedCompteIndexRoute: AuthenticatedCompteIndexRoute,
+}
+
+const AuthenticatedCompteRouteWithChildren =
+  AuthenticatedCompteRoute._addFileChildren(AuthenticatedCompteRouteChildren)
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedCompteRoute: typeof AuthenticatedCompteRouteWithChildren
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedCompteRoute: AuthenticatedCompteRouteWithChildren,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   CguRoute: CguRoute,
   ConfidentialiteRoute: ConfidentialiteRoute,
+  ConnexionRoute: ConnexionRoute,
   EditeurRoute: EditeurRoute,
   MentionsLegalesRoute: MentionsLegalesRoute,
+  ReinitialiserMotDePasseRoute: ReinitialiserMotDePasseRoute,
   TableauDeBordRoute: TableauDeBordRoute,
   TarifsRoute: TarifsRoute,
 }
