@@ -9,13 +9,27 @@ const LANGS = [
   { code: "de", label: "Deutsch" },
 ];
 
+export function BrandMark({ className = "h-10 w-10" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 48 48" className={`shrink-0 ${className}`} aria-hidden>
+      <rect x="2" y="2" width="44" height="44" rx="14" fill="var(--primary)" />
+      <path d="M12 31c4-1 6-9 9-9s1 8 4 8 4-6 6-6 2 4 5 4" fill="none" stroke="var(--primary-foreground)" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M12 36h24" stroke="var(--gold)" strokeWidth="1.6" strokeLinecap="round" />
+      <circle cx="37" cy="13" r="4.5" fill="var(--gold)" />
+    </svg>
+  );
+}
+
 export function Logo() {
   return (
-    <Link to="/" className="flex items-baseline gap-2">
-      <span className="font-serif text-2xl font-semibold text-primary">
-        Signature<span className="italic text-gold">.Contact</span>
+    <Link to="/" className="flex items-center gap-3" aria-label="Signature.Contact by Gem's">
+      <BrandMark />
+      <span className="leading-none">
+        <span className="block font-serif text-2xl font-semibold text-primary">
+          Signature<span className="italic text-gold">.Contact</span>
+        </span>
+        <span className="mt-1 block text-[10px] font-semibold uppercase tracking-[0.3em] text-muted-foreground">by Gem's</span>
       </span>
-      <span className="text-xs text-muted-foreground">by Gem's</span>
     </Link>
   );
 }

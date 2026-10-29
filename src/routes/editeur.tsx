@@ -3,7 +3,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import { Copy, Code2 } from "lucide-react";
 import { SignaturePreview } from "@/components/site/SignaturePreview";
-import { defaultSignature, renderSignature, templates, type SignatureData, type TemplateId } from "@/lib/signature";
+import { defaultSignature, LOGO_MIN, LOGO_MAX, clampLogoSize, renderSignature, templates, type SignatureData, type TemplateId } from "@/lib/signature";
 
 export const Route = createFileRoute("/editeur")({
   head: () => ({
