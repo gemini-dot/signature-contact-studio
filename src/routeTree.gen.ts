@@ -19,9 +19,11 @@ import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
 import { Route as ReinitialiserMotDePasseRouteImport } from './routes/reinitialiser-mot-de-passe'
 import { Route as TableauDeBordRouteImport } from './routes/tableau-de-bord'
 import { Route as TarifsRouteImport } from './routes/tarifs'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedCompteRouteImport } from './routes/_authenticated/compte'
 import { Route as AuthenticatedCompteIndexRouteImport } from './routes/_authenticated/compte.index'
 import { Route as AuthenticatedCompteAbonnementRouteImport } from './routes/_authenticated/compte.abonnement'
+import { Route as AuthenticatedCompteEquipeRouteImport } from './routes/_authenticated/compte.equipe'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -72,6 +74,11 @@ const TarifsRoute = TarifsRouteImport.update({
   path: '/tarifs',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedCompteRoute = AuthenticatedCompteRouteImport.update({
   id: '/compte',
   path: '/compte',
@@ -89,6 +96,12 @@ const AuthenticatedCompteAbonnementRoute =
     path: '/abonnement',
     getParentRoute: () => AuthenticatedCompteRoute,
   } as any)
+const AuthenticatedCompteEquipeRoute =
+  AuthenticatedCompteEquipeRouteImport.update({
+    id: '/equipe',
+    path: '/equipe',
+    getParentRoute: () => AuthenticatedCompteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -100,8 +113,10 @@ export interface FileRoutesByFullPath {
   '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
   '/tarifs': typeof TarifsRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/compte': typeof AuthenticatedCompteRouteWithChildren
   '/compte/abonnement': typeof AuthenticatedCompteAbonnementRoute
+  '/compte/equipe': typeof AuthenticatedCompteEquipeRoute
   '/compte/': typeof AuthenticatedCompteIndexRoute
 }
 export interface FileRoutesByTo {
@@ -114,7 +129,9 @@ export interface FileRoutesByTo {
   '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
   '/tarifs': typeof TarifsRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/compte/abonnement': typeof AuthenticatedCompteAbonnementRoute
+  '/compte/equipe': typeof AuthenticatedCompteEquipeRoute
   '/compte': typeof AuthenticatedCompteIndexRoute
 }
 export interface FileRoutesById {
@@ -129,8 +146,10 @@ export interface FileRoutesById {
   '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
   '/tarifs': typeof TarifsRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/compte': typeof AuthenticatedCompteRouteWithChildren
   '/_authenticated/compte/abonnement': typeof AuthenticatedCompteAbonnementRoute
+  '/_authenticated/compte/equipe': typeof AuthenticatedCompteEquipeRoute
   '/_authenticated/compte/': typeof AuthenticatedCompteIndexRoute
 }
 export interface FileRouteTypes {
@@ -145,8 +164,10 @@ export interface FileRouteTypes {
     | '/reinitialiser-mot-de-passe'
     | '/tableau-de-bord'
     | '/tarifs'
+    | '/admin'
     | '/compte'
     | '/compte/abonnement'
+    | '/compte/equipe'
     | '/compte/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -159,7 +180,9 @@ export interface FileRouteTypes {
     | '/reinitialiser-mot-de-passe'
     | '/tableau-de-bord'
     | '/tarifs'
+    | '/admin'
     | '/compte/abonnement'
+    | '/compte/equipe'
     | '/compte'
   id:
     | '__root__'
@@ -173,8 +196,10 @@ export interface FileRouteTypes {
     | '/reinitialiser-mot-de-passe'
     | '/tableau-de-bord'
     | '/tarifs'
+    | '/_authenticated/admin'
     | '/_authenticated/compte'
     | '/_authenticated/compte/abonnement'
+    | '/_authenticated/compte/equipe'
     | '/_authenticated/compte/'
   fileRoutesById: FileRoutesById
 }
@@ -263,6 +288,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TarifsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/compte': {
       id: '/_authenticated/compte'
       path: '/compte'
@@ -284,16 +316,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCompteAbonnementRouteImport
       parentRoute: typeof AuthenticatedCompteRoute
     }
+    '/_authenticated/compte/equipe': {
+      id: '/_authenticated/compte/equipe'
+      path: '/equipe'
+      fullPath: '/compte/equipe'
+      preLoaderRoute: typeof AuthenticatedCompteEquipeRouteImport
+      parentRoute: typeof AuthenticatedCompteRoute
+    }
   }
 }
 
 interface AuthenticatedCompteRouteChildren {
   AuthenticatedCompteAbonnementRoute: typeof AuthenticatedCompteAbonnementRoute
+  AuthenticatedCompteEquipeRoute: typeof AuthenticatedCompteEquipeRoute
   AuthenticatedCompteIndexRoute: typeof AuthenticatedCompteIndexRoute
 }
 
 const AuthenticatedCompteRouteChildren: AuthenticatedCompteRouteChildren = {
   AuthenticatedCompteAbonnementRoute: AuthenticatedCompteAbonnementRoute,
+  AuthenticatedCompteEquipeRoute: AuthenticatedCompteEquipeRoute,
   AuthenticatedCompteIndexRoute: AuthenticatedCompteIndexRoute,
 }
 
@@ -301,10 +342,12 @@ const AuthenticatedCompteRouteWithChildren =
   AuthenticatedCompteRoute._addFileChildren(AuthenticatedCompteRouteChildren)
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedCompteRoute: typeof AuthenticatedCompteRouteWithChildren
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedCompteRoute: AuthenticatedCompteRouteWithChildren,
 }
 
