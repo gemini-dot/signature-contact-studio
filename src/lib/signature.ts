@@ -12,6 +12,8 @@ export interface SignatureData {
   instagram: string;
   x: string;
   logoUrl: string;
+  logoSize: number;
+  logoShape: "arrondi" | "carre" | "cercle";
   accent: string;
   bannerOn: boolean;
   bannerText: string;
@@ -36,6 +38,8 @@ export const defaultSignature: SignatureData = {
   instagram: "",
   x: "",
   logoUrl: "",
+  logoSize: 72,
+  logoShape: "arrondi",
   accent: "#1e3a6e",
   bannerOn: true,
   bannerText: "Nouveau : notre collection d'automne est en ligne →",
@@ -87,9 +91,19 @@ function socials(d: SignatureData) {
     .join("");
 }
 
-function logo(d: SignatureData, size = 64) {
+export const LOGO_MIN = 32;
+export const LOGO_MAX = 160;
+export function clampLogoSize(n: number) {
+  return Math.min(LOGO_MAX, Math.max(LOGO_MIN, Math.round(Number.isFinite(n) ? n : 72)));
+}
+function logo(d: SignatureData, _size = 64) {
   if (!d.logoUrl) return "";
-  return `<img src="${esc(d.logoUrl)}" alt="${esc(d.company)}" width="${size}" style="display:block;width:${size}px;height:auto;border-radius:8px;">`;
+  const size = clampLogoSize(d.logoSize);
+  const shape = d.logoShape ?? "arrondi";
+  const radius = shape === "cercle" ? "50%" : shape === "carre" ? "0" : "8px";
+  const h = shape === "cercle" ? `height="${size}" ` : "";
+  const hs = shape === "cercle" ? `height:${size}px;object-fit:cover;` : "height:auto;";
+  return `<img src="${esc(d.logoUrl)}" alt="${esc(d.company)}" width="${size}" ${h}style="display:block;width:${size}px;${hs}border-radius:${radius};">`;
 }
 
 function extras(d: SignatureData) {

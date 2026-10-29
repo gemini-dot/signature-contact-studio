@@ -10,3 +10,13 @@ describe("tarifs", () => {
     expect(teamMonthlyPrice(10)).toBe(29);
   });
 });
+
+import { clampLogoSize } from "@/lib/signature";
+import { describe as d2, it as i2, expect as e2 } from "vitest";
+d2("taille du logo", () => {
+  i2("reste entre 32 et 160 px", () => {
+    e2(clampLogoSize(10)).toBe(32);
+    e2(clampLogoSize(500)).toBe(160);
+    e2(clampLogoSize(90)).toBe(90);
+  });
+});
