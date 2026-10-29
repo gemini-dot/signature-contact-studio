@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      invoices: {
+        Row: {
+          amount_cents: number
+          cycle: string
+          id: string
+          issued_at: string
+          number: string
+          period_end: string
+          plan: string
+          test_mode: boolean
+          user_id: string
+        }
+        Insert: {
+          amount_cents: number
+          cycle: string
+          id?: string
+          issued_at?: string
+          number: string
+          period_end: string
+          plan: string
+          test_mode?: boolean
+          user_id: string
+        }
+        Update: {
+          amount_cents?: number
+          cycle?: string
+          id?: string
+          issued_at?: string
+          number?: string
+          period_end?: string
+          plan?: string
+          test_mode?: boolean
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -60,6 +96,51 @@ export type Database = {
           id?: string
           name?: string
           template?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          auto_renew: boolean
+          created_at: string
+          current_period_end: string | null
+          current_period_start: string
+          cycle: string
+          id: string
+          plan: string
+          seats: number
+          status: string
+          test_mode: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          auto_renew?: boolean
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string
+          cycle?: string
+          id?: string
+          plan?: string
+          seats?: number
+          status?: string
+          test_mode?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          auto_renew?: boolean
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string
+          cycle?: string
+          id?: string
+          plan?: string
+          seats?: number
+          status?: string
+          test_mode?: boolean
           updated_at?: string
           user_id?: string
         }
@@ -173,6 +254,30 @@ export type Database = {
       is_team_member: {
         Args: { _team: string; _user: string }
         Returns: boolean
+      }
+      set_auto_renew: { Args: { _on: boolean }; Returns: undefined }
+      subscribe_test: {
+        Args: { _cycle: string; _plan: string; _seats: number }
+        Returns: {
+          auto_renew: boolean
+          created_at: string
+          current_period_end: string | null
+          current_period_start: string
+          cycle: string
+          id: string
+          plan: string
+          seats: number
+          status: string
+          test_mode: boolean
+          updated_at: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "subscriptions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
     }
     Enums: {
