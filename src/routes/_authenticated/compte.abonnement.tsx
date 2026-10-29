@@ -149,7 +149,7 @@ function Billing() {
 function printInvoice(i: { number: string; issued_at: string; plan: string; cycle: string; amount_cents: number; period_end: string }) {
   const w = window.open("", "_blank");
   if (!w) return;
-  const ht = i.amount_cents / 120;
+  const ht = Math.round(i.amount_cents / 1.2);
   w.document.write(`<html><head><title>Facture ${i.number}</title></head><body style="font-family:Georgia,serif;max-width:640px;margin:40px auto;color:#1a2440">
 <h1 style="margin:0">Signature.Contact</h1><p style="color:#c9a45c;margin:0;letter-spacing:3px;font-size:11px">BY GEM'S</p>
 <p style="color:#b33;font-weight:bold">FACTURE DE TEST — sans valeur</p>
