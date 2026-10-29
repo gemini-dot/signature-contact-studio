@@ -20,3 +20,13 @@ d2("taille du logo", () => {
     e2(clampLogoSize(90)).toBe(90);
   });
 });
+
+import { cropRect } from "@/lib/signature";
+d2("recadrage du logo", () => {
+  i2("zoom 2 centré sur une image 200×100", () => {
+    e2(cropRect(200, 100, 2, 50, 50, false)).toEqual({ sx: 50, sy: 25, sw: 100, sh: 50 });
+  });
+  i2("carré calé en haut à gauche", () => {
+    e2(cropRect(200, 100, 1, 0, 0, true)).toEqual({ sx: 0, sy: 0, sw: 100, sh: 100 });
+  });
+});
