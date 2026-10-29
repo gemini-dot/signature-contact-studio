@@ -50,20 +50,20 @@ function TeamPage() {
     e.preventDefault();
     if (!user) return;
     const { error } = await supabase.from("teams").insert({ name: teamName, owner_id: user.id });
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     refresh();
   };
   const sendInvite = async (e: FormEvent) => {
     e.preventDefault();
     const { error } = await supabase.from("team_members").insert({ team_id: team!.id, email: invite.trim().toLowerCase() });
-    if (error) return toast.error(error.code === "23505" ? "Déjà invité" : error.message);
+    if (error) { toast.error(error.code === "23505" ? "Déjà invité" : error.message); return; }
     toast.success("Invitation enregistrée : la personne rejoint l'équipe en créant son compte avec cette adresse.");
     setInvite("");
     refresh();
   };
   const save = async () => {
     const { error } = await supabase.from("teams").update({ template: tpl, base_data: base, lock_logo: lockLogo, lock_colors: lockColors }).eq("id", team!.id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Modèle d'équipe enregistré");
     refresh();
   };

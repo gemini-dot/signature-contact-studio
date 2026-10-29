@@ -21,7 +21,7 @@ function MySignatures() {
   const remove = async (id: string) => {
     if (!confirm("Supprimer cette signature ?")) return;
     const { error } = await supabase.from("signatures").delete().eq("id", id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     qc.invalidateQueries({ queryKey: ["signatures"] });
   };
 

@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
+import type { Json } from "@/integrations/supabase/types";
 import { useAuth } from "@/hooks/use-auth";
 import { Save, Lock } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
@@ -9,7 +10,7 @@ import { SignaturePreview } from "@/components/site/SignaturePreview";
 import { defaultSignature, LOGO_MIN, LOGO_MAX, clampLogoSize, cropRect, ZOOM_MAX, renderSignature, templates, type SignatureData, type TemplateId } from "@/lib/signature";
 
 export const Route = createFileRoute("/editeur")({
-  validateSearch: (s: Record<string, unknown>): { id?: string } => (typeof s.id === "string" ? { id: s.id } : {}),
+  validateSearch: (s: Record<string, unknown>): { id?: string } => (typeof s['id'] === "string" ? { id: s['id'] } : {}),
   head: () => ({
     meta: [
       { title: "Éditeur de signature — Signature.Contact" },
@@ -84,7 +85,7 @@ function Editor() {
     if (!user) { setTeam(null); return; }
     (async () => {
       const { data: t } = await supabase.from("teams").select("*").limit(1).maybeSingle();
-      if (!t) return setTeam(null);
+      if (!t) { setTeam(null); return; }
       const { data: m } = await supabase.from("team_members").select("role").eq("team_id", t.id).eq("user_id", user.id).maybeSingle();
       setTeam({ owner_id: t.owner_id, lock_logo: t.lock_logo, lock_colors: t.lock_colors, base_data: (t.base_data ?? {}) as Record<string, string>, is_admin: t.owner_id === user.id || m?.role === "admin" });
     })();
@@ -93,19 +94,19 @@ function Editor() {
   const colorLocked = !!team && !team.is_admin && team.lock_colors;
   const view: SignatureData = {
     ...d,
-    ...(logoLocked ? { logoUrl: team!.base_data.logoUrl ?? "", logoSrc: "" } : {}),
-    ...(colorLocked && team!.base_data.accent ? { accent: team!.base_data.accent } : {}),
+    ...(logoLocked ? { logoUrl: team!.base_data['logoUrl'] ?? "", logoSrc: "" } : {}),
+    ...(colorLocked && team!.base_data['accent'] ? { accent: team!.base_data['accent'] } : {}),
   };
 
   const saveSig = async () => {
     if (!user) { navigate({ to: "/connexion", search: { redirect: "/editeur" } }); return; }
-    const payload = { name: sigName || "Ma signature", template: tpl, data: view as unknown as Record<string, unknown>, updated_at: new Date().toISOString() };
+    const payload = { name: sigName || "Ma signature", template: tpl, data: view as unknown as Json, updated_at: new Date().toISOString() };
     if (sigId) {
       const { error } = await supabase.from("signatures").update(payload).eq("id", sigId);
-      if (error) return toast.error(error.message);
+      if (error) { toast.error(error.message); return; }
     } else {
       const { data, error } = await supabase.from("signatures").insert({ ...payload, user_id: user.id }).select("id").single();
-      if (error) return toast.error(error.message);
+      if (error) { toast.error(error.message); return; }
       setSigId(data.id);
     }
     toast.success("Signature enregistrée dans votre espace");

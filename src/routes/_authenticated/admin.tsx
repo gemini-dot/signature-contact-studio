@@ -61,7 +61,7 @@ function Admin() {
       <p className="text-xs uppercase tracking-[0.2em] text-gold">Administration</p>
       <h1 className="mt-1 text-4xl font-medium">Vos <em className="text-gold">clients</em></h1>
       <div className="mt-8 grid gap-4 sm:grid-cols-5">
-        {[["Clients", rows.length], ["Gratuit", counts.gratuit], ["Solo", counts.solo], ["Équipe", counts.equipe], ["Revenu mensuel (test)", `${mrr.toFixed(2)} €`]].map(([l, v]) => (
+        {[["Clients", rows.length], ["Gratuit", counts["gratuit"]], ["Solo", counts["solo"]], ["Équipe", counts["equipe"]], ["Revenu mensuel (test)", `${mrr.toFixed(2)} €`]].map(([l, v]) => (
           <div key={l as string} className="rounded-2xl border border-border bg-card p-4">
             <p className="text-xs text-muted-foreground">{l}</p>
             <p className="mt-1 font-serif text-2xl">{v}</p>

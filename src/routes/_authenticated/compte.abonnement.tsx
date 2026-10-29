@@ -38,14 +38,14 @@ function Billing() {
     setBusy(true);
     const { error } = await supabase.rpc("subscribe_test", { _plan: choice.plan, _cycle: choice.cycle, _seats: choice.seats });
     setBusy(false);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Abonnement activé (mode test)");
     setChoice(null);
     refresh();
   };
   const toggleRenew = async () => {
     const { error } = await supabase.rpc("set_auto_renew", { _on: !s?.auto_renew });
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     refresh();
   };
   const downgrade = async () => {
