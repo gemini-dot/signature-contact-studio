@@ -14,6 +14,11 @@ export interface SignatureData {
   logoUrl: string;
   logoSize: number;
   logoShape: "arrondi" | "carre" | "cercle";
+  /** Image importée d'origine, avant recadrage. */
+  logoSrc: string;
+  logoZoom: number;
+  logoX: number;
+  logoY: number;
   accent: string;
   bannerOn: boolean;
   bannerText: string;
@@ -40,6 +45,10 @@ export const defaultSignature: SignatureData = {
   logoUrl: "",
   logoSize: 72,
   logoShape: "arrondi",
+  logoSrc: "",
+  logoZoom: 1,
+  logoX: 50,
+  logoY: 50,
   accent: "#1e3a6e",
   bannerOn: true,
   bannerText: "Nouveau : notre collection d'automne est en ligne →",
@@ -95,6 +104,17 @@ export const LOGO_MIN = 32;
 export const LOGO_MAX = 160;
 export function clampLogoSize(n: number) {
   return Math.min(LOGO_MAX, Math.max(LOGO_MIN, Math.round(Number.isFinite(n) ? n : 72)));
+}
+export const ZOOM_MAX = 4;
+/** Zone visible de l'image d'origine : zoom 1 à 4, position 0 à 100 % sur chaque axe. */
+export function cropRect(w: number, h: number, zoom: number, x: number, y: number, square: boolean) {
+  const z = Math.min(ZOOM_MAX, Math.max(1, zoom));
+  const cx = Math.min(100, Math.max(0, x)) / 100;
+  const cy = Math.min(100, Math.max(0, y)) / 100;
+  const side = Math.min(w, h);
+  const cw = (square ? side : w) / z;
+  const ch = (square ? side : h) / z;
+  return { sx: (w - cw) * cx, sy: (h - ch) * cy, sw: cw, sh: ch };
 }
 function logo(d: SignatureData, _size = 64) {
   if (!d.logoUrl) return "";

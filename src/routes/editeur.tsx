@@ -3,7 +3,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import { Copy, Code2 } from "lucide-react";
 import { SignaturePreview } from "@/components/site/SignaturePreview";
-import { defaultSignature, LOGO_MIN, LOGO_MAX, clampLogoSize, renderSignature, templates, type SignatureData, type TemplateId } from "@/lib/signature";
+import { defaultSignature, LOGO_MIN, LOGO_MAX, clampLogoSize, cropRect, ZOOM_MAX, renderSignature, templates, type SignatureData, type TemplateId } from "@/lib/signature";
 
 export const Route = createFileRoute("/editeur")({
   head: () => ({
@@ -78,9 +78,27 @@ function Editor() {
   const onLogo = (f?: File) => {
     if (!f) return;
     const r = new FileReader();
-    r.onload = () => set("logoUrl", String(r.result));
+    r.onload = () => setD((p) => ({ ...p, logoSrc: String(r.result), logoZoom: 1, logoX: 50, logoY: 50 }));
     r.readAsDataURL(f);
   };
+
+  // Recadrage : on redessine la partie visible dans une nouvelle image, compatible avec toutes les messageries.
+  useEffect(() => {
+    if (!d.logoSrc) return;
+    const img = new Image();
+    img.onload = () => {
+      const square = d.logoShape !== "arrondi";
+      const c = cropRect(img.naturalWidth, img.naturalHeight, d.logoZoom, d.logoX, d.logoY, square);
+      const scale = Math.min(1, 480 / Math.max(c.sw, c.sh));
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.max(1, Math.round(c.sw * scale));
+      canvas.height = Math.max(1, Math.round(c.sh * scale));
+      canvas.getContext("2d")?.drawImage(img, c.sx, c.sy, c.sw, c.sh, 0, 0, canvas.width, canvas.height);
+      const out = canvas.toDataURL("image/png");
+      setD((p) => (p.logoUrl === out ? p : { ...p, logoUrl: out }));
+    };
+    img.src = d.logoSrc;
+  }, [d.logoSrc, d.logoZoom, d.logoX, d.logoY, d.logoShape]);
 
   const text = (k: keyof SignatureData, label: string, ph = "") => (
     <label className="block text-sm">
@@ -118,9 +136,14 @@ function Editor() {
               {text("instagram", "Instagram")}
               {text("x", "X")}
             </div>
-            {text("logoUrl", "URL du logo (hébergé)", "https://…/logo.png")}
+            <label className="block text-sm">
+              <span className="mb-1 block text-muted-foreground">URL du logo (hébergé)</span>
+              <input value={d.logoSrc ? "" : d.logoUrl} placeholder={d.logoSrc ? "Fichier importé" : "https://…/logo.png"}
+                onChange={(e) => setD((p) => ({ ...p, logoSrc: "", logoUrl: e.target.value }))}
+                className="w-full rounded-xl border border-input bg-background px-3 py-2 outline-none focus:ring-2 focus:ring-ring" />
+            </label>
             <label className="block text-sm text-muted-foreground">
-              ou importer un fichier (aperçu uniquement)
+              ou importer un fichier
               <input type="file" accept="image/*" onChange={(e) => onLogo(e.target.files?.[0])} className="mt-1 block text-sm" />
             </label>
             {d.logoUrl && (
@@ -134,8 +157,22 @@ function Editor() {
                   {([["arrondi","Arrondi"],["carre","Carré"],["cercle","Cercle (photo)"]] as const).map(([v,l]) => (
                     <button key={v} type="button" onClick={() => set("logoShape", v)} className={`rounded-full border px-3 py-1 ${d.logoShape === v ? "border-primary bg-primary text-primary-foreground" : "border-border"}`}>{l}</button>
                   ))}
-                  <button type="button" onClick={() => { set("logoSize", 72); set("logoShape", "arrondi"); }} className="ml-auto text-xs text-muted-foreground underline">Réinitialiser</button>
+                  <button type="button" onClick={() => setD((p) => ({ ...p, logoSize: 72, logoShape: "arrondi", logoZoom: 1, logoX: 50, logoY: 50 }))} className="ml-auto text-xs text-muted-foreground underline">Réinitialiser</button>
                 </div>
+                {d.logoSrc ? (
+                  <div className="grid gap-2 border-t border-border pt-3">
+                    <p className="text-sm font-medium">Recadrage</p>
+                    {([["logoZoom","Zoom",1,ZOOM_MAX,0.05,`${d.logoZoom.toFixed(1)}×`],["logoX","Position horizontale",0,100,1,`${d.logoX} %`],["logoY","Position verticale",0,100,1,`${d.logoY} %`]] as const).map(([k,l,min,max,step,v]) => (
+                      <label key={k} className="block text-sm">
+                        <span className="flex justify-between text-muted-foreground">{l} <span>{v}</span></span>
+                        <input type="range" min={min} max={max} step={step} value={d[k]} onChange={(e) => set(k, Number(e.target.value))} className="mt-1 w-full accent-primary" />
+                      </label>
+                    ))}
+                    <p className="text-xs text-muted-foreground">Zoomez puis déplacez pour choisir la partie visible du logo.</p>
+                  </div>
+                ) : (
+                  <p className="text-xs text-muted-foreground">Importez un fichier pour pouvoir recadrer le logo.</p>
+                )}
               </div>
             )}
             <label className="flex items-center gap-3 text-sm">
