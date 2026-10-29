@@ -83,22 +83,38 @@ function Editor() {
   };
 
   // Recadrage : on redessine la partie visible dans une nouvelle image, compatible avec toutes les messageries.
+  // Pour un logo par adresse web, le site hébergeur doit autoriser la lecture de l'image ; sinon on garde l'image d'origine.
+  const [cropBlocked, setCropBlocked] = useState(false);
   useEffect(() => {
     if (!d.logoSrc) return;
+    const remote = /^https?:/i.test(d.logoSrc);
     const img = new Image();
+    if (remote) img.crossOrigin = "anonymous";
     img.onload = () => {
-      const square = d.logoShape !== "arrondi";
-      const c = cropRect(img.naturalWidth, img.naturalHeight, d.logoZoom, d.logoX, d.logoY, square);
-      const scale = Math.min(1, 480 / Math.max(c.sw, c.sh));
-      const canvas = document.createElement("canvas");
-      canvas.width = Math.max(1, Math.round(c.sw * scale));
-      canvas.height = Math.max(1, Math.round(c.sh * scale));
-      canvas.getContext("2d")?.drawImage(img, c.sx, c.sy, c.sw, c.sh, 0, 0, canvas.width, canvas.height);
-      const out = canvas.toDataURL("image/png");
-      setD((p) => (p.logoUrl === out ? p : { ...p, logoUrl: out }));
+      try {
+        const square = d.logoShape !== "arrondi";
+        const c = cropRect(img.naturalWidth, img.naturalHeight, d.logoZoom, d.logoX, d.logoY, square);
+        const scale = Math.min(1, 480 / Math.max(c.sw, c.sh));
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.max(1, Math.round(c.sw * scale));
+        canvas.height = Math.max(1, Math.round(c.sh * scale));
+        canvas.getContext("2d")?.drawImage(img, c.sx, c.sy, c.sw, c.sh, 0, 0, canvas.width, canvas.height);
+        const out = canvas.toDataURL("image/png");
+        setCropBlocked(false);
+        setD((p) => (p.logoUrl === out ? p : { ...p, logoUrl: out }));
+      } catch {
+        setCropBlocked(true);
+        setD((p) => (p.logoUrl === d.logoSrc ? p : { ...p, logoUrl: d.logoSrc }));
+      }
+    };
+    img.onerror = () => {
+      if (!remote) return;
+      setCropBlocked(true);
+      setD((p) => (p.logoUrl === d.logoSrc ? p : { ...p, logoUrl: d.logoSrc }));
     };
     img.src = d.logoSrc;
   }, [d.logoSrc, d.logoZoom, d.logoX, d.logoY, d.logoShape]);
+  const isRemote = /^https?:/i.test(d.logoSrc);
 
   const text = (k: keyof SignatureData, label: string, ph = "") => (
     <label className="block text-sm">
@@ -138,8 +154,8 @@ function Editor() {
             </div>
             <label className="block text-sm">
               <span className="mb-1 block text-muted-foreground">URL du logo (hébergé)</span>
-              <input value={d.logoSrc ? "" : d.logoUrl} placeholder={d.logoSrc ? "Fichier importé" : "https://…/logo.png"}
-                onChange={(e) => setD((p) => ({ ...p, logoSrc: "", logoUrl: e.target.value }))}
+              <input value={isRemote ? d.logoSrc : d.logoSrc ? "" : d.logoUrl} placeholder={d.logoSrc ? "Fichier importé" : "https://…/logo.png"}
+                onChange={(e) => { const v = e.target.value.trim(); setD((p) => ({ ...p, logoSrc: v, logoUrl: v ? p.logoUrl : "", logoZoom: 1, logoX: 50, logoY: 50 })); }}
                 className="w-full rounded-xl border border-input bg-background px-3 py-2 outline-none focus:ring-2 focus:ring-ring" />
             </label>
             <label className="block text-sm text-muted-foreground">
@@ -159,7 +175,7 @@ function Editor() {
                   ))}
                   <button type="button" onClick={() => setD((p) => ({ ...p, logoSize: 72, logoShape: "arrondi", logoZoom: 1, logoX: 50, logoY: 50 }))} className="ml-auto text-xs text-muted-foreground underline">Réinitialiser</button>
                 </div>
-                {d.logoSrc ? (
+                {d.logoSrc && !cropBlocked ? (
                   <div className="grid gap-2 border-t border-border pt-3">
                     <p className="text-sm font-medium">Recadrage</p>
                     {([["logoZoom","Zoom",1,ZOOM_MAX,0.05,`${d.logoZoom.toFixed(1)}×`],["logoX","Position horizontale",0,100,1,`${d.logoX} %`],["logoY","Position verticale",0,100,1,`${d.logoY} %`]] as const).map(([k,l,min,max,step,v]) => (
@@ -171,7 +187,7 @@ function Editor() {
                     <p className="text-xs text-muted-foreground">Zoomez puis déplacez pour choisir la partie visible du logo.</p>
                   </div>
                 ) : (
-                  <p className="text-xs text-muted-foreground">Importez un fichier pour pouvoir recadrer le logo.</p>
+                  <p className="text-xs text-muted-foreground">Le site qui héberge ce logo empêche de le recadrer. Téléchargez l'image puis importez-la comme fichier pour la recadrer.</p>
                 )}
               </div>
             )}
