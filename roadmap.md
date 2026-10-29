@@ -2,8 +2,9 @@
 
 - [x] Comparatif Solo / Équipe sur la page Tarifs
 - [ ] Versions par pays (/es, /it, …) — en attente : liste des pays et traductions à valider
-- [ ] Connexion (e-mail + mot de passe, lien magique)
-- [ ] Espace personnel : signatures enregistrées, modification
-- [ ] Abonnement Stripe (mode test) : souscription en fenêtre, renouvellement, échéance, factures
-- [ ] Admin d'équipe : invitations, modèle commun, logo/couleurs verrouillés
-- [ ] Rubrique Admin (gemini@chinasamy.com) : clients, abonnements, formules actives
+- [x] Connexion (e-mail + mot de passe, lien magique)
+- [x] Espace personnel : signatures enregistrées, modification
+- [x] Abonnement en mode démo : fenêtre de paiement, renouvellement, échéance, factures
+- [ ] Brancher le vrai paiement Stripe (test) — en attente : activation Stripe refusée, à relancer avec l'accord de l'utilisateur
+- [x] Admin d'équipe : invitations, modèle commun, logo/couleurs verrouillés
+- [x] Rubrique Admin (gemini@chinasamy.com) : clients, abonnements, formules actives
