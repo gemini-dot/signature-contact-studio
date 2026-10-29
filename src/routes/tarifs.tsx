@@ -52,6 +52,58 @@ function Tarifs() {
         ))}
       </div>
       <p className="mt-6 text-center text-xs text-muted-foreground">Prix TTC. Le paiement en ligne arrive bientôt.</p>
+
+      <div className="mt-24">
+        <h2 className="text-center text-4xl font-medium">Solo ou Équipe : <em className="text-gold">la différence</em></h2>
+        <p className="mx-auto mt-3 max-w-2xl text-center text-muted-foreground">Solo vous laisse tout gérer vous-même. Équipe permet à une seule personne de gérer les signatures de toute l'entreprise.</p>
+        <div className="mt-10 overflow-x-auto rounded-3xl border border-border bg-card">
+          <table className="w-full text-left text-sm">
+            <thead>
+              <tr className="border-b border-border">
+                <th className="p-4 font-medium text-muted-foreground">Critère</th>
+                <th className="p-4 font-serif text-lg">Solo</th>
+                <th className="p-4 font-serif text-lg text-gold">Équipe</th>
+              </tr>
+            </thead>
+            <tbody>
+              {COMPARE.map(([k, s, t]) => (
+                <tr key={k} className="border-b border-border/60 last:border-0">
+                  <td className="p-4 font-medium">{k}</td>
+                  <td className="p-4 text-muted-foreground">{s}</td>
+                  <td className="p-4">{t}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="mt-10 grid gap-5 md:grid-cols-2">
+          {REASONS.map((r) => (
+            <div key={r.title} className="rounded-3xl border border-border bg-card p-6">
+              <h3 className="text-xl">{r.title}</h3>
+              <p className="mt-2 text-sm text-muted-foreground">{r.text}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-10 rounded-3xl border border-gold/40 bg-card p-6">
+          <h3 className="text-xl">Combien ça coûte selon votre équipe ?</h3>
+          <div className="mt-4 grid gap-3 sm:grid-cols-4">
+            {[1, 3, 5, 15].map((n) => {
+              const solo = n * PRICES.soloMonthly;
+              const team = teamMonthlyPrice(n);
+              return (
+                <div key={n} className="rounded-2xl border border-border p-4 text-sm">
+                  <p className="font-medium">{n} personne{n > 1 ? "s" : ""}</p>
+                  <p className="mt-2 text-muted-foreground">Solo : {solo} €/mois</p>
+                  <p className={team < solo ? "text-gold font-medium" : ""}>Équipe : {team} €/mois</p>
+                </div>
+              );
+            })}
+          </div>
+          <p className="mt-4 text-xs text-muted-foreground">Équipe devient moins chère que des abonnements Solo séparés à partir de 4 personnes.</p>
+        </div>
+      </div>
     </section>
   );
 }
