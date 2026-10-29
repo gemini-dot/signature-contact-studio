@@ -15,6 +15,23 @@ export const Route = createFileRoute("/tarifs")({
   component: Tarifs,
 });
 
+const COMPARE: [string, string, string][] = [
+  ["Pour qui", "Indépendant, freelance, dirigeant seul", "PME, agence, cabinet, équipe commerciale"],
+  ["Gestion", "Vous gérez votre propre signature", "Un administrateur gère toutes les signatures"],
+  ["Charte graphique", "Libre : modèle et couleurs au choix", "Modèle, logo et couleurs imposés à tous"],
+  ["Signature vivante", "Votre bannière personnelle", "Une bannière changée pour toute l'équipe en 1 clic"],
+  ["Mentions légales", "Saisies par vous", "Communes et verrouillées pour tous"],
+  ["Nouveau collaborateur", "—", "Ajouté en 1 clic, signature prête en 30 secondes"],
+  ["Facturation", "Un abonnement par personne", "Une facture unique pour l'entreprise"],
+];
+
+const REASONS = [
+  { title: "Une image de marque cohérente", text: "Fini les logos flous et les signatures bricolées : tout le monde utilise le même modèle officiel." },
+  { title: "Une annonce, toute l'entreprise", text: "Salon, nouveau produit, vœux : changez la bannière une fois, elle s'affiche dans les e-mails de chaque collaborateur." },
+  { title: "Des informations toujours justes", text: "Adresse, site web et mentions légales sont fixés par l'administrateur. Chacun ne remplit que son nom, son poste et son numéro." },
+  { title: "Moins cher dès 4 personnes", text: "19 € + 1 € par collaborateur : pour 15 personnes, 34 €/mois au lieu de 90 € en Solo." },
+];
+
 function Tarifs() {
   const [yearly, setYearly] = useState(false);
   const [seats, setSeats] = useState(5);
