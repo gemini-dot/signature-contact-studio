@@ -175,7 +175,7 @@ function Editor() {
                   ))}
                   <button type="button" onClick={() => setD((p) => ({ ...p, logoSize: 72, logoShape: "arrondi", logoZoom: 1, logoX: 50, logoY: 50 }))} className="ml-auto text-xs text-muted-foreground underline">Réinitialiser</button>
                 </div>
-                {d.logoSrc ? (
+                {d.logoSrc && !cropBlocked ? (
                   <div className="grid gap-2 border-t border-border pt-3">
                     <p className="text-sm font-medium">Recadrage</p>
                     {([["logoZoom","Zoom",1,ZOOM_MAX,0.05,`${d.logoZoom.toFixed(1)}×`],["logoX","Position horizontale",0,100,1,`${d.logoX} %`],["logoY","Position verticale",0,100,1,`${d.logoY} %`]] as const).map(([k,l,min,max,step,v]) => (
@@ -187,7 +187,7 @@ function Editor() {
                     <p className="text-xs text-muted-foreground">Zoomez puis déplacez pour choisir la partie visible du logo.</p>
                   </div>
                 ) : (
-                  <p className="text-xs text-muted-foreground">Importez un fichier pour pouvoir recadrer le logo.</p>
+                  <p className="text-xs text-muted-foreground">Le site qui héberge ce logo empêche de le recadrer. Téléchargez l'image puis importez-la comme fichier pour la recadrer.</p>
                 )}
               </div>
             )}
