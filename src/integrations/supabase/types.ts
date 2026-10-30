@@ -50,6 +50,24 @@ export type Database = {
         }
         Relationships: []
       }
+      partner_codes: {
+        Row: {
+          code: string
+          created_at: string
+          user_id: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          user_id: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -240,6 +258,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_partner_code: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
