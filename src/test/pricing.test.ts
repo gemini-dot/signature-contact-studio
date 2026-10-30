@@ -30,3 +30,8 @@ d2("recadrage du logo", () => {
     e2(cropRect(200, 100, 1, 0, 0, true)).toEqual({ sx: 0, sy: 0, sw: 100, sh: 100 });
   });
 });
+
+import { PARTNER_DISCOUNT_PERCENT } from "@/lib/pricing";
+d2("avantage Mails.contact", () => {
+  i2("remise de 30 % pour les clients Équipe", () => { e2(PARTNER_DISCOUNT_PERCENT).toBe(30); });
+});
