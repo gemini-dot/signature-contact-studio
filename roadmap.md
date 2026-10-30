@@ -1,7 +1,8 @@
 # Roadmap
 
 - [x] Comparatif Solo / Équipe sur la page Tarifs
-- [ ] Versions par pays (/es, /it, …) — en attente : liste des pays et traductions à valider
+- [ ] Versions par pays (/es, /uk, /pt, /de, /it, /nl) — en attente : traductions à valider
+- [x] Pied de page aligné sur mails.contact
 - [x] Connexion (e-mail + mot de passe, lien magique)
 - [x] Espace personnel : signatures enregistrées, modification
 - [x] Abonnement en mode démo : fenêtre de paiement, renouvellement, échéance, factures
