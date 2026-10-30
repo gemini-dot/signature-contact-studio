@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Check } from "lucide-react";
-import { PRICES, teamMonthlyPrice } from "@/lib/pricing";
+import { PARTNER_DISCOUNT_PERCENT, PRICES, teamMonthlyPrice } from "@/lib/pricing";
 
 export const Route = createFileRoute("/tarifs")({
   head: () => ({
@@ -30,6 +30,7 @@ const REASONS = [
   { title: "Une annonce, toute l'entreprise", text: "Salon, nouveau produit, vœux : changez la bannière une fois, elle s'affiche dans les e-mails de chaque collaborateur." },
   { title: "Des informations toujours justes", text: "Adresse, site web et mentions légales sont fixés par l'administrateur. Chacun ne remplit que son nom, son poste et son numéro." },
   { title: "Moins cher dès 4 personnes", text: "19 € + 1 € par collaborateur : pour 15 personnes, 34 €/mois au lieu de 90 € en Solo." },
+  { title: `-${PARTNER_DISCOUNT_PERCENT} % sur Mails.contact`, text: "Les clients Équipe reçoivent un code unique dans leur espace pour profiter d'une remise sur leur abonnement Mails.contact." },
 ];
 
 function Tarifs() {
@@ -38,7 +39,7 @@ function Tarifs() {
   const plans = [
     { name: "Gratuit", price: `${PRICES.free} €`, note: "pour toujours", features: ["1 signature", "5 modèles", "Mention « signature.contact »"], cta: "Commencer" },
     { name: "Solo", price: yearly ? `${PRICES.soloYearly} €` : `${PRICES.soloMonthly} €`, note: yearly ? "par an" : "par mois", features: ["Sans branding", "Signature vivante", "Bouton « Prendre rendez-vous »", "QR code carte de visite"], cta: "Choisir Solo", featured: true },
-    { name: "Équipe", price: `${teamMonthlyPrice(seats)} €`, note: `par mois · ${seats} collaborateurs`, features: ["Tout Solo", "Gestion centralisée", `${PRICES.teamBase} € + ${PRICES.teamPerSeat} €/collaborateur/mois`], cta: "Choisir Équipe", team: true },
+    { name: "Équipe", price: `${teamMonthlyPrice(seats)} €`, note: `par mois · ${seats} collaborateurs`, features: ["Tout Solo", "Gestion centralisée", `${PRICES.teamBase} € + ${PRICES.teamPerSeat} €/collaborateur/mois`, `Inclus : -${PARTNER_DISCOUNT_PERCENT} % sur Mails.contact (code unique)`], cta: "Choisir Équipe", team: true },
   ];
   return (
     <section className="mx-auto max-w-6xl px-5 py-16">

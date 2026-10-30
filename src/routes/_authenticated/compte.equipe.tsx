@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { SignaturePreview } from "@/components/site/SignaturePreview";
 import { defaultSignature, templates, type SignatureData, type TemplateId } from "@/lib/signature";
+import { MailsContactPerk } from "@/components/site/MailsContactPerk";
 
 export const Route = createFileRoute("/_authenticated/compte/equipe")({ component: TeamPage });
 
@@ -94,6 +95,9 @@ function TeamPage() {
         <p className="text-xs uppercase tracking-[0.2em] text-gold">Équipe</p>
         <p className="font-serif text-3xl">{team.name}</p>
         {!isAdmin && <p className="mt-2 text-sm text-muted-foreground">Vous êtes membre de cette équipe. Seuls les administrateurs peuvent modifier le modèle.</p>}
+      </div>
+      <MailsContactPerk />
+      <div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
