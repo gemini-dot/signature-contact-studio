@@ -15,6 +15,13 @@
       "when": 1793305961573,
       "tag": "0001_subscriptions_demo",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794258023023,
+      "tag": "0002_booking",
+      "breakpoints": true
     }
   ]
 }

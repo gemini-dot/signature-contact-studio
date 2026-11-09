@@ -14,6 +14,96 @@ export type Database = {
   }
   public: {
     Tables: {
+      appointments: {
+        Row: {
+          created_at: string
+          email: string
+          ends_at: string
+          id: string
+          name: string
+          owner_id: string
+          phone: string
+          reason: string
+          starts_at: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          ends_at: string
+          id?: string
+          name: string
+          owner_id: string
+          phone?: string
+          reason?: string
+          starts_at: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          ends_at?: string
+          id?: string
+          name?: string
+          owner_id?: string
+          phone?: string
+          reason?: string
+          starts_at?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      booking_pages: {
+        Row: {
+          blocked: Json
+          buffer_min: number
+          duration_min: number
+          enabled: boolean
+          horizon_days: number
+          host_name: string
+          intro: string
+          min_notice_hours: number
+          slug: string
+          timezone: string
+          title: string
+          updated_at: string
+          user_id: string
+          weekly: Json
+        }
+        Insert: {
+          blocked?: Json
+          buffer_min?: number
+          duration_min?: number
+          enabled?: boolean
+          horizon_days?: number
+          host_name?: string
+          intro?: string
+          min_notice_hours?: number
+          slug: string
+          timezone?: string
+          title?: string
+          updated_at?: string
+          user_id: string
+          weekly?: Json
+        }
+        Update: {
+          blocked?: Json
+          buffer_min?: number
+          duration_min?: number
+          enabled?: boolean
+          horizon_days?: number
+          host_name?: string
+          intro?: string
+          min_notice_hours?: number
+          slug?: string
+          timezone?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+          weekly?: Json
+        }
+        Relationships: []
+      }
       invoices: {
         Row: {
           amount_cents: number
@@ -258,6 +348,18 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      book_appointment: {
+        Args: {
+          _email: string
+          _name: string
+          _phone: string
+          _reason: string
+          _slug: string
+          _starts_at: string
+        }
+        Returns: string
+      }
+      get_booking_page: { Args: { _slug: string }; Returns: Json }
       get_partner_code: { Args: never; Returns: string }
       has_role: {
         Args: {
@@ -266,6 +368,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_booking_eligible: { Args: { _user: string }; Returns: boolean }
       is_team_admin: {
         Args: { _team: string; _user: string }
         Returns: boolean

@@ -21,9 +21,11 @@ import { Route as TableauDeBordRouteImport } from './routes/tableau-de-bord'
 import { Route as TarifsRouteImport } from './routes/tarifs'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedCompteRouteImport } from './routes/_authenticated/compte'
+import { Route as RdvSlugRouteImport } from './routes/rdv.$slug'
 import { Route as AuthenticatedCompteIndexRouteImport } from './routes/_authenticated/compte.index'
 import { Route as AuthenticatedCompteAbonnementRouteImport } from './routes/_authenticated/compte.abonnement'
 import { Route as AuthenticatedCompteEquipeRouteImport } from './routes/_authenticated/compte.equipe'
+import { Route as AuthenticatedCompteRendezVousRouteImport } from './routes/_authenticated/compte.rendez-vous'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -84,6 +86,11 @@ const AuthenticatedCompteRoute = AuthenticatedCompteRouteImport.update({
   path: '/compte',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const RdvSlugRoute = RdvSlugRouteImport.update({
+  id: '/rdv/$slug',
+  path: '/rdv/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedCompteIndexRoute =
   AuthenticatedCompteIndexRouteImport.update({
     id: '/',
@@ -102,6 +109,12 @@ const AuthenticatedCompteEquipeRoute =
     path: '/equipe',
     getParentRoute: () => AuthenticatedCompteRoute,
   } as any)
+const AuthenticatedCompteRendezVousRoute =
+  AuthenticatedCompteRendezVousRouteImport.update({
+    id: '/rendez-vous',
+    path: '/rendez-vous',
+    getParentRoute: () => AuthenticatedCompteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -115,8 +128,10 @@ export interface FileRoutesByFullPath {
   '/tarifs': typeof TarifsRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/compte': typeof AuthenticatedCompteRouteWithChildren
+  '/rdv/$slug': typeof RdvSlugRoute
   '/compte/abonnement': typeof AuthenticatedCompteAbonnementRoute
   '/compte/equipe': typeof AuthenticatedCompteEquipeRoute
+  '/compte/rendez-vous': typeof AuthenticatedCompteRendezVousRoute
   '/compte/': typeof AuthenticatedCompteIndexRoute
 }
 export interface FileRoutesByTo {
@@ -130,8 +145,10 @@ export interface FileRoutesByTo {
   '/tableau-de-bord': typeof TableauDeBordRoute
   '/tarifs': typeof TarifsRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/rdv/$slug': typeof RdvSlugRoute
   '/compte/abonnement': typeof AuthenticatedCompteAbonnementRoute
   '/compte/equipe': typeof AuthenticatedCompteEquipeRoute
+  '/compte/rendez-vous': typeof AuthenticatedCompteRendezVousRoute
   '/compte': typeof AuthenticatedCompteIndexRoute
 }
 export interface FileRoutesById {
@@ -148,8 +165,10 @@ export interface FileRoutesById {
   '/tarifs': typeof TarifsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/compte': typeof AuthenticatedCompteRouteWithChildren
+  '/rdv/$slug': typeof RdvSlugRoute
   '/_authenticated/compte/abonnement': typeof AuthenticatedCompteAbonnementRoute
   '/_authenticated/compte/equipe': typeof AuthenticatedCompteEquipeRoute
+  '/_authenticated/compte/rendez-vous': typeof AuthenticatedCompteRendezVousRoute
   '/_authenticated/compte/': typeof AuthenticatedCompteIndexRoute
 }
 export interface FileRouteTypes {
@@ -166,8 +185,10 @@ export interface FileRouteTypes {
     | '/tarifs'
     | '/admin'
     | '/compte'
+    | '/rdv/$slug'
     | '/compte/abonnement'
     | '/compte/equipe'
+    | '/compte/rendez-vous'
     | '/compte/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -181,8 +202,10 @@ export interface FileRouteTypes {
     | '/tableau-de-bord'
     | '/tarifs'
     | '/admin'
+    | '/rdv/$slug'
     | '/compte/abonnement'
     | '/compte/equipe'
+    | '/compte/rendez-vous'
     | '/compte'
   id:
     | '__root__'
@@ -198,8 +221,10 @@ export interface FileRouteTypes {
     | '/tarifs'
     | '/_authenticated/admin'
     | '/_authenticated/compte'
+    | '/rdv/$slug'
     | '/_authenticated/compte/abonnement'
     | '/_authenticated/compte/equipe'
+    | '/_authenticated/compte/rendez-vous'
     | '/_authenticated/compte/'
   fileRoutesById: FileRoutesById
 }
@@ -214,6 +239,7 @@ export interface RootRouteChildren {
   ReinitialiserMotDePasseRoute: typeof ReinitialiserMotDePasseRoute
   TableauDeBordRoute: typeof TableauDeBordRoute
   TarifsRoute: typeof TarifsRoute
+  RdvSlugRoute: typeof RdvSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -302,6 +328,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCompteRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/rdv/$slug': {
+      id: '/rdv/$slug'
+      path: '/rdv/$slug'
+      fullPath: '/rdv/$slug'
+      preLoaderRoute: typeof RdvSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/compte/': {
       id: '/_authenticated/compte/'
       path: '/'
@@ -323,18 +356,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCompteEquipeRouteImport
       parentRoute: typeof AuthenticatedCompteRoute
     }
+    '/_authenticated/compte/rendez-vous': {
+      id: '/_authenticated/compte/rendez-vous'
+      path: '/rendez-vous'
+      fullPath: '/compte/rendez-vous'
+      preLoaderRoute: typeof AuthenticatedCompteRendezVousRouteImport
+      parentRoute: typeof AuthenticatedCompteRoute
+    }
   }
 }
 
 interface AuthenticatedCompteRouteChildren {
   AuthenticatedCompteAbonnementRoute: typeof AuthenticatedCompteAbonnementRoute
   AuthenticatedCompteEquipeRoute: typeof AuthenticatedCompteEquipeRoute
+  AuthenticatedCompteRendezVousRoute: typeof AuthenticatedCompteRendezVousRoute
   AuthenticatedCompteIndexRoute: typeof AuthenticatedCompteIndexRoute
 }
 
 const AuthenticatedCompteRouteChildren: AuthenticatedCompteRouteChildren = {
   AuthenticatedCompteAbonnementRoute: AuthenticatedCompteAbonnementRoute,
   AuthenticatedCompteEquipeRoute: AuthenticatedCompteEquipeRoute,
+  AuthenticatedCompteRendezVousRoute: AuthenticatedCompteRendezVousRoute,
   AuthenticatedCompteIndexRoute: AuthenticatedCompteIndexRoute,
 }
 
@@ -365,6 +407,7 @@ const rootRouteChildren: RootRouteChildren = {
   ReinitialiserMotDePasseRoute: ReinitialiserMotDePasseRoute,
   TableauDeBordRoute: TableauDeBordRoute,
   TarifsRoute: TarifsRoute,
+  RdvSlugRoute: RdvSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

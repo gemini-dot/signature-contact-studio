@@ -21,6 +21,7 @@ function Layout() {
       <nav className="mt-6 flex flex-wrap gap-2">
         <Link to="/compte" activeOptions={{ exact: true }} className={tab} activeProps={active}>Mes signatures</Link>
         <Link to="/compte/abonnement" className={tab} activeProps={active}>Abonnement</Link>
+        <Link to="/compte/rendez-vous" className={tab} activeProps={active}>Rendez-vous</Link>
         <Link to="/compte/equipe" className={tab} activeProps={active}>Équipe</Link>
       </nav>
       <div className="mt-8"><Outlet /></div>
