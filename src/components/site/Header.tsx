@@ -49,7 +49,7 @@ export function Logo() {
         <span className="block font-serif text-2xl font-semibold text-primary">
           Signature<span className="italic text-gold">.Contact</span>
         </span>
-        <span className="mt-1 block font-serif text-[13px] italic tracking-wide text-gold">{SLOGANS[lang] ?? SLOGANS.fr}</span>
+        <span className="mt-1 block font-serif text-[13px] italic tracking-wide text-gold">{SLOGANS[lang] ?? SLOGANS["fr"]}</span>
       </span>
     </Link>
   );
