@@ -22,13 +22,6 @@
       "when": 1794258023023,
       "tag": "0002_booking",
       "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1794900000000,
-      "tag": "0003_member_features",
-      "breakpoints": true
     }
   ]
 }
