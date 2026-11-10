@@ -21,7 +21,9 @@ import { Route as TableauDeBordRouteImport } from './routes/tableau-de-bord'
 import { Route as TarifsRouteImport } from './routes/tarifs'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedCompteRouteImport } from './routes/_authenticated/compte'
+import { Route as PSlugRouteImport } from './routes/p.$slug'
 import { Route as RdvSlugRouteImport } from './routes/rdv.$slug'
+import { Route as VerifSlugRouteImport } from './routes/verif.$slug'
 import { Route as AuthenticatedCompteIndexRouteImport } from './routes/_authenticated/compte.index'
 import { Route as AuthenticatedCompteAbonnementRouteImport } from './routes/_authenticated/compte.abonnement'
 import { Route as AuthenticatedCompteBannieresRouteImport } from './routes/_authenticated/compte.bannieres'
@@ -90,9 +92,19 @@ const AuthenticatedCompteRoute = AuthenticatedCompteRouteImport.update({
   path: '/compte',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const PSlugRoute = PSlugRouteImport.update({
+  id: '/p/$slug',
+  path: '/p/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RdvSlugRoute = RdvSlugRouteImport.update({
   id: '/rdv/$slug',
   path: '/rdv/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VerifSlugRoute = VerifSlugRouteImport.update({
+  id: '/verif/$slug',
+  path: '/verif/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedCompteIndexRoute =
@@ -155,7 +167,9 @@ export interface FileRoutesByFullPath {
   '/tarifs': typeof TarifsRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/compte': typeof AuthenticatedCompteRouteWithChildren
+  '/p/$slug': typeof PSlugRoute
   '/rdv/$slug': typeof RdvSlugRoute
+  '/verif/$slug': typeof VerifSlugRoute
   '/compte/abonnement': typeof AuthenticatedCompteAbonnementRoute
   '/compte/bannieres': typeof AuthenticatedCompteBannieresRoute
   '/compte/equipe': typeof AuthenticatedCompteEquipeRoute
@@ -176,7 +190,9 @@ export interface FileRoutesByTo {
   '/tableau-de-bord': typeof TableauDeBordRoute
   '/tarifs': typeof TarifsRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/p/$slug': typeof PSlugRoute
   '/rdv/$slug': typeof RdvSlugRoute
+  '/verif/$slug': typeof VerifSlugRoute
   '/compte/abonnement': typeof AuthenticatedCompteAbonnementRoute
   '/compte/bannieres': typeof AuthenticatedCompteBannieresRoute
   '/compte/equipe': typeof AuthenticatedCompteEquipeRoute
@@ -200,7 +216,9 @@ export interface FileRoutesById {
   '/tarifs': typeof TarifsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/compte': typeof AuthenticatedCompteRouteWithChildren
+  '/p/$slug': typeof PSlugRoute
   '/rdv/$slug': typeof RdvSlugRoute
+  '/verif/$slug': typeof VerifSlugRoute
   '/_authenticated/compte/abonnement': typeof AuthenticatedCompteAbonnementRoute
   '/_authenticated/compte/bannieres': typeof AuthenticatedCompteBannieresRoute
   '/_authenticated/compte/equipe': typeof AuthenticatedCompteEquipeRoute
@@ -224,7 +242,9 @@ export interface FileRouteTypes {
     | '/tarifs'
     | '/admin'
     | '/compte'
+    | '/p/$slug'
     | '/rdv/$slug'
+    | '/verif/$slug'
     | '/compte/abonnement'
     | '/compte/bannieres'
     | '/compte/equipe'
@@ -245,7 +265,9 @@ export interface FileRouteTypes {
     | '/tableau-de-bord'
     | '/tarifs'
     | '/admin'
+    | '/p/$slug'
     | '/rdv/$slug'
+    | '/verif/$slug'
     | '/compte/abonnement'
     | '/compte/bannieres'
     | '/compte/equipe'
@@ -268,7 +290,9 @@ export interface FileRouteTypes {
     | '/tarifs'
     | '/_authenticated/admin'
     | '/_authenticated/compte'
+    | '/p/$slug'
     | '/rdv/$slug'
+    | '/verif/$slug'
     | '/_authenticated/compte/abonnement'
     | '/_authenticated/compte/bannieres'
     | '/_authenticated/compte/equipe'
@@ -290,7 +314,9 @@ export interface RootRouteChildren {
   ReinitialiserMotDePasseRoute: typeof ReinitialiserMotDePasseRoute
   TableauDeBordRoute: typeof TableauDeBordRoute
   TarifsRoute: typeof TarifsRoute
+  PSlugRoute: typeof PSlugRoute
   RdvSlugRoute: typeof RdvSlugRoute
+  VerifSlugRoute: typeof VerifSlugRoute
   ApiPublicBanniereTeamIdRoute: typeof ApiPublicBanniereTeamIdRoute
 }
 
@@ -380,11 +406,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCompteRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/p/$slug': {
+      id: '/p/$slug'
+      path: '/p/$slug'
+      fullPath: '/p/$slug'
+      preLoaderRoute: typeof PSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/rdv/$slug': {
       id: '/rdv/$slug'
       path: '/rdv/$slug'
       fullPath: '/rdv/$slug'
       preLoaderRoute: typeof RdvSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/verif/$slug': {
+      id: '/verif/$slug'
+      path: '/verif/$slug'
+      fullPath: '/verif/$slug'
+      preLoaderRoute: typeof VerifSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/compte/': {
@@ -493,7 +533,9 @@ const rootRouteChildren: RootRouteChildren = {
   ReinitialiserMotDePasseRoute: ReinitialiserMotDePasseRoute,
   TableauDeBordRoute: TableauDeBordRoute,
   TarifsRoute: TarifsRoute,
+  PSlugRoute: PSlugRoute,
   RdvSlugRoute: RdvSlugRoute,
+  VerifSlugRoute: VerifSlugRoute,
   ApiPublicBanniereTeamIdRoute: ApiPublicBanniereTeamIdRoute,
 }
 export const routeTree = rootRouteImport
