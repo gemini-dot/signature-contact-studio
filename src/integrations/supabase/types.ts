@@ -140,6 +140,72 @@ export type Database = {
         }
         Relationships: []
       }
+      member_profiles: {
+        Row: {
+          address: string
+          badge_enabled: boolean
+          bio: string
+          company: string
+          email: string
+          full_name: string
+          job_title: string
+          links: Json
+          phone: string
+          photo_url: string
+          profile_enabled: boolean
+          slug: string
+          status: string
+          status_note: string
+          status_until: string | null
+          updated_at: string
+          user_id: string
+          verified_at: string | null
+          website: string
+        }
+        Insert: {
+          address?: string
+          badge_enabled?: boolean
+          bio?: string
+          company?: string
+          email?: string
+          full_name?: string
+          job_title?: string
+          links?: Json
+          phone?: string
+          photo_url?: string
+          profile_enabled?: boolean
+          slug: string
+          status?: string
+          status_note?: string
+          status_until?: string | null
+          updated_at?: string
+          user_id: string
+          verified_at?: string | null
+          website?: string
+        }
+        Update: {
+          address?: string
+          badge_enabled?: boolean
+          bio?: string
+          company?: string
+          email?: string
+          full_name?: string
+          job_title?: string
+          links?: Json
+          phone?: string
+          photo_url?: string
+          profile_enabled?: boolean
+          slug?: string
+          status?: string
+          status_note?: string
+          status_until?: string | null
+          updated_at?: string
+          user_id?: string
+          verified_at?: string | null
+          website?: string
+        }
+        Relationships: []
+      }
       partner_codes: {
         Row: {
           code: string
@@ -254,6 +320,50 @@ export type Database = {
         }
         Relationships: []
       }
+      team_banners: {
+        Row: {
+          created_at: string
+          ends_on: string | null
+          id: string
+          image_url: string
+          is_default: boolean
+          link_url: string
+          starts_on: string | null
+          team_id: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          ends_on?: string | null
+          id?: string
+          image_url: string
+          is_default?: boolean
+          link_url?: string
+          starts_on?: string | null
+          team_id: string
+          title?: string
+        }
+        Update: {
+          created_at?: string
+          ends_on?: string | null
+          id?: string
+          image_url?: string
+          is_default?: boolean
+          link_url?: string
+          starts_on?: string | null
+          team_id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_banners_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       team_members: {
         Row: {
           created_at: string
@@ -359,7 +469,9 @@ export type Database = {
         }
         Returns: string
       }
+      current_team_banner: { Args: { _team: string }; Returns: Json }
       get_booking_page: { Args: { _slug: string }; Returns: Json }
+      get_member_profile: { Args: { _slug: string }; Returns: Json }
       get_partner_code: { Args: never; Returns: string }
       has_role: {
         Args: {
