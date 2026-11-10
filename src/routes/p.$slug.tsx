@@ -41,6 +41,20 @@ function PublicProfilePage() {
         <p className="mt-2 text-muted-foreground">{[p.job_title, p.company].filter(Boolean).join(" · ")}</p>
         <p className="mt-3 inline-flex items-center gap-2 text-sm"><span className={`h-2.5 w-2.5 rounded-full ${st.tone}`} />{st.label}{p.status_until && ` jusqu'au ${new Date(p.status_until).toLocaleDateString("fr-FR")}`}{p.status_note && ` — ${p.status_note}`}</p>
         {p.bio && <p className="mt-4 text-sm text-muted-foreground">{p.bio}</p>}
+        {(p.activity || (p.services?.length ?? 0) > 0) && (
+          <div className="mt-6 text-left">
+            <h2 className="font-serif text-xl">Activité & <em className="text-gold">services</em></h2>
+            {p.activity && <p className="mt-2 whitespace-pre-line text-sm text-muted-foreground">{p.activity}</p>}
+            <ul className="mt-3 space-y-2">
+              {p.services?.map((s, i) => (
+                <li key={i} className="rounded-xl border border-border px-4 py-3">
+                  <div className="flex items-baseline justify-between gap-3"><span className="font-medium">{s.name}</span>{s.price && <span className="text-sm text-gold">{s.price}</span>}</div>
+                  {s.description && <p className="mt-1 text-sm text-muted-foreground">{s.description}</p>}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
         <button onClick={vcf} className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 font-medium text-primary-foreground"><Download className="h-4 w-4" /> Ajouter à mes contacts</button>
         <div className="mt-6 space-y-2 text-left">
           {p.booking_slug && <a href={`/rdv/${p.booking_slug}`} className={row}><CalendarCheck className="h-4 w-4 text-gold" /> Prendre rendez-vous</a>}
