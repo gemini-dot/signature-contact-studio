@@ -15,17 +15,24 @@ import { Route as CguRouteImport } from './routes/cgu'
 import { Route as ConfidentialiteRouteImport } from './routes/confidentialite'
 import { Route as ConnexionRouteImport } from './routes/connexion'
 import { Route as EditeurRouteImport } from './routes/editeur'
+import { Route as EntreprisesRouteImport } from './routes/entreprises'
 import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
 import { Route as ReinitialiserMotDePasseRouteImport } from './routes/reinitialiser-mot-de-passe'
 import { Route as TableauDeBordRouteImport } from './routes/tableau-de-bord'
 import { Route as TarifsRouteImport } from './routes/tarifs'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedCompteRouteImport } from './routes/_authenticated/compte'
+import { Route as PSlugRouteImport } from './routes/p.$slug'
 import { Route as RdvSlugRouteImport } from './routes/rdv.$slug'
+import { Route as VerifSlugRouteImport } from './routes/verif.$slug'
 import { Route as AuthenticatedCompteIndexRouteImport } from './routes/_authenticated/compte.index'
 import { Route as AuthenticatedCompteAbonnementRouteImport } from './routes/_authenticated/compte.abonnement'
+import { Route as AuthenticatedCompteBannieresRouteImport } from './routes/_authenticated/compte.bannieres'
 import { Route as AuthenticatedCompteEquipeRouteImport } from './routes/_authenticated/compte.equipe'
+import { Route as AuthenticatedCompteProfilRouteImport } from './routes/_authenticated/compte.profil'
 import { Route as AuthenticatedCompteRendezVousRouteImport } from './routes/_authenticated/compte.rendez-vous'
+import { Route as AuthenticatedCompteStatutRouteImport } from './routes/_authenticated/compte.statut'
+import { Route as ApiPublicBanniereTeamIdRouteImport } from './routes/api/public/banniere.$teamId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -54,6 +61,11 @@ const ConnexionRoute = ConnexionRouteImport.update({
 const EditeurRoute = EditeurRouteImport.update({
   id: '/editeur',
   path: '/editeur',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EntreprisesRoute = EntreprisesRouteImport.update({
+  id: '/entreprises',
+  path: '/entreprises',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
@@ -86,9 +98,19 @@ const AuthenticatedCompteRoute = AuthenticatedCompteRouteImport.update({
   path: '/compte',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const PSlugRoute = PSlugRouteImport.update({
+  id: '/p/$slug',
+  path: '/p/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RdvSlugRoute = RdvSlugRouteImport.update({
   id: '/rdv/$slug',
   path: '/rdv/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VerifSlugRoute = VerifSlugRouteImport.update({
+  id: '/verif/$slug',
+  path: '/verif/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedCompteIndexRoute =
@@ -103,10 +125,22 @@ const AuthenticatedCompteAbonnementRoute =
     path: '/abonnement',
     getParentRoute: () => AuthenticatedCompteRoute,
   } as any)
+const AuthenticatedCompteBannieresRoute =
+  AuthenticatedCompteBannieresRouteImport.update({
+    id: '/bannieres',
+    path: '/bannieres',
+    getParentRoute: () => AuthenticatedCompteRoute,
+  } as any)
 const AuthenticatedCompteEquipeRoute =
   AuthenticatedCompteEquipeRouteImport.update({
     id: '/equipe',
     path: '/equipe',
+    getParentRoute: () => AuthenticatedCompteRoute,
+  } as any)
+const AuthenticatedCompteProfilRoute =
+  AuthenticatedCompteProfilRouteImport.update({
+    id: '/profil',
+    path: '/profil',
     getParentRoute: () => AuthenticatedCompteRoute,
   } as any)
 const AuthenticatedCompteRendezVousRoute =
@@ -115,6 +149,17 @@ const AuthenticatedCompteRendezVousRoute =
     path: '/rendez-vous',
     getParentRoute: () => AuthenticatedCompteRoute,
   } as any)
+const AuthenticatedCompteStatutRoute =
+  AuthenticatedCompteStatutRouteImport.update({
+    id: '/statut',
+    path: '/statut',
+    getParentRoute: () => AuthenticatedCompteRoute,
+  } as any)
+const ApiPublicBanniereTeamIdRoute = ApiPublicBanniereTeamIdRouteImport.update({
+  id: '/api/public/banniere/$teamId',
+  path: '/api/public/banniere/$teamId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -122,17 +167,24 @@ export interface FileRoutesByFullPath {
   '/confidentialite': typeof ConfidentialiteRoute
   '/connexion': typeof ConnexionRoute
   '/editeur': typeof EditeurRoute
+  '/entreprises': typeof EntreprisesRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
   '/tarifs': typeof TarifsRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/compte': typeof AuthenticatedCompteRouteWithChildren
+  '/p/$slug': typeof PSlugRoute
   '/rdv/$slug': typeof RdvSlugRoute
+  '/verif/$slug': typeof VerifSlugRoute
   '/compte/abonnement': typeof AuthenticatedCompteAbonnementRoute
+  '/compte/bannieres': typeof AuthenticatedCompteBannieresRoute
   '/compte/equipe': typeof AuthenticatedCompteEquipeRoute
+  '/compte/profil': typeof AuthenticatedCompteProfilRoute
   '/compte/rendez-vous': typeof AuthenticatedCompteRendezVousRoute
+  '/compte/statut': typeof AuthenticatedCompteStatutRoute
   '/compte/': typeof AuthenticatedCompteIndexRoute
+  '/api/public/banniere/$teamId': typeof ApiPublicBanniereTeamIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -140,16 +192,23 @@ export interface FileRoutesByTo {
   '/confidentialite': typeof ConfidentialiteRoute
   '/connexion': typeof ConnexionRoute
   '/editeur': typeof EditeurRoute
+  '/entreprises': typeof EntreprisesRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
   '/tarifs': typeof TarifsRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/p/$slug': typeof PSlugRoute
   '/rdv/$slug': typeof RdvSlugRoute
+  '/verif/$slug': typeof VerifSlugRoute
   '/compte/abonnement': typeof AuthenticatedCompteAbonnementRoute
+  '/compte/bannieres': typeof AuthenticatedCompteBannieresRoute
   '/compte/equipe': typeof AuthenticatedCompteEquipeRoute
+  '/compte/profil': typeof AuthenticatedCompteProfilRoute
   '/compte/rendez-vous': typeof AuthenticatedCompteRendezVousRoute
+  '/compte/statut': typeof AuthenticatedCompteStatutRoute
   '/compte': typeof AuthenticatedCompteIndexRoute
+  '/api/public/banniere/$teamId': typeof ApiPublicBanniereTeamIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -159,17 +218,24 @@ export interface FileRoutesById {
   '/confidentialite': typeof ConfidentialiteRoute
   '/connexion': typeof ConnexionRoute
   '/editeur': typeof EditeurRoute
+  '/entreprises': typeof EntreprisesRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
   '/tarifs': typeof TarifsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/compte': typeof AuthenticatedCompteRouteWithChildren
+  '/p/$slug': typeof PSlugRoute
   '/rdv/$slug': typeof RdvSlugRoute
+  '/verif/$slug': typeof VerifSlugRoute
   '/_authenticated/compte/abonnement': typeof AuthenticatedCompteAbonnementRoute
+  '/_authenticated/compte/bannieres': typeof AuthenticatedCompteBannieresRoute
   '/_authenticated/compte/equipe': typeof AuthenticatedCompteEquipeRoute
+  '/_authenticated/compte/profil': typeof AuthenticatedCompteProfilRoute
   '/_authenticated/compte/rendez-vous': typeof AuthenticatedCompteRendezVousRoute
+  '/_authenticated/compte/statut': typeof AuthenticatedCompteStatutRoute
   '/_authenticated/compte/': typeof AuthenticatedCompteIndexRoute
+  '/api/public/banniere/$teamId': typeof ApiPublicBanniereTeamIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -179,17 +245,24 @@ export interface FileRouteTypes {
     | '/confidentialite'
     | '/connexion'
     | '/editeur'
+    | '/entreprises'
     | '/mentions-legales'
     | '/reinitialiser-mot-de-passe'
     | '/tableau-de-bord'
     | '/tarifs'
     | '/admin'
     | '/compte'
+    | '/p/$slug'
     | '/rdv/$slug'
+    | '/verif/$slug'
     | '/compte/abonnement'
+    | '/compte/bannieres'
     | '/compte/equipe'
+    | '/compte/profil'
     | '/compte/rendez-vous'
+    | '/compte/statut'
     | '/compte/'
+    | '/api/public/banniere/$teamId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -197,16 +270,23 @@ export interface FileRouteTypes {
     | '/confidentialite'
     | '/connexion'
     | '/editeur'
+    | '/entreprises'
     | '/mentions-legales'
     | '/reinitialiser-mot-de-passe'
     | '/tableau-de-bord'
     | '/tarifs'
     | '/admin'
+    | '/p/$slug'
     | '/rdv/$slug'
+    | '/verif/$slug'
     | '/compte/abonnement'
+    | '/compte/bannieres'
     | '/compte/equipe'
+    | '/compte/profil'
     | '/compte/rendez-vous'
+    | '/compte/statut'
     | '/compte'
+    | '/api/public/banniere/$teamId'
   id:
     | '__root__'
     | '/'
@@ -215,17 +295,24 @@ export interface FileRouteTypes {
     | '/confidentialite'
     | '/connexion'
     | '/editeur'
+    | '/entreprises'
     | '/mentions-legales'
     | '/reinitialiser-mot-de-passe'
     | '/tableau-de-bord'
     | '/tarifs'
     | '/_authenticated/admin'
     | '/_authenticated/compte'
+    | '/p/$slug'
     | '/rdv/$slug'
+    | '/verif/$slug'
     | '/_authenticated/compte/abonnement'
+    | '/_authenticated/compte/bannieres'
     | '/_authenticated/compte/equipe'
+    | '/_authenticated/compte/profil'
     | '/_authenticated/compte/rendez-vous'
+    | '/_authenticated/compte/statut'
     | '/_authenticated/compte/'
+    | '/api/public/banniere/$teamId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -235,11 +322,15 @@ export interface RootRouteChildren {
   ConfidentialiteRoute: typeof ConfidentialiteRoute
   ConnexionRoute: typeof ConnexionRoute
   EditeurRoute: typeof EditeurRoute
+  EntreprisesRoute: typeof EntreprisesRoute
   MentionsLegalesRoute: typeof MentionsLegalesRoute
   ReinitialiserMotDePasseRoute: typeof ReinitialiserMotDePasseRoute
   TableauDeBordRoute: typeof TableauDeBordRoute
   TarifsRoute: typeof TarifsRoute
+  PSlugRoute: typeof PSlugRoute
   RdvSlugRoute: typeof RdvSlugRoute
+  VerifSlugRoute: typeof VerifSlugRoute
+  ApiPublicBanniereTeamIdRoute: typeof ApiPublicBanniereTeamIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -286,6 +377,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EditeurRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/entreprises': {
+      id: '/entreprises'
+      path: '/entreprises'
+      fullPath: '/entreprises'
+      preLoaderRoute: typeof EntreprisesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/mentions-legales': {
       id: '/mentions-legales'
       path: '/mentions-legales'
@@ -328,11 +426,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCompteRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/p/$slug': {
+      id: '/p/$slug'
+      path: '/p/$slug'
+      fullPath: '/p/$slug'
+      preLoaderRoute: typeof PSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/rdv/$slug': {
       id: '/rdv/$slug'
       path: '/rdv/$slug'
       fullPath: '/rdv/$slug'
       preLoaderRoute: typeof RdvSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/verif/$slug': {
+      id: '/verif/$slug'
+      path: '/verif/$slug'
+      fullPath: '/verif/$slug'
+      preLoaderRoute: typeof VerifSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/compte/': {
@@ -349,11 +461,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCompteAbonnementRouteImport
       parentRoute: typeof AuthenticatedCompteRoute
     }
+    '/_authenticated/compte/bannieres': {
+      id: '/_authenticated/compte/bannieres'
+      path: '/bannieres'
+      fullPath: '/compte/bannieres'
+      preLoaderRoute: typeof AuthenticatedCompteBannieresRouteImport
+      parentRoute: typeof AuthenticatedCompteRoute
+    }
     '/_authenticated/compte/equipe': {
       id: '/_authenticated/compte/equipe'
       path: '/equipe'
       fullPath: '/compte/equipe'
       preLoaderRoute: typeof AuthenticatedCompteEquipeRouteImport
+      parentRoute: typeof AuthenticatedCompteRoute
+    }
+    '/_authenticated/compte/profil': {
+      id: '/_authenticated/compte/profil'
+      path: '/profil'
+      fullPath: '/compte/profil'
+      preLoaderRoute: typeof AuthenticatedCompteProfilRouteImport
       parentRoute: typeof AuthenticatedCompteRoute
     }
     '/_authenticated/compte/rendez-vous': {
@@ -363,20 +489,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCompteRendezVousRouteImport
       parentRoute: typeof AuthenticatedCompteRoute
     }
+    '/_authenticated/compte/statut': {
+      id: '/_authenticated/compte/statut'
+      path: '/statut'
+      fullPath: '/compte/statut'
+      preLoaderRoute: typeof AuthenticatedCompteStatutRouteImport
+      parentRoute: typeof AuthenticatedCompteRoute
+    }
+    '/api/public/banniere/$teamId': {
+      id: '/api/public/banniere/$teamId'
+      path: '/api/public/banniere/$teamId'
+      fullPath: '/api/public/banniere/$teamId'
+      preLoaderRoute: typeof ApiPublicBanniereTeamIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 interface AuthenticatedCompteRouteChildren {
   AuthenticatedCompteAbonnementRoute: typeof AuthenticatedCompteAbonnementRoute
+  AuthenticatedCompteBannieresRoute: typeof AuthenticatedCompteBannieresRoute
   AuthenticatedCompteEquipeRoute: typeof AuthenticatedCompteEquipeRoute
+  AuthenticatedCompteProfilRoute: typeof AuthenticatedCompteProfilRoute
   AuthenticatedCompteRendezVousRoute: typeof AuthenticatedCompteRendezVousRoute
+  AuthenticatedCompteStatutRoute: typeof AuthenticatedCompteStatutRoute
   AuthenticatedCompteIndexRoute: typeof AuthenticatedCompteIndexRoute
 }
 
 const AuthenticatedCompteRouteChildren: AuthenticatedCompteRouteChildren = {
   AuthenticatedCompteAbonnementRoute: AuthenticatedCompteAbonnementRoute,
+  AuthenticatedCompteBannieresRoute: AuthenticatedCompteBannieresRoute,
   AuthenticatedCompteEquipeRoute: AuthenticatedCompteEquipeRoute,
+  AuthenticatedCompteProfilRoute: AuthenticatedCompteProfilRoute,
   AuthenticatedCompteRendezVousRoute: AuthenticatedCompteRendezVousRoute,
+  AuthenticatedCompteStatutRoute: AuthenticatedCompteStatutRoute,
   AuthenticatedCompteIndexRoute: AuthenticatedCompteIndexRoute,
 }
 
@@ -403,11 +549,15 @@ const rootRouteChildren: RootRouteChildren = {
   ConfidentialiteRoute: ConfidentialiteRoute,
   ConnexionRoute: ConnexionRoute,
   EditeurRoute: EditeurRoute,
+  EntreprisesRoute: EntreprisesRoute,
   MentionsLegalesRoute: MentionsLegalesRoute,
   ReinitialiserMotDePasseRoute: ReinitialiserMotDePasseRoute,
   TableauDeBordRoute: TableauDeBordRoute,
   TarifsRoute: TarifsRoute,
+  PSlugRoute: PSlugRoute,
   RdvSlugRoute: RdvSlugRoute,
+  VerifSlugRoute: VerifSlugRoute,
+  ApiPublicBanniereTeamIdRoute: ApiPublicBanniereTeamIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -21,6 +21,7 @@ export function Footer() {
           <Logo />
           <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
             <Link to="/tarifs" className={link}>Tarifs</Link>
+            <Link to="/entreprises" className={link}>Entreprises</Link>
             <Link to="/mentions-legales" className={link}>Mentions légales</Link>
             <Link to="/confidentialite" className={link}>Confidentialité</Link>
             <Link to="/cgu" className={link}>Conditions d'utilisation</Link>

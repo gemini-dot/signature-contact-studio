@@ -69,6 +69,7 @@ export function Header() {
         <nav className="hidden items-center gap-7 md:flex">
           <Link to="/editeur" className={nav} activeProps={{ className: "text-foreground" }}>Éditeur</Link>
           <Link to="/tarifs" className={nav} activeProps={{ className: "text-foreground" }}>Tarifs</Link>
+          <Link to="/entreprises" className={nav} activeProps={{ className: "text-foreground" }}>Entreprises</Link>
           {user ? (
             <Link to="/compte" className={nav} activeProps={{ className: "text-foreground" }}>Mon espace</Link>
           ) : (
