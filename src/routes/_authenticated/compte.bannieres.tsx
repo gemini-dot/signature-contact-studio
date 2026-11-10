@@ -7,6 +7,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { usePlan } from "@/hooks/use-plan";
 import { LockedFeature } from "@/components/site/LockedFeature";
 import { activeBanner } from "@/lib/member";
+import { useAuth } from "@/hooks/use-auth";
+import { ImageUpload } from "@/components/site/ImageUpload";
 
 export const Route = createFileRoute("/_authenticated/compte/bannieres")({ component: BannersPage });
 
@@ -14,6 +16,7 @@ const input = "rounded-lg border border-input bg-background px-3 py-2 text-sm";
 
 function BannersPage() {
   const { isTeamPlan, team, loading } = usePlan();
+  const { user } = useAuth();
   const qc = useQueryClient();
   const q = useQuery({
     queryKey: ["banners", team?.id], enabled: !!team,
@@ -32,10 +35,11 @@ function BannersPage() {
   const live = activeBanner(list, new Date().toISOString().slice(0, 10));
 
   const add = async () => {
-    if (!/^https:\/\//.test(f.image_url)) { toast.error("L'image doit être un lien https://"); return; }
+    if (!/^https:\/\//.test(f.image_url)) { toast.error("Importez une image ou collez un lien https://"); return; }
     const { error } = await supabase.from("team_banners").insert({ team_id: team.id, title: f.title, image_url: f.image_url, link_url: f.link_url, starts_on: f.is_default ? null : f.starts_on || null, ends_on: f.is_default ? null : f.ends_on || null, is_default: f.is_default });
-    if (error) { toast.error(error.message.includes("policy") ? "Seul un administrateur de l'équipe peut ajouter une bannière." : error.message); return; }
-    toast.success("Bannière ajoutée"); setF({ title: "", image_url: "", link_url: "", starts_on: "", ends_on: "", is_default: false });
+    if (error) { toast.error(error.message.includes("policy") ? "Réservé aux administrateurs d'une équipe avec abonnement Équipe actif." : error.message); return; }
+    toast.success("Bannière ajoutée");
+    window.__lovableEvents?.track?.("project.banner_scheduled", { is_default: f.is_default, has_dates: !f.is_default && !!(f.starts_on || f.ends_on) }); setF({ title: "", image_url: "", link_url: "", starts_on: "", ends_on: "", is_default: false });
     qc.invalidateQueries({ queryKey: ["banners"] });
   };
   const del = async (id: string) => { await supabase.from("team_banners").delete().eq("id", id); qc.invalidateQueries({ queryKey: ["banners"] }); };
@@ -56,7 +60,11 @@ function BannersPage() {
           <h3 className="font-serif text-xl">Nouvelle bannière</h3>
           <div className="mt-4 grid gap-3">
             <input className={input} placeholder="Nom (ex. Salon de juin)" value={f.title} onChange={(e) => setF({ ...f, title: e.target.value })} />
-            <input className={input} placeholder="Lien de l'image (https://…, 600×150 conseillé)" value={f.image_url} onChange={(e) => setF({ ...f, image_url: e.target.value })} />
+            <div className="flex flex-wrap items-center gap-3">
+              {user && <ImageUpload userId={user.id} folder="bannieres" label="Importer l'image (600×150 conseillé)" onUploaded={(url) => setF((x) => ({ ...x, image_url: url }))} />}
+              {f.image_url && <img src={f.image_url} alt="" className="h-12 rounded-md object-cover" />}
+            </div>
+            <input className={input} placeholder="…ou collez un lien d'image https://" value={f.image_url.includes("/object/sign/") ? "" : f.image_url} onChange={(e) => setF({ ...f, image_url: e.target.value })} />
             <input className={input} placeholder="Page ouverte au clic (facultatif)" value={f.link_url} onChange={(e) => setF({ ...f, link_url: e.target.value })} />
             <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={f.is_default} onChange={(e) => setF({ ...f, is_default: e.target.checked })} /> Bannière par défaut (affichée hors campagne)</label>
             {!f.is_default && (

@@ -13,3 +13,5 @@
 - Subscriptions/invoices are written only by SECURITY DEFINER RPCs (`subscribe_test`, `set_auto_renew`) in test mode until real Stripe is enabled — why: users cannot grant themselves a plan.
 - Paid member features (profile/vCard, verified badge, live status) live in `member_profiles`; a trigger sets `verified_at`/e-mail from the confirmed account and public pages read only through `get_member_profile` — why: members cannot forge their certification.
 - Team Smart Banners are served by `/api/public/banniere/$teamId` (302 to the current image, `?go=1` to its link) via `current_team_banner` — why: signatures keep one fixed URL while the image changes.
+- Member uploads go to the private `member-media` bucket under `<userId>/…` (upload allowed only when `is_booking_eligible`) and are stored as 10-year signed URLs — why: workspace blocks public buckets, public pages still need the image.
+- Plan rights are enforced in the database (profile/status writes via `is_booking_eligible`, banner writes via `team_has_plan`), the UI lock is only cosmetic — why: blocks API bypass.

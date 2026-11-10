@@ -29,6 +29,13 @@
       "when": 1794324184595,
       "tag": "0003_member_features",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1794328718734,
+      "tag": "0004_media_services_plan_guards",
+      "breakpoints": true
     }
   ]
 }

@@ -8,7 +8,8 @@ import { useAuth } from "@/hooks/use-auth";
 import { usePlan } from "@/hooks/use-plan";
 import { LockedFeature } from "@/components/site/LockedFeature";
 import { slugify } from "@/lib/booking";
-import { buildVCard, qrUrl, type ProfileLink } from "@/lib/member";
+import { buildVCard, qrUrl, type ProfileLink, type ProfileService } from "@/lib/member";
+import { ImageUpload } from "@/components/site/ImageUpload";
 
 export const Route = createFileRoute("/_authenticated/compte/profil")({ component: ProfilePage });
 
@@ -26,6 +27,8 @@ function ProfilePage() {
   });
   const [f, setF] = useState(empty);
   const [links, setLinks] = useState<ProfileLink[]>([]);
+  const [services, setServices] = useState<ProfileService[]>([]);
+  const [activity, setActivity] = useState("");
   const [enabled, setEnabled] = useState(true);
   const [badge, setBadge] = useState(false);
 
@@ -33,7 +36,7 @@ function ProfilePage() {
     const p = q.data;
     if (p) {
       setF({ slug: p.slug, full_name: p.full_name, job_title: p.job_title, company: p.company, email: p.email, phone: p.phone, website: p.website, address: p.address, bio: p.bio, photo_url: p.photo_url });
-      setLinks((p.links as ProfileLink[]) ?? []); setEnabled(p.profile_enabled); setBadge(p.badge_enabled);
+      setLinks((p.links as ProfileLink[]) ?? []); setServices((p.services as ProfileService[]) ?? []); setActivity(p.activity ?? ""); setEnabled(p.profile_enabled); setBadge(p.badge_enabled);
     } else if (user && q.isFetched) {
       setF((x) => ({ ...x, email: user.email ?? "", slug: slugify((user.email ?? "").split("@")[0] ?? "") }));
     }
@@ -52,17 +55,28 @@ function ProfilePage() {
     if (s.length < 2) { toast.error("Choisissez une adresse de profil (2 caractères minimum)."); return; }
     if (!f.full_name.trim()) { toast.error("Indiquez votre nom."); return; }
     const { data, error } = await supabase.from("member_profiles").upsert({
-      user_id: user!.id, ...f, slug: s, links: links.filter((l) => l.label && l.url), profile_enabled: enabled, badge_enabled: badge,
+      user_id: user!.id, ...f, slug: s, links: links.filter((l) => l.label && l.url),
+      activity: activity.slice(0, 1500), services: services.filter((x) => x.name.trim()).slice(0, 12),
+      profile_enabled: enabled, badge_enabled: badge,
     }).select().single();
     if (error) { toast.error(error.code === "23505" ? "Cette adresse est déjà prise." : error.message); return; }
     if (badge && !data.badge_enabled) toast.warning("Badge non activé : confirmez d'abord votre adresse e-mail.");
     else toast.success("Profil enregistré");
+    if (!q.data) window.__lovableEvents?.track?.("project.profile_created", { badge: !!data.badge_enabled, services_count: services.length });
     qc.invalidateQueries({ queryKey: ["my-profile"] });
   };
 
   const downloadVcf = () => {
     const blob = new Blob([buildVCard(f, profileUrl)], { type: "text/vcard" });
     const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `${f.slug || "contact"}.vcf`; a.click();
+    window.__lovableEvents?.track?.("project.qr_downloaded", { format: "vcf" });
+  };
+  const downloadQr = async () => {
+    try {
+      const blob = await (await fetch(qrUrl(profileUrl, 600))).blob();
+      const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `qr-${f.slug}.png`; a.click();
+      window.__lovableEvents?.track?.("project.qr_downloaded", { format: "png" });
+    } catch { toast.error("Téléchargement impossible"); }
   };
   const copy = (t: string) => { navigator.clipboard.writeText(t); toast.success("Copié"); };
   const saved = !!q.data;
@@ -81,8 +95,34 @@ function ProfilePage() {
             <label className="grid gap-1 text-sm">Téléphone<input className={input} value={f.phone} onChange={set("phone")} /></label>
             <label className="grid gap-1 text-sm">Site web<input className={input} value={f.website} onChange={set("website")} placeholder="https://" /></label>
             <label className="grid gap-1 text-sm sm:col-span-2">Adresse<input className={input} value={f.address} onChange={set("address")} /></label>
-            <label className="grid gap-1 text-sm sm:col-span-2">Photo (lien d'image)<input className={input} value={f.photo_url} onChange={set("photo_url")} placeholder="https://…" /></label>
+            <div className="grid gap-2 text-sm sm:col-span-2">
+              Photo de profil
+              <div className="flex items-center gap-3">
+                {f.photo_url ? <img src={f.photo_url} alt="" className="h-14 w-14 rounded-full object-cover ring-2 ring-gold" /> : <div className="h-14 w-14 rounded-full bg-muted" />}
+                <ImageUpload userId={user!.id} folder="photo" label={f.photo_url ? "Changer la photo" : "Importer ma photo"} onUploaded={(url) => setF((x) => ({ ...x, photo_url: url }))} />
+                {f.photo_url && <button type="button" onClick={() => setF({ ...f, photo_url: "" })} className="text-xs text-muted-foreground underline">Retirer</button>}
+              </div>
+            </div>
             <label className="grid gap-1 text-sm sm:col-span-2">Présentation<textarea className={input} rows={3} maxLength={600} value={f.bio} onChange={set("bio")} /></label>
+          </div>
+          <h3 className="mt-6 font-serif text-xl">Votre activité & vos <em className="text-gold">services</em></h3>
+          <p className="mt-1 text-sm text-muted-foreground">Décrivez ce que vous faites : vos visiteurs le liront sur votre carte de visite.</p>
+          <textarea className={`${input} mt-3 w-full`} rows={4} maxLength={1500} placeholder="Ex. Cabinet d'architecture spécialisé dans la rénovation de maisons anciennes…" value={activity} onChange={(e) => setActivity(e.target.value)} />
+          <div className="mt-3 space-y-3">
+            {services.map((s, i) => {
+              const upd = (k: keyof ProfileService, v: string) => setServices(services.map((x, j) => j === i ? { ...x, [k]: v } : x));
+              return (
+                <div key={i} className="rounded-xl border border-border p-3">
+                  <div className="flex gap-2">
+                    <input className={`${input} flex-1`} placeholder="Service (ex. Audit énergétique)" maxLength={80} value={s.name} onChange={(e) => upd("name", e.target.value)} />
+                    <input className={`${input} w-32`} placeholder="Prix (facultatif)" maxLength={40} value={s.price} onChange={(e) => upd("price", e.target.value)} />
+                    <button aria-label="Supprimer" onClick={() => setServices(services.filter((_, j) => j !== i))} className="p-2 text-muted-foreground"><Trash2 className="h-4 w-4" /></button>
+                  </div>
+                  <textarea className={`${input} mt-2 w-full`} rows={2} maxLength={300} placeholder="Description courte" value={s.description} onChange={(e) => upd("description", e.target.value)} />
+                </div>
+              );
+            })}
+            {services.length < 12 && <button onClick={() => setServices([...services, { name: "", description: "", price: "" }])} className="inline-flex items-center gap-1 text-sm text-gold"><Plus className="h-4 w-4" /> Ajouter un service</button>}
           </div>
           <h3 className="mt-6 text-sm font-medium">Liens (portfolio, LinkedIn, catalogue…)</h3>
           <div className="mt-2 space-y-2">
@@ -124,6 +164,7 @@ function ProfilePage() {
               <div className="mt-4 flex flex-wrap justify-center gap-2 text-sm">
                 <button onClick={() => copy(profileUrl)} className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1.5"><Copy className="h-4 w-4" /> Lien du profil</button>
                 <button onClick={downloadVcf} className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1.5"><Download className="h-4 w-4" /> Fiche .vcf</button>
+                <button onClick={downloadQr} className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1.5"><Download className="h-4 w-4" /> QR code</button>
                 <a href={`/p/${f.slug}`} target="_blank" rel="noreferrer" className="rounded-full border border-border px-3 py-1.5">Voir la page</a>
               </div>
             </>

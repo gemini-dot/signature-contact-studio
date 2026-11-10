@@ -36,7 +36,7 @@ function StatusPage() {
   const save = async (next: StatusKey = status) => {
     setStatus(next);
     const { error } = await supabase.from("member_profiles").update({ status: next, status_note: note.slice(0, 140), status_until: next === "disponible" ? null : until || null }).eq("user_id", user!.id);
-    if (error) toast.error(error.message); else { toast.success("Statut mis à jour"); qc.invalidateQueries({ queryKey: ["my-profile"] }); }
+    if (error) toast.error(error.message); else { toast.success("Statut mis à jour"); window.__lovableEvents?.track?.("project.status_changed", { status: next, has_end_date: next !== "disponible" && !!until }); qc.invalidateQueries({ queryKey: ["my-profile"] }); }
   };
 
   return (

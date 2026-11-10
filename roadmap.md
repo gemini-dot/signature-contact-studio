@@ -11,3 +11,4 @@
 - [x] Rubrique Admin (gemini@chinasamy.com) : clients, abonnements, formules actives
 - [x] Tarifs : nouvelles fonctions + comparatif détaillé ; page Entreprises
 - [x] Espace membre : Carte & badge, Statut, Smart Bannières (onglets regroupés)
+- [x] Import photo/bannières, activité & services, droits côté serveur, suivi d’adoption

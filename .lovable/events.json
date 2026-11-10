@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "events": {
+    "project.banner_scheduled": {
+      "event_schema_version": 1,
+      "description": "A team admin added or scheduled a Smart Banner.",
+      "privacy": {
+        "contains_pii": false,
+        "purpose": "product_analytics"
+      },
+      "properties_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "is_default",
+          "has_dates"
+        ],
+        "properties": {
+          "is_default": {
+            "type": "boolean"
+          },
+          "has_dates": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "project.profile_created": {
+      "event_schema_version": 1,
+      "description": "A paid member saved their business card profile for the first time.",
+      "privacy": {
+        "contains_pii": false,
+        "purpose": "product_analytics"
+      },
+      "properties_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "badge",
+          "services_count"
+        ],
+        "properties": {
+          "badge": {
+            "type": "boolean"
+          },
+          "services_count": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "project.qr_downloaded": {
+      "event_schema_version": 1,
+      "description": "A member downloaded their QR code image or vCard file.",
+      "privacy": {
+        "contains_pii": false,
+        "purpose": "product_analytics"
+      },
+      "properties_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "format"
+        ],
+        "properties": {
+          "format": {
+            "type": "string",
+            "enum": [
+              "png",
+              "vcf"
+            ]
+          }
+        }
+      }
+    },
+    "project.status_changed": {
+      "event_schema_version": 1,
+      "description": "A member changed their live availability status.",
+      "privacy": {
+        "contains_pii": false,
+        "purpose": "product_analytics"
+      },
+      "properties_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "status",
+          "has_end_date"
+        ],
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "has_end_date": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  }
+}

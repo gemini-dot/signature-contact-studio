@@ -9,10 +9,12 @@ export const STATUSES = {
 export type StatusKey = keyof typeof STATUSES;
 
 export type ProfileLink = { label: string; url: string };
+export type ProfileService = { name: string; description: string; price: string };
 
 export type PublicProfile = {
   full_name: string; job_title: string; company: string; email: string; phone: string;
   website: string; address: string; bio: string; photo_url: string; links: ProfileLink[];
+  activity?: string; services?: ProfileService[];
   profile_enabled: boolean; verified: boolean; verified_at: string | null;
   status: StatusKey; status_note: string; status_until: string | null; booking_slug: string | null;
 };
