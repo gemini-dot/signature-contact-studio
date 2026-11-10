@@ -24,8 +24,12 @@ import { Route as AuthenticatedCompteRouteImport } from './routes/_authenticated
 import { Route as RdvSlugRouteImport } from './routes/rdv.$slug'
 import { Route as AuthenticatedCompteIndexRouteImport } from './routes/_authenticated/compte.index'
 import { Route as AuthenticatedCompteAbonnementRouteImport } from './routes/_authenticated/compte.abonnement'
+import { Route as AuthenticatedCompteBannieresRouteImport } from './routes/_authenticated/compte.bannieres'
 import { Route as AuthenticatedCompteEquipeRouteImport } from './routes/_authenticated/compte.equipe'
+import { Route as AuthenticatedCompteProfilRouteImport } from './routes/_authenticated/compte.profil'
 import { Route as AuthenticatedCompteRendezVousRouteImport } from './routes/_authenticated/compte.rendez-vous'
+import { Route as AuthenticatedCompteStatutRouteImport } from './routes/_authenticated/compte.statut'
+import { Route as ApiPublicBanniereTeamIdRouteImport } from './routes/api/public/banniere.$teamId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -103,10 +107,22 @@ const AuthenticatedCompteAbonnementRoute =
     path: '/abonnement',
     getParentRoute: () => AuthenticatedCompteRoute,
   } as any)
+const AuthenticatedCompteBannieresRoute =
+  AuthenticatedCompteBannieresRouteImport.update({
+    id: '/bannieres',
+    path: '/bannieres',
+    getParentRoute: () => AuthenticatedCompteRoute,
+  } as any)
 const AuthenticatedCompteEquipeRoute =
   AuthenticatedCompteEquipeRouteImport.update({
     id: '/equipe',
     path: '/equipe',
+    getParentRoute: () => AuthenticatedCompteRoute,
+  } as any)
+const AuthenticatedCompteProfilRoute =
+  AuthenticatedCompteProfilRouteImport.update({
+    id: '/profil',
+    path: '/profil',
     getParentRoute: () => AuthenticatedCompteRoute,
   } as any)
 const AuthenticatedCompteRendezVousRoute =
@@ -115,6 +131,17 @@ const AuthenticatedCompteRendezVousRoute =
     path: '/rendez-vous',
     getParentRoute: () => AuthenticatedCompteRoute,
   } as any)
+const AuthenticatedCompteStatutRoute =
+  AuthenticatedCompteStatutRouteImport.update({
+    id: '/statut',
+    path: '/statut',
+    getParentRoute: () => AuthenticatedCompteRoute,
+  } as any)
+const ApiPublicBanniereTeamIdRoute = ApiPublicBanniereTeamIdRouteImport.update({
+  id: '/api/public/banniere/$teamId',
+  path: '/api/public/banniere/$teamId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -130,9 +157,13 @@ export interface FileRoutesByFullPath {
   '/compte': typeof AuthenticatedCompteRouteWithChildren
   '/rdv/$slug': typeof RdvSlugRoute
   '/compte/abonnement': typeof AuthenticatedCompteAbonnementRoute
+  '/compte/bannieres': typeof AuthenticatedCompteBannieresRoute
   '/compte/equipe': typeof AuthenticatedCompteEquipeRoute
+  '/compte/profil': typeof AuthenticatedCompteProfilRoute
   '/compte/rendez-vous': typeof AuthenticatedCompteRendezVousRoute
+  '/compte/statut': typeof AuthenticatedCompteStatutRoute
   '/compte/': typeof AuthenticatedCompteIndexRoute
+  '/api/public/banniere/$teamId': typeof ApiPublicBanniereTeamIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -147,9 +178,13 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminRoute
   '/rdv/$slug': typeof RdvSlugRoute
   '/compte/abonnement': typeof AuthenticatedCompteAbonnementRoute
+  '/compte/bannieres': typeof AuthenticatedCompteBannieresRoute
   '/compte/equipe': typeof AuthenticatedCompteEquipeRoute
+  '/compte/profil': typeof AuthenticatedCompteProfilRoute
   '/compte/rendez-vous': typeof AuthenticatedCompteRendezVousRoute
+  '/compte/statut': typeof AuthenticatedCompteStatutRoute
   '/compte': typeof AuthenticatedCompteIndexRoute
+  '/api/public/banniere/$teamId': typeof ApiPublicBanniereTeamIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -167,9 +202,13 @@ export interface FileRoutesById {
   '/_authenticated/compte': typeof AuthenticatedCompteRouteWithChildren
   '/rdv/$slug': typeof RdvSlugRoute
   '/_authenticated/compte/abonnement': typeof AuthenticatedCompteAbonnementRoute
+  '/_authenticated/compte/bannieres': typeof AuthenticatedCompteBannieresRoute
   '/_authenticated/compte/equipe': typeof AuthenticatedCompteEquipeRoute
+  '/_authenticated/compte/profil': typeof AuthenticatedCompteProfilRoute
   '/_authenticated/compte/rendez-vous': typeof AuthenticatedCompteRendezVousRoute
+  '/_authenticated/compte/statut': typeof AuthenticatedCompteStatutRoute
   '/_authenticated/compte/': typeof AuthenticatedCompteIndexRoute
+  '/api/public/banniere/$teamId': typeof ApiPublicBanniereTeamIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -187,9 +226,13 @@ export interface FileRouteTypes {
     | '/compte'
     | '/rdv/$slug'
     | '/compte/abonnement'
+    | '/compte/bannieres'
     | '/compte/equipe'
+    | '/compte/profil'
     | '/compte/rendez-vous'
+    | '/compte/statut'
     | '/compte/'
+    | '/api/public/banniere/$teamId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -204,9 +247,13 @@ export interface FileRouteTypes {
     | '/admin'
     | '/rdv/$slug'
     | '/compte/abonnement'
+    | '/compte/bannieres'
     | '/compte/equipe'
+    | '/compte/profil'
     | '/compte/rendez-vous'
+    | '/compte/statut'
     | '/compte'
+    | '/api/public/banniere/$teamId'
   id:
     | '__root__'
     | '/'
@@ -223,9 +270,13 @@ export interface FileRouteTypes {
     | '/_authenticated/compte'
     | '/rdv/$slug'
     | '/_authenticated/compte/abonnement'
+    | '/_authenticated/compte/bannieres'
     | '/_authenticated/compte/equipe'
+    | '/_authenticated/compte/profil'
     | '/_authenticated/compte/rendez-vous'
+    | '/_authenticated/compte/statut'
     | '/_authenticated/compte/'
+    | '/api/public/banniere/$teamId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -240,6 +291,7 @@ export interface RootRouteChildren {
   TableauDeBordRoute: typeof TableauDeBordRoute
   TarifsRoute: typeof TarifsRoute
   RdvSlugRoute: typeof RdvSlugRoute
+  ApiPublicBanniereTeamIdRoute: typeof ApiPublicBanniereTeamIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -349,11 +401,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCompteAbonnementRouteImport
       parentRoute: typeof AuthenticatedCompteRoute
     }
+    '/_authenticated/compte/bannieres': {
+      id: '/_authenticated/compte/bannieres'
+      path: '/bannieres'
+      fullPath: '/compte/bannieres'
+      preLoaderRoute: typeof AuthenticatedCompteBannieresRouteImport
+      parentRoute: typeof AuthenticatedCompteRoute
+    }
     '/_authenticated/compte/equipe': {
       id: '/_authenticated/compte/equipe'
       path: '/equipe'
       fullPath: '/compte/equipe'
       preLoaderRoute: typeof AuthenticatedCompteEquipeRouteImport
+      parentRoute: typeof AuthenticatedCompteRoute
+    }
+    '/_authenticated/compte/profil': {
+      id: '/_authenticated/compte/profil'
+      path: '/profil'
+      fullPath: '/compte/profil'
+      preLoaderRoute: typeof AuthenticatedCompteProfilRouteImport
       parentRoute: typeof AuthenticatedCompteRoute
     }
     '/_authenticated/compte/rendez-vous': {
@@ -363,20 +429,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCompteRendezVousRouteImport
       parentRoute: typeof AuthenticatedCompteRoute
     }
+    '/_authenticated/compte/statut': {
+      id: '/_authenticated/compte/statut'
+      path: '/statut'
+      fullPath: '/compte/statut'
+      preLoaderRoute: typeof AuthenticatedCompteStatutRouteImport
+      parentRoute: typeof AuthenticatedCompteRoute
+    }
+    '/api/public/banniere/$teamId': {
+      id: '/api/public/banniere/$teamId'
+      path: '/api/public/banniere/$teamId'
+      fullPath: '/api/public/banniere/$teamId'
+      preLoaderRoute: typeof ApiPublicBanniereTeamIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 interface AuthenticatedCompteRouteChildren {
   AuthenticatedCompteAbonnementRoute: typeof AuthenticatedCompteAbonnementRoute
+  AuthenticatedCompteBannieresRoute: typeof AuthenticatedCompteBannieresRoute
   AuthenticatedCompteEquipeRoute: typeof AuthenticatedCompteEquipeRoute
+  AuthenticatedCompteProfilRoute: typeof AuthenticatedCompteProfilRoute
   AuthenticatedCompteRendezVousRoute: typeof AuthenticatedCompteRendezVousRoute
+  AuthenticatedCompteStatutRoute: typeof AuthenticatedCompteStatutRoute
   AuthenticatedCompteIndexRoute: typeof AuthenticatedCompteIndexRoute
 }
 
 const AuthenticatedCompteRouteChildren: AuthenticatedCompteRouteChildren = {
   AuthenticatedCompteAbonnementRoute: AuthenticatedCompteAbonnementRoute,
+  AuthenticatedCompteBannieresRoute: AuthenticatedCompteBannieresRoute,
   AuthenticatedCompteEquipeRoute: AuthenticatedCompteEquipeRoute,
+  AuthenticatedCompteProfilRoute: AuthenticatedCompteProfilRoute,
   AuthenticatedCompteRendezVousRoute: AuthenticatedCompteRendezVousRoute,
+  AuthenticatedCompteStatutRoute: AuthenticatedCompteStatutRoute,
   AuthenticatedCompteIndexRoute: AuthenticatedCompteIndexRoute,
 }
 
@@ -408,6 +494,7 @@ const rootRouteChildren: RootRouteChildren = {
   TableauDeBordRoute: TableauDeBordRoute,
   TarifsRoute: TarifsRoute,
   RdvSlugRoute: RdvSlugRoute,
+  ApiPublicBanniereTeamIdRoute: ApiPublicBanniereTeamIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
