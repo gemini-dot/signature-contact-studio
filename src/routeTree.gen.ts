@@ -15,6 +15,7 @@ import { Route as CguRouteImport } from './routes/cgu'
 import { Route as ConfidentialiteRouteImport } from './routes/confidentialite'
 import { Route as ConnexionRouteImport } from './routes/connexion'
 import { Route as EditeurRouteImport } from './routes/editeur'
+import { Route as EntreprisesRouteImport } from './routes/entreprises'
 import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
 import { Route as ReinitialiserMotDePasseRouteImport } from './routes/reinitialiser-mot-de-passe'
 import { Route as TableauDeBordRouteImport } from './routes/tableau-de-bord'
@@ -60,6 +61,11 @@ const ConnexionRoute = ConnexionRouteImport.update({
 const EditeurRoute = EditeurRouteImport.update({
   id: '/editeur',
   path: '/editeur',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EntreprisesRoute = EntreprisesRouteImport.update({
+  id: '/entreprises',
+  path: '/entreprises',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
@@ -161,6 +167,7 @@ export interface FileRoutesByFullPath {
   '/confidentialite': typeof ConfidentialiteRoute
   '/connexion': typeof ConnexionRoute
   '/editeur': typeof EditeurRoute
+  '/entreprises': typeof EntreprisesRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
@@ -185,6 +192,7 @@ export interface FileRoutesByTo {
   '/confidentialite': typeof ConfidentialiteRoute
   '/connexion': typeof ConnexionRoute
   '/editeur': typeof EditeurRoute
+  '/entreprises': typeof EntreprisesRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
@@ -210,6 +218,7 @@ export interface FileRoutesById {
   '/confidentialite': typeof ConfidentialiteRoute
   '/connexion': typeof ConnexionRoute
   '/editeur': typeof EditeurRoute
+  '/entreprises': typeof EntreprisesRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
@@ -236,6 +245,7 @@ export interface FileRouteTypes {
     | '/confidentialite'
     | '/connexion'
     | '/editeur'
+    | '/entreprises'
     | '/mentions-legales'
     | '/reinitialiser-mot-de-passe'
     | '/tableau-de-bord'
@@ -260,6 +270,7 @@ export interface FileRouteTypes {
     | '/confidentialite'
     | '/connexion'
     | '/editeur'
+    | '/entreprises'
     | '/mentions-legales'
     | '/reinitialiser-mot-de-passe'
     | '/tableau-de-bord'
@@ -284,6 +295,7 @@ export interface FileRouteTypes {
     | '/confidentialite'
     | '/connexion'
     | '/editeur'
+    | '/entreprises'
     | '/mentions-legales'
     | '/reinitialiser-mot-de-passe'
     | '/tableau-de-bord'
@@ -310,6 +322,7 @@ export interface RootRouteChildren {
   ConfidentialiteRoute: typeof ConfidentialiteRoute
   ConnexionRoute: typeof ConnexionRoute
   EditeurRoute: typeof EditeurRoute
+  EntreprisesRoute: typeof EntreprisesRoute
   MentionsLegalesRoute: typeof MentionsLegalesRoute
   ReinitialiserMotDePasseRoute: typeof ReinitialiserMotDePasseRoute
   TableauDeBordRoute: typeof TableauDeBordRoute
@@ -362,6 +375,13 @@ declare module '@tanstack/react-router' {
       path: '/editeur'
       fullPath: '/editeur'
       preLoaderRoute: typeof EditeurRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/entreprises': {
+      id: '/entreprises'
+      path: '/entreprises'
+      fullPath: '/entreprises'
+      preLoaderRoute: typeof EntreprisesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mentions-legales': {
@@ -529,6 +549,7 @@ const rootRouteChildren: RootRouteChildren = {
   ConfidentialiteRoute: ConfidentialiteRoute,
   ConnexionRoute: ConnexionRoute,
   EditeurRoute: EditeurRoute,
+  EntreprisesRoute: EntreprisesRoute,
   MentionsLegalesRoute: MentionsLegalesRoute,
   ReinitialiserMotDePasseRoute: ReinitialiserMotDePasseRoute,
   TableauDeBordRoute: TableauDeBordRoute,
