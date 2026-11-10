@@ -11,3 +11,5 @@
 - Account pages live under `src/routes/_authenticated/` (client-only gate redirecting to `/connexion`); data access uses the browser client with RLS — why: no server secrets needed.
 - Site admin is granted by the signup trigger from a fixed e-mail into `user_roles`; never check admin client-side only — why: prevents privilege escalation.
 - Subscriptions/invoices are written only by SECURITY DEFINER RPCs (`subscribe_test`, `set_auto_renew`) in test mode until real Stripe is enabled — why: users cannot grant themselves a plan.
+- Paid member features (profile/vCard, verified badge, live status) live in `member_profiles`; a trigger sets `verified_at`/e-mail from the confirmed account and public pages read only through `get_member_profile` — why: members cannot forge their certification.
+- Team Smart Banners are served by `/api/public/banniere/$teamId` (302 to the current image, `?go=1` to its link) via `current_team_banner` — why: signatures keep one fixed URL while the image changes.
