@@ -24,7 +24,24 @@ export function BrandMark({ className = "h-10 w-10" }: { className?: string }) {
   );
 }
 
+export const SLOGANS: Record<string, string> = {
+  fr: "Personnalisez votre vie numérique",
+  en: "Personalize your digital life",
+  es: "Personaliza tu vida digital",
+  de: "Personalisieren Sie Ihr digitales Leben",
+  it: "Personalizza la tua vita digitale",
+  pt: "Personalize a sua vida digital",
+  nl: "Personaliseer je digitale leven",
+};
+
 export function Logo() {
+  const [lang, setLang] = useState("fr");
+  useEffect(() => {
+    const read = () => setLang(localStorage.getItem("lang") ?? "fr");
+    read();
+    window.addEventListener("langchange", read);
+    return () => window.removeEventListener("langchange", read);
+  }, []);
   return (
     <Link to="/" className="flex items-center gap-3" aria-label="Signature.Contact by Gem's">
       <BrandMark />
@@ -32,7 +49,7 @@ export function Logo() {
         <span className="block font-serif text-2xl font-semibold text-primary">
           Signature<span className="italic text-gold">.Contact</span>
         </span>
-        <span className="mt-1 block text-[10px] font-semibold uppercase tracking-[0.3em] text-muted-foreground">by Gem's</span>
+        <span className="mt-1 block font-serif text-[13px] italic tracking-wide text-gold">{SLOGANS[lang] ?? SLOGANS.fr}</span>
       </span>
     </Link>
   );
