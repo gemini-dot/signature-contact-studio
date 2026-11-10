@@ -100,7 +100,7 @@ export function Header() {
             <select
               aria-label="Langue"
               value={lang}
-              onChange={(e) => { setLang(e.target.value); localStorage.setItem("lang", e.target.value); }}
+              onChange={(e) => { setLang(e.target.value); localStorage.setItem("lang", e.target.value); window.dispatchEvent(new Event("langchange")); }}
               className="bg-transparent outline-none"
             >
               {LANGS.map((l) => <option key={l.code} value={l.code}>{l.code.toUpperCase()}</option>)}
