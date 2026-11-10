@@ -142,6 +142,7 @@ export type Database = {
       }
       member_profiles: {
         Row: {
+          activity: string
           address: string
           badge_enabled: boolean
           bio: string
@@ -153,6 +154,7 @@ export type Database = {
           phone: string
           photo_url: string
           profile_enabled: boolean
+          services: Json
           slug: string
           status: string
           status_note: string
@@ -163,6 +165,7 @@ export type Database = {
           website: string
         }
         Insert: {
+          activity?: string
           address?: string
           badge_enabled?: boolean
           bio?: string
@@ -174,6 +177,7 @@ export type Database = {
           phone?: string
           photo_url?: string
           profile_enabled?: boolean
+          services?: Json
           slug: string
           status?: string
           status_note?: string
@@ -184,6 +188,7 @@ export type Database = {
           website?: string
         }
         Update: {
+          activity?: string
           address?: string
           badge_enabled?: boolean
           bio?: string
@@ -195,6 +200,7 @@ export type Database = {
           phone?: string
           photo_url?: string
           profile_enabled?: boolean
+          services?: Json
           slug?: string
           status?: string
           status_note?: string
@@ -513,6 +519,7 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      team_has_plan: { Args: { _team: string }; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "user"
