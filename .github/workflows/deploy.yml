@@ -1,0 +1,33 @@
+name: Déploiement VPS OVH
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-vps
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mise à jour du site sur le VPS
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT || 22 }}
+          command_timeout: 20m
+          script: |
+            set -e
+            export NVM_DIR="$HOME/.nvm"; [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+            cd ~/signature-contact-studio
+            git fetch --all
+            git reset --hard origin/main
+            npm install --no-audit --no-fund
+            NITRO_PRESET=node-server npm run build
+            pm2 restart signature-contact --update-env || PORT=3005 pm2 start .output/server/index.mjs --name signature-contact
+            pm2 save
