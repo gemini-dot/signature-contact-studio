@@ -32,6 +32,7 @@ import { Route as AuthenticatedCompteEquipeRouteImport } from './routes/_authent
 import { Route as AuthenticatedCompteProfilRouteImport } from './routes/_authenticated/compte.profil'
 import { Route as AuthenticatedCompteRendezVousRouteImport } from './routes/_authenticated/compte.rendez-vous'
 import { Route as AuthenticatedCompteStatutRouteImport } from './routes/_authenticated/compte.statut'
+import { Route as AuthenticatedCompteVisioRouteImport } from './routes/_authenticated/compte.visio'
 import { Route as AuthenticatedCompteVitrineRouteImport } from './routes/_authenticated/compte.vitrine'
 import { Route as ApiPublicBanniereTeamIdRouteImport } from './routes/api/public/banniere.$teamId'
 import { Route as ApiPublicDocumentSlugRouteImport } from './routes/api/public/document.$slug'
@@ -157,6 +158,12 @@ const AuthenticatedCompteStatutRoute =
     path: '/statut',
     getParentRoute: () => AuthenticatedCompteRoute,
   } as any)
+const AuthenticatedCompteVisioRoute =
+  AuthenticatedCompteVisioRouteImport.update({
+    id: '/visio',
+    path: '/visio',
+    getParentRoute: () => AuthenticatedCompteRoute,
+  } as any)
 const AuthenticatedCompteVitrineRoute =
   AuthenticatedCompteVitrineRouteImport.update({
     id: '/vitrine',
@@ -196,6 +203,7 @@ export interface FileRoutesByFullPath {
   '/compte/profil': typeof AuthenticatedCompteProfilRoute
   '/compte/rendez-vous': typeof AuthenticatedCompteRendezVousRoute
   '/compte/statut': typeof AuthenticatedCompteStatutRoute
+  '/compte/visio': typeof AuthenticatedCompteVisioRoute
   '/compte/vitrine': typeof AuthenticatedCompteVitrineRoute
   '/compte/': typeof AuthenticatedCompteIndexRoute
   '/api/public/banniere/$teamId': typeof ApiPublicBanniereTeamIdRoute
@@ -222,6 +230,7 @@ export interface FileRoutesByTo {
   '/compte/profil': typeof AuthenticatedCompteProfilRoute
   '/compte/rendez-vous': typeof AuthenticatedCompteRendezVousRoute
   '/compte/statut': typeof AuthenticatedCompteStatutRoute
+  '/compte/visio': typeof AuthenticatedCompteVisioRoute
   '/compte/vitrine': typeof AuthenticatedCompteVitrineRoute
   '/compte': typeof AuthenticatedCompteIndexRoute
   '/api/public/banniere/$teamId': typeof ApiPublicBanniereTeamIdRoute
@@ -251,6 +260,7 @@ export interface FileRoutesById {
   '/_authenticated/compte/profil': typeof AuthenticatedCompteProfilRoute
   '/_authenticated/compte/rendez-vous': typeof AuthenticatedCompteRendezVousRoute
   '/_authenticated/compte/statut': typeof AuthenticatedCompteStatutRoute
+  '/_authenticated/compte/visio': typeof AuthenticatedCompteVisioRoute
   '/_authenticated/compte/vitrine': typeof AuthenticatedCompteVitrineRoute
   '/_authenticated/compte/': typeof AuthenticatedCompteIndexRoute
   '/api/public/banniere/$teamId': typeof ApiPublicBanniereTeamIdRoute
@@ -280,6 +290,7 @@ export interface FileRouteTypes {
     | '/compte/profil'
     | '/compte/rendez-vous'
     | '/compte/statut'
+    | '/compte/visio'
     | '/compte/vitrine'
     | '/compte/'
     | '/api/public/banniere/$teamId'
@@ -306,6 +317,7 @@ export interface FileRouteTypes {
     | '/compte/profil'
     | '/compte/rendez-vous'
     | '/compte/statut'
+    | '/compte/visio'
     | '/compte/vitrine'
     | '/compte'
     | '/api/public/banniere/$teamId'
@@ -334,6 +346,7 @@ export interface FileRouteTypes {
     | '/_authenticated/compte/profil'
     | '/_authenticated/compte/rendez-vous'
     | '/_authenticated/compte/statut'
+    | '/_authenticated/compte/visio'
     | '/_authenticated/compte/vitrine'
     | '/_authenticated/compte/'
     | '/api/public/banniere/$teamId'
@@ -522,6 +535,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCompteStatutRouteImport
       parentRoute: typeof AuthenticatedCompteRoute
     }
+    '/_authenticated/compte/visio': {
+      id: '/_authenticated/compte/visio'
+      path: '/visio'
+      fullPath: '/compte/visio'
+      preLoaderRoute: typeof AuthenticatedCompteVisioRouteImport
+      parentRoute: typeof AuthenticatedCompteRoute
+    }
     '/_authenticated/compte/vitrine': {
       id: '/_authenticated/compte/vitrine'
       path: '/vitrine'
@@ -553,6 +573,7 @@ interface AuthenticatedCompteRouteChildren {
   AuthenticatedCompteProfilRoute: typeof AuthenticatedCompteProfilRoute
   AuthenticatedCompteRendezVousRoute: typeof AuthenticatedCompteRendezVousRoute
   AuthenticatedCompteStatutRoute: typeof AuthenticatedCompteStatutRoute
+  AuthenticatedCompteVisioRoute: typeof AuthenticatedCompteVisioRoute
   AuthenticatedCompteVitrineRoute: typeof AuthenticatedCompteVitrineRoute
   AuthenticatedCompteIndexRoute: typeof AuthenticatedCompteIndexRoute
 }
@@ -564,6 +585,7 @@ const AuthenticatedCompteRouteChildren: AuthenticatedCompteRouteChildren = {
   AuthenticatedCompteProfilRoute: AuthenticatedCompteProfilRoute,
   AuthenticatedCompteRendezVousRoute: AuthenticatedCompteRendezVousRoute,
   AuthenticatedCompteStatutRoute: AuthenticatedCompteStatutRoute,
+  AuthenticatedCompteVisioRoute: AuthenticatedCompteVisioRoute,
   AuthenticatedCompteVitrineRoute: AuthenticatedCompteVitrineRoute,
   AuthenticatedCompteIndexRoute: AuthenticatedCompteIndexRoute,
 }

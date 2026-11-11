@@ -63,8 +63,9 @@ function VisioPage() {
         ctx.drawImage(photo, x + 30, cy - 20, 100, 100); ctx.restore(); cy += 120;
       }
       ctx.fillStyle = t.text; ctx.font = "500 54px Fraunces, Georgia, serif"; ctx.textBaseline = "top";
-      wrapText(ctx, p.full_name || "Votre nom", x + 40, cy, pw - 80, 62).forEach((l, i) => ctx.fillText(l, x + 40, cy + i * 62));
-      cy += 80 * Math.max(1, Math.ceil(ctx.measureText(p.full_name).width / (pw - 80)));
+      const nameLines = wrapText(ctx, p.full_name || "Votre nom", pw - 80);
+      nameLines.forEach((l, i) => ctx.fillText(l, x + 40, cy + i * 62));
+      cy += nameLines.length * 62 + 18;
       ctx.fillStyle = t.sub; ctx.font = "italic 32px Fraunces, Georgia, serif";
       if (p.job_title) { ctx.fillText(p.job_title.slice(0, 40), x + 40, cy); cy += 46; }
       ctx.fillStyle = t.text; ctx.font = "600 30px Manrope, Arial, sans-serif";
@@ -123,7 +124,7 @@ function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: numbe
   ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
   ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
 }
-function wrapText(ctx: CanvasRenderingContext2D, text: string, _x: number, _y: number, max: number, _lh: number) {
+function wrapText(ctx: CanvasRenderingContext2D, text: string, max: number) {
   const words = text.split(" "); const lines: string[] = []; let cur = "";
   for (const w of words) { const t = cur ? cur + " " + w : w; if (ctx.measureText(t).width > max && cur) { lines.push(cur); cur = w; } else cur = t; }
   if (cur) lines.push(cur); return lines.slice(0, 2);
