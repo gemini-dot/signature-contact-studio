@@ -32,6 +32,7 @@ import { Route as AuthenticatedCompteEquipeRouteImport } from './routes/_authent
 import { Route as AuthenticatedCompteProfilRouteImport } from './routes/_authenticated/compte.profil'
 import { Route as AuthenticatedCompteRendezVousRouteImport } from './routes/_authenticated/compte.rendez-vous'
 import { Route as AuthenticatedCompteStatutRouteImport } from './routes/_authenticated/compte.statut'
+import { Route as AuthenticatedCompteVitrineRouteImport } from './routes/_authenticated/compte.vitrine'
 import { Route as ApiPublicBanniereTeamIdRouteImport } from './routes/api/public/banniere.$teamId'
 import { Route as ApiPublicDocumentSlugRouteImport } from './routes/api/public/document.$slug'
 
@@ -156,6 +157,12 @@ const AuthenticatedCompteStatutRoute =
     path: '/statut',
     getParentRoute: () => AuthenticatedCompteRoute,
   } as any)
+const AuthenticatedCompteVitrineRoute =
+  AuthenticatedCompteVitrineRouteImport.update({
+    id: '/vitrine',
+    path: '/vitrine',
+    getParentRoute: () => AuthenticatedCompteRoute,
+  } as any)
 const ApiPublicBanniereTeamIdRoute = ApiPublicBanniereTeamIdRouteImport.update({
   id: '/api/public/banniere/$teamId',
   path: '/api/public/banniere/$teamId',
@@ -189,6 +196,7 @@ export interface FileRoutesByFullPath {
   '/compte/profil': typeof AuthenticatedCompteProfilRoute
   '/compte/rendez-vous': typeof AuthenticatedCompteRendezVousRoute
   '/compte/statut': typeof AuthenticatedCompteStatutRoute
+  '/compte/vitrine': typeof AuthenticatedCompteVitrineRoute
   '/compte/': typeof AuthenticatedCompteIndexRoute
   '/api/public/banniere/$teamId': typeof ApiPublicBanniereTeamIdRoute
   '/api/public/document/$slug': typeof ApiPublicDocumentSlugRoute
@@ -214,6 +222,7 @@ export interface FileRoutesByTo {
   '/compte/profil': typeof AuthenticatedCompteProfilRoute
   '/compte/rendez-vous': typeof AuthenticatedCompteRendezVousRoute
   '/compte/statut': typeof AuthenticatedCompteStatutRoute
+  '/compte/vitrine': typeof AuthenticatedCompteVitrineRoute
   '/compte': typeof AuthenticatedCompteIndexRoute
   '/api/public/banniere/$teamId': typeof ApiPublicBanniereTeamIdRoute
   '/api/public/document/$slug': typeof ApiPublicDocumentSlugRoute
@@ -242,6 +251,7 @@ export interface FileRoutesById {
   '/_authenticated/compte/profil': typeof AuthenticatedCompteProfilRoute
   '/_authenticated/compte/rendez-vous': typeof AuthenticatedCompteRendezVousRoute
   '/_authenticated/compte/statut': typeof AuthenticatedCompteStatutRoute
+  '/_authenticated/compte/vitrine': typeof AuthenticatedCompteVitrineRoute
   '/_authenticated/compte/': typeof AuthenticatedCompteIndexRoute
   '/api/public/banniere/$teamId': typeof ApiPublicBanniereTeamIdRoute
   '/api/public/document/$slug': typeof ApiPublicDocumentSlugRoute
@@ -270,6 +280,7 @@ export interface FileRouteTypes {
     | '/compte/profil'
     | '/compte/rendez-vous'
     | '/compte/statut'
+    | '/compte/vitrine'
     | '/compte/'
     | '/api/public/banniere/$teamId'
     | '/api/public/document/$slug'
@@ -295,6 +306,7 @@ export interface FileRouteTypes {
     | '/compte/profil'
     | '/compte/rendez-vous'
     | '/compte/statut'
+    | '/compte/vitrine'
     | '/compte'
     | '/api/public/banniere/$teamId'
     | '/api/public/document/$slug'
@@ -322,6 +334,7 @@ export interface FileRouteTypes {
     | '/_authenticated/compte/profil'
     | '/_authenticated/compte/rendez-vous'
     | '/_authenticated/compte/statut'
+    | '/_authenticated/compte/vitrine'
     | '/_authenticated/compte/'
     | '/api/public/banniere/$teamId'
     | '/api/public/document/$slug'
@@ -509,6 +522,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCompteStatutRouteImport
       parentRoute: typeof AuthenticatedCompteRoute
     }
+    '/_authenticated/compte/vitrine': {
+      id: '/_authenticated/compte/vitrine'
+      path: '/vitrine'
+      fullPath: '/compte/vitrine'
+      preLoaderRoute: typeof AuthenticatedCompteVitrineRouteImport
+      parentRoute: typeof AuthenticatedCompteRoute
+    }
     '/api/public/banniere/$teamId': {
       id: '/api/public/banniere/$teamId'
       path: '/api/public/banniere/$teamId'
@@ -533,6 +553,7 @@ interface AuthenticatedCompteRouteChildren {
   AuthenticatedCompteProfilRoute: typeof AuthenticatedCompteProfilRoute
   AuthenticatedCompteRendezVousRoute: typeof AuthenticatedCompteRendezVousRoute
   AuthenticatedCompteStatutRoute: typeof AuthenticatedCompteStatutRoute
+  AuthenticatedCompteVitrineRoute: typeof AuthenticatedCompteVitrineRoute
   AuthenticatedCompteIndexRoute: typeof AuthenticatedCompteIndexRoute
 }
 
@@ -543,6 +564,7 @@ const AuthenticatedCompteRouteChildren: AuthenticatedCompteRouteChildren = {
   AuthenticatedCompteProfilRoute: AuthenticatedCompteProfilRoute,
   AuthenticatedCompteRendezVousRoute: AuthenticatedCompteRendezVousRoute,
   AuthenticatedCompteStatutRoute: AuthenticatedCompteStatutRoute,
+  AuthenticatedCompteVitrineRoute: AuthenticatedCompteVitrineRoute,
   AuthenticatedCompteIndexRoute: AuthenticatedCompteIndexRoute,
 }
 
