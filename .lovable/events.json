@@ -181,10 +181,10 @@
         "type": "object",
         "additionalProperties": false,
         "required": [
-          "with_phone"
+          "mobile_provided"
         ],
         "properties": {
-          "with_phone": {
+          "mobile_provided": {
             "type": "boolean"
           }
         }
