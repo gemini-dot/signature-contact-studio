@@ -24,6 +24,7 @@ import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedCompteRouteImport } from './routes/_authenticated/compte'
 import { Route as PSlugRouteImport } from './routes/p.$slug'
 import { Route as RdvSlugRouteImport } from './routes/rdv.$slug'
+import { Route as RejoindreTokenRouteImport } from './routes/rejoindre.$token'
 import { Route as VerifSlugRouteImport } from './routes/verif.$slug'
 import { Route as AuthenticatedCompteIndexRouteImport } from './routes/_authenticated/compte.index'
 import { Route as AuthenticatedCompteAbonnementRouteImport } from './routes/_authenticated/compte.abonnement'
@@ -111,6 +112,11 @@ const RdvSlugRoute = RdvSlugRouteImport.update({
   path: '/rdv/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RejoindreTokenRoute = RejoindreTokenRouteImport.update({
+  id: '/rejoindre/$token',
+  path: '/rejoindre/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const VerifSlugRoute = VerifSlugRouteImport.update({
   id: '/verif/$slug',
   path: '/verif/$slug',
@@ -196,6 +202,7 @@ export interface FileRoutesByFullPath {
   '/compte': typeof AuthenticatedCompteRouteWithChildren
   '/p/$slug': typeof PSlugRoute
   '/rdv/$slug': typeof RdvSlugRoute
+  '/rejoindre/$token': typeof RejoindreTokenRoute
   '/verif/$slug': typeof VerifSlugRoute
   '/compte/abonnement': typeof AuthenticatedCompteAbonnementRoute
   '/compte/bannieres': typeof AuthenticatedCompteBannieresRoute
@@ -223,6 +230,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminRoute
   '/p/$slug': typeof PSlugRoute
   '/rdv/$slug': typeof RdvSlugRoute
+  '/rejoindre/$token': typeof RejoindreTokenRoute
   '/verif/$slug': typeof VerifSlugRoute
   '/compte/abonnement': typeof AuthenticatedCompteAbonnementRoute
   '/compte/bannieres': typeof AuthenticatedCompteBannieresRoute
@@ -253,6 +261,7 @@ export interface FileRoutesById {
   '/_authenticated/compte': typeof AuthenticatedCompteRouteWithChildren
   '/p/$slug': typeof PSlugRoute
   '/rdv/$slug': typeof RdvSlugRoute
+  '/rejoindre/$token': typeof RejoindreTokenRoute
   '/verif/$slug': typeof VerifSlugRoute
   '/_authenticated/compte/abonnement': typeof AuthenticatedCompteAbonnementRoute
   '/_authenticated/compte/bannieres': typeof AuthenticatedCompteBannieresRoute
@@ -283,6 +292,7 @@ export interface FileRouteTypes {
     | '/compte'
     | '/p/$slug'
     | '/rdv/$slug'
+    | '/rejoindre/$token'
     | '/verif/$slug'
     | '/compte/abonnement'
     | '/compte/bannieres'
@@ -310,6 +320,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/p/$slug'
     | '/rdv/$slug'
+    | '/rejoindre/$token'
     | '/verif/$slug'
     | '/compte/abonnement'
     | '/compte/bannieres'
@@ -339,6 +350,7 @@ export interface FileRouteTypes {
     | '/_authenticated/compte'
     | '/p/$slug'
     | '/rdv/$slug'
+    | '/rejoindre/$token'
     | '/verif/$slug'
     | '/_authenticated/compte/abonnement'
     | '/_authenticated/compte/bannieres'
@@ -367,6 +379,7 @@ export interface RootRouteChildren {
   TarifsRoute: typeof TarifsRoute
   PSlugRoute: typeof PSlugRoute
   RdvSlugRoute: typeof RdvSlugRoute
+  RejoindreTokenRoute: typeof RejoindreTokenRoute
   VerifSlugRoute: typeof VerifSlugRoute
   ApiPublicBanniereTeamIdRoute: typeof ApiPublicBanniereTeamIdRoute
   ApiPublicDocumentSlugRoute: typeof ApiPublicDocumentSlugRoute
@@ -477,6 +490,13 @@ declare module '@tanstack/react-router' {
       path: '/rdv/$slug'
       fullPath: '/rdv/$slug'
       preLoaderRoute: typeof RdvSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rejoindre/$token': {
+      id: '/rejoindre/$token'
+      path: '/rejoindre/$token'
+      fullPath: '/rejoindre/$token'
+      preLoaderRoute: typeof RejoindreTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/verif/$slug': {
@@ -620,6 +640,7 @@ const rootRouteChildren: RootRouteChildren = {
   TarifsRoute: TarifsRoute,
   PSlugRoute: PSlugRoute,
   RdvSlugRoute: RdvSlugRoute,
+  RejoindreTokenRoute: RejoindreTokenRoute,
   VerifSlugRoute: VerifSlugRoute,
   ApiPublicBanniereTeamIdRoute: ApiPublicBanniereTeamIdRoute,
   ApiPublicDocumentSlugRoute: ApiPublicDocumentSlugRoute,
