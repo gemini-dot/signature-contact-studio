@@ -24,6 +24,7 @@ import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedCompteRouteImport } from './routes/_authenticated/compte'
 import { Route as PSlugRouteImport } from './routes/p.$slug'
 import { Route as RdvSlugRouteImport } from './routes/rdv.$slug'
+import { Route as RejoindreTokenRouteImport } from './routes/rejoindre.$token'
 import { Route as VerifSlugRouteImport } from './routes/verif.$slug'
 import { Route as AuthenticatedCompteIndexRouteImport } from './routes/_authenticated/compte.index'
 import { Route as AuthenticatedCompteAbonnementRouteImport } from './routes/_authenticated/compte.abonnement'
@@ -32,7 +33,10 @@ import { Route as AuthenticatedCompteEquipeRouteImport } from './routes/_authent
 import { Route as AuthenticatedCompteProfilRouteImport } from './routes/_authenticated/compte.profil'
 import { Route as AuthenticatedCompteRendezVousRouteImport } from './routes/_authenticated/compte.rendez-vous'
 import { Route as AuthenticatedCompteStatutRouteImport } from './routes/_authenticated/compte.statut'
+import { Route as AuthenticatedCompteVisioRouteImport } from './routes/_authenticated/compte.visio'
+import { Route as AuthenticatedCompteVitrineRouteImport } from './routes/_authenticated/compte.vitrine'
 import { Route as ApiPublicBanniereTeamIdRouteImport } from './routes/api/public/banniere.$teamId'
+import { Route as ApiPublicDocumentSlugRouteImport } from './routes/api/public/document.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -108,6 +112,11 @@ const RdvSlugRoute = RdvSlugRouteImport.update({
   path: '/rdv/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RejoindreTokenRoute = RejoindreTokenRouteImport.update({
+  id: '/rejoindre/$token',
+  path: '/rejoindre/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const VerifSlugRoute = VerifSlugRouteImport.update({
   id: '/verif/$slug',
   path: '/verif/$slug',
@@ -155,9 +164,26 @@ const AuthenticatedCompteStatutRoute =
     path: '/statut',
     getParentRoute: () => AuthenticatedCompteRoute,
   } as any)
+const AuthenticatedCompteVisioRoute =
+  AuthenticatedCompteVisioRouteImport.update({
+    id: '/visio',
+    path: '/visio',
+    getParentRoute: () => AuthenticatedCompteRoute,
+  } as any)
+const AuthenticatedCompteVitrineRoute =
+  AuthenticatedCompteVitrineRouteImport.update({
+    id: '/vitrine',
+    path: '/vitrine',
+    getParentRoute: () => AuthenticatedCompteRoute,
+  } as any)
 const ApiPublicBanniereTeamIdRoute = ApiPublicBanniereTeamIdRouteImport.update({
   id: '/api/public/banniere/$teamId',
   path: '/api/public/banniere/$teamId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicDocumentSlugRoute = ApiPublicDocumentSlugRouteImport.update({
+  id: '/api/public/document/$slug',
+  path: '/api/public/document/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -176,6 +202,7 @@ export interface FileRoutesByFullPath {
   '/compte': typeof AuthenticatedCompteRouteWithChildren
   '/p/$slug': typeof PSlugRoute
   '/rdv/$slug': typeof RdvSlugRoute
+  '/rejoindre/$token': typeof RejoindreTokenRoute
   '/verif/$slug': typeof VerifSlugRoute
   '/compte/abonnement': typeof AuthenticatedCompteAbonnementRoute
   '/compte/bannieres': typeof AuthenticatedCompteBannieresRoute
@@ -183,8 +210,11 @@ export interface FileRoutesByFullPath {
   '/compte/profil': typeof AuthenticatedCompteProfilRoute
   '/compte/rendez-vous': typeof AuthenticatedCompteRendezVousRoute
   '/compte/statut': typeof AuthenticatedCompteStatutRoute
+  '/compte/visio': typeof AuthenticatedCompteVisioRoute
+  '/compte/vitrine': typeof AuthenticatedCompteVitrineRoute
   '/compte/': typeof AuthenticatedCompteIndexRoute
   '/api/public/banniere/$teamId': typeof ApiPublicBanniereTeamIdRoute
+  '/api/public/document/$slug': typeof ApiPublicDocumentSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -200,6 +230,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminRoute
   '/p/$slug': typeof PSlugRoute
   '/rdv/$slug': typeof RdvSlugRoute
+  '/rejoindre/$token': typeof RejoindreTokenRoute
   '/verif/$slug': typeof VerifSlugRoute
   '/compte/abonnement': typeof AuthenticatedCompteAbonnementRoute
   '/compte/bannieres': typeof AuthenticatedCompteBannieresRoute
@@ -207,8 +238,11 @@ export interface FileRoutesByTo {
   '/compte/profil': typeof AuthenticatedCompteProfilRoute
   '/compte/rendez-vous': typeof AuthenticatedCompteRendezVousRoute
   '/compte/statut': typeof AuthenticatedCompteStatutRoute
+  '/compte/visio': typeof AuthenticatedCompteVisioRoute
+  '/compte/vitrine': typeof AuthenticatedCompteVitrineRoute
   '/compte': typeof AuthenticatedCompteIndexRoute
   '/api/public/banniere/$teamId': typeof ApiPublicBanniereTeamIdRoute
+  '/api/public/document/$slug': typeof ApiPublicDocumentSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -227,6 +261,7 @@ export interface FileRoutesById {
   '/_authenticated/compte': typeof AuthenticatedCompteRouteWithChildren
   '/p/$slug': typeof PSlugRoute
   '/rdv/$slug': typeof RdvSlugRoute
+  '/rejoindre/$token': typeof RejoindreTokenRoute
   '/verif/$slug': typeof VerifSlugRoute
   '/_authenticated/compte/abonnement': typeof AuthenticatedCompteAbonnementRoute
   '/_authenticated/compte/bannieres': typeof AuthenticatedCompteBannieresRoute
@@ -234,8 +269,11 @@ export interface FileRoutesById {
   '/_authenticated/compte/profil': typeof AuthenticatedCompteProfilRoute
   '/_authenticated/compte/rendez-vous': typeof AuthenticatedCompteRendezVousRoute
   '/_authenticated/compte/statut': typeof AuthenticatedCompteStatutRoute
+  '/_authenticated/compte/visio': typeof AuthenticatedCompteVisioRoute
+  '/_authenticated/compte/vitrine': typeof AuthenticatedCompteVitrineRoute
   '/_authenticated/compte/': typeof AuthenticatedCompteIndexRoute
   '/api/public/banniere/$teamId': typeof ApiPublicBanniereTeamIdRoute
+  '/api/public/document/$slug': typeof ApiPublicDocumentSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -254,6 +292,7 @@ export interface FileRouteTypes {
     | '/compte'
     | '/p/$slug'
     | '/rdv/$slug'
+    | '/rejoindre/$token'
     | '/verif/$slug'
     | '/compte/abonnement'
     | '/compte/bannieres'
@@ -261,8 +300,11 @@ export interface FileRouteTypes {
     | '/compte/profil'
     | '/compte/rendez-vous'
     | '/compte/statut'
+    | '/compte/visio'
+    | '/compte/vitrine'
     | '/compte/'
     | '/api/public/banniere/$teamId'
+    | '/api/public/document/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -278,6 +320,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/p/$slug'
     | '/rdv/$slug'
+    | '/rejoindre/$token'
     | '/verif/$slug'
     | '/compte/abonnement'
     | '/compte/bannieres'
@@ -285,8 +328,11 @@ export interface FileRouteTypes {
     | '/compte/profil'
     | '/compte/rendez-vous'
     | '/compte/statut'
+    | '/compte/visio'
+    | '/compte/vitrine'
     | '/compte'
     | '/api/public/banniere/$teamId'
+    | '/api/public/document/$slug'
   id:
     | '__root__'
     | '/'
@@ -304,6 +350,7 @@ export interface FileRouteTypes {
     | '/_authenticated/compte'
     | '/p/$slug'
     | '/rdv/$slug'
+    | '/rejoindre/$token'
     | '/verif/$slug'
     | '/_authenticated/compte/abonnement'
     | '/_authenticated/compte/bannieres'
@@ -311,8 +358,11 @@ export interface FileRouteTypes {
     | '/_authenticated/compte/profil'
     | '/_authenticated/compte/rendez-vous'
     | '/_authenticated/compte/statut'
+    | '/_authenticated/compte/visio'
+    | '/_authenticated/compte/vitrine'
     | '/_authenticated/compte/'
     | '/api/public/banniere/$teamId'
+    | '/api/public/document/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -329,8 +379,10 @@ export interface RootRouteChildren {
   TarifsRoute: typeof TarifsRoute
   PSlugRoute: typeof PSlugRoute
   RdvSlugRoute: typeof RdvSlugRoute
+  RejoindreTokenRoute: typeof RejoindreTokenRoute
   VerifSlugRoute: typeof VerifSlugRoute
   ApiPublicBanniereTeamIdRoute: typeof ApiPublicBanniereTeamIdRoute
+  ApiPublicDocumentSlugRoute: typeof ApiPublicDocumentSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -440,6 +492,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RdvSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/rejoindre/$token': {
+      id: '/rejoindre/$token'
+      path: '/rejoindre/$token'
+      fullPath: '/rejoindre/$token'
+      preLoaderRoute: typeof RejoindreTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/verif/$slug': {
       id: '/verif/$slug'
       path: '/verif/$slug'
@@ -496,11 +555,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCompteStatutRouteImport
       parentRoute: typeof AuthenticatedCompteRoute
     }
+    '/_authenticated/compte/visio': {
+      id: '/_authenticated/compte/visio'
+      path: '/visio'
+      fullPath: '/compte/visio'
+      preLoaderRoute: typeof AuthenticatedCompteVisioRouteImport
+      parentRoute: typeof AuthenticatedCompteRoute
+    }
+    '/_authenticated/compte/vitrine': {
+      id: '/_authenticated/compte/vitrine'
+      path: '/vitrine'
+      fullPath: '/compte/vitrine'
+      preLoaderRoute: typeof AuthenticatedCompteVitrineRouteImport
+      parentRoute: typeof AuthenticatedCompteRoute
+    }
     '/api/public/banniere/$teamId': {
       id: '/api/public/banniere/$teamId'
       path: '/api/public/banniere/$teamId'
       fullPath: '/api/public/banniere/$teamId'
       preLoaderRoute: typeof ApiPublicBanniereTeamIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/document/$slug': {
+      id: '/api/public/document/$slug'
+      path: '/api/public/document/$slug'
+      fullPath: '/api/public/document/$slug'
+      preLoaderRoute: typeof ApiPublicDocumentSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -513,6 +593,8 @@ interface AuthenticatedCompteRouteChildren {
   AuthenticatedCompteProfilRoute: typeof AuthenticatedCompteProfilRoute
   AuthenticatedCompteRendezVousRoute: typeof AuthenticatedCompteRendezVousRoute
   AuthenticatedCompteStatutRoute: typeof AuthenticatedCompteStatutRoute
+  AuthenticatedCompteVisioRoute: typeof AuthenticatedCompteVisioRoute
+  AuthenticatedCompteVitrineRoute: typeof AuthenticatedCompteVitrineRoute
   AuthenticatedCompteIndexRoute: typeof AuthenticatedCompteIndexRoute
 }
 
@@ -523,6 +605,8 @@ const AuthenticatedCompteRouteChildren: AuthenticatedCompteRouteChildren = {
   AuthenticatedCompteProfilRoute: AuthenticatedCompteProfilRoute,
   AuthenticatedCompteRendezVousRoute: AuthenticatedCompteRendezVousRoute,
   AuthenticatedCompteStatutRoute: AuthenticatedCompteStatutRoute,
+  AuthenticatedCompteVisioRoute: AuthenticatedCompteVisioRoute,
+  AuthenticatedCompteVitrineRoute: AuthenticatedCompteVitrineRoute,
   AuthenticatedCompteIndexRoute: AuthenticatedCompteIndexRoute,
 }
 
@@ -556,8 +640,10 @@ const rootRouteChildren: RootRouteChildren = {
   TarifsRoute: TarifsRoute,
   PSlugRoute: PSlugRoute,
   RdvSlugRoute: RdvSlugRoute,
+  RejoindreTokenRoute: RejoindreTokenRoute,
   VerifSlugRoute: VerifSlugRoute,
   ApiPublicBanniereTeamIdRoute: ApiPublicBanniereTeamIdRoute,
+  ApiPublicDocumentSlugRoute: ApiPublicDocumentSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

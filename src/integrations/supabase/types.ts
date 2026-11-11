@@ -147,6 +147,8 @@ export type Database = {
           badge_enabled: boolean
           bio: string
           company: string
+          document_label: string
+          document_url: string
           email: string
           full_name: string
           job_title: string
@@ -154,11 +156,17 @@ export type Database = {
           phone: string
           photo_url: string
           profile_enabled: boolean
+          rating: number | null
+          rating_count: number | null
+          rating_source: string
+          reviews_url: string
           services: Json
           slug: string
           status: string
           status_note: string
           status_until: string | null
+          testimonial: string
+          testimonial_author: string
           updated_at: string
           user_id: string
           verified_at: string | null
@@ -170,6 +178,8 @@ export type Database = {
           badge_enabled?: boolean
           bio?: string
           company?: string
+          document_label?: string
+          document_url?: string
           email?: string
           full_name?: string
           job_title?: string
@@ -177,11 +187,17 @@ export type Database = {
           phone?: string
           photo_url?: string
           profile_enabled?: boolean
+          rating?: number | null
+          rating_count?: number | null
+          rating_source?: string
+          reviews_url?: string
           services?: Json
           slug: string
           status?: string
           status_note?: string
           status_until?: string | null
+          testimonial?: string
+          testimonial_author?: string
           updated_at?: string
           user_id: string
           verified_at?: string | null
@@ -193,6 +209,8 @@ export type Database = {
           badge_enabled?: boolean
           bio?: string
           company?: string
+          document_label?: string
+          document_url?: string
           email?: string
           full_name?: string
           job_title?: string
@@ -200,11 +218,17 @@ export type Database = {
           phone?: string
           photo_url?: string
           profile_enabled?: boolean
+          rating?: number | null
+          rating_count?: number | null
+          rating_source?: string
+          reviews_url?: string
           services?: Json
           slug?: string
           status?: string
           status_note?: string
           status_until?: string | null
+          testimonial?: string
+          testimonial_author?: string
           updated_at?: string
           user_id?: string
           verified_at?: string | null
@@ -370,6 +394,35 @@ export type Database = {
           },
         ]
       }
+      team_join_links: {
+        Row: {
+          created_at: string
+          enabled: boolean
+          team_id: string
+          token: string
+        }
+        Insert: {
+          created_at?: string
+          enabled?: boolean
+          team_id: string
+          token?: string
+        }
+        Update: {
+          created_at?: string
+          enabled?: boolean
+          team_id?: string
+          token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_join_links_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: true
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       team_members: {
         Row: {
           created_at: string
@@ -477,6 +530,8 @@ export type Database = {
       }
       current_team_banner: { Args: { _team: string }; Returns: Json }
       get_booking_page: { Args: { _slug: string }; Returns: Json }
+      get_join_info: { Args: { _token: string }; Returns: Json }
+      get_member_document: { Args: { _slug: string }; Returns: string }
       get_member_profile: { Args: { _slug: string }; Returns: Json }
       get_partner_code: { Args: never; Returns: string }
       has_role: {
@@ -494,6 +549,11 @@ export type Database = {
       is_team_member: {
         Args: { _team: string; _user: string }
         Returns: boolean
+      }
+      join_team: { Args: { _token: string }; Returns: Json }
+      manage_join_link: {
+        Args: { _action: string; _team: string }
+        Returns: string
       }
       set_auto_renew: { Args: { _on: boolean }; Returns: undefined }
       subscribe_test: {

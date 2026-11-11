@@ -96,6 +96,99 @@
           }
         }
       }
+    },
+    "project.document_uploaded": {
+      "event_schema_version": 1,
+      "description": "A paid member published a downloadable PDF document.",
+      "privacy": {
+        "contains_pii": false,
+        "purpose": "product_analytics"
+      },
+      "properties_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "size_kb"
+        ],
+        "properties": {
+          "size_kb": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "project.reviews_saved": {
+      "event_schema_version": 1,
+      "description": "A paid member saved their rating/testimonial.",
+      "privacy": {
+        "contains_pii": false,
+        "purpose": "product_analytics"
+      },
+      "properties_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "has_rating",
+          "has_testimonial"
+        ],
+        "properties": {
+          "has_rating": {
+            "type": "boolean"
+          },
+          "has_testimonial": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "project.visio_background_downloaded": {
+      "event_schema_version": 1,
+      "description": "A paid member downloaded a video-call background.",
+      "privacy": {
+        "contains_pii": false,
+        "purpose": "product_analytics"
+      },
+      "properties_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "theme",
+          "with_photo"
+        ],
+        "properties": {
+          "theme": {
+            "type": "string",
+            "enum": [
+              "nuit",
+              "ivoire",
+              "graphite"
+            ]
+          },
+          "with_photo": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "project.team_joined_magic_link": {
+      "event_schema_version": 1,
+      "description": "A collaborator joined a team via the magic onboarding link.",
+      "privacy": {
+        "contains_pii": false,
+        "purpose": "product_analytics"
+      },
+      "properties_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "with_phone"
+        ],
+        "properties": {
+          "with_phone": {
+            "type": "boolean"
+          }
+        }
+      }
     }
   }
 }

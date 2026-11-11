@@ -17,7 +17,22 @@ export type PublicProfile = {
   activity?: string; services?: ProfileService[];
   profile_enabled: boolean; verified: boolean; verified_at: string | null;
   status: StatusKey; status_note: string; status_until: string | null; booking_slug: string | null;
+  has_document?: boolean; document_label?: string;
+  rating?: number | null; rating_count?: number | null; rating_source?: string; reviews_url?: string;
+  testimonial?: string; testimonial_author?: string;
 };
+
+/** Texte court de preuve sociale, ex. « ★★★★★ 4,9/5 · 128 avis Google ». */
+export function ratingLine(rating: number | null | undefined, count?: number | null, source?: string): string {
+  if (rating == null || !Number.isFinite(rating)) return "";
+  const r = Math.min(5, Math.max(0, rating));
+  const full = Math.round(r);
+  const stars = "★".repeat(full) + "☆".repeat(5 - full);
+  const parts = [`${stars} ${r.toFixed(1).replace(".", ",")}/5`];
+  if (count) parts.push(`${count} avis${source ? " " + source : ""}`);
+  else if (source) parts.push(source);
+  return parts.join(" · ");
+}
 
 const esc = (s: string) => s.replace(/\\/g, "\\\\").replace(/\n/g, "\\n").replace(/([,;])/g, "\\$1");
 

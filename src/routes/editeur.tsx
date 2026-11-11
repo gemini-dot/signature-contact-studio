@@ -2,12 +2,14 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import type { Json } from "@/integrations/supabase/types";
 import { useAuth } from "@/hooks/use-auth";
-import { Save, Lock } from "lucide-react";
+import { Save, Lock, Sparkles } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { usePlan } from "@/hooks/use-plan";
 import { useEffect, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import { Copy, Code2 } from "lucide-react";
 import { SignaturePreview } from "@/components/site/SignaturePreview";
-import { defaultSignature, LOGO_MIN, LOGO_MAX, clampLogoSize, cropRect, ZOOM_MAX, renderSignature, templates, type SignatureData, type TemplateId } from "@/lib/signature";
+import { defaultSignature, LOGO_MIN, LOGO_MAX, clampLogoSize, cropRect, ZOOM_MAX, renderSignature, renderReplySignature, templates, type SignatureData, type TemplateId } from "@/lib/signature";
 
 export const Route = createFileRoute("/editeur")({
   validateSearch: (s: Record<string, unknown>): { id?: string } => (typeof s['id'] === "string" ? { id: s['id'] } : {}),
@@ -67,6 +69,13 @@ function Editor() {
   const { user } = useAuth();
   const [sigId, setSigId] = useState<string | undefined>(id);
   const [sigName, setSigName] = useState("Ma signature");
+  const { paid } = usePlan();
+  const [variant, setVariant] = useState<"full" | "reply">("full");
+  const [mySlug, setMySlug] = useState<string | null>(null);
+  useEffect(() => {
+    if (!user || !paid) { setMySlug(null); return; }
+    supabase.from("member_profiles").select("slug,document_url").eq("user_id", user.id).maybeSingle().then(({ data }) => setMySlug(data?.document_url ? data.slug : null));
+  }, [user, paid]);
   const [team, setTeam] = useState<{ owner_id: string; lock_logo: boolean; lock_colors: boolean; base_data: Record<string, string>; is_admin: boolean } | null>(null);
 
   useEffect(() => {
@@ -113,7 +122,7 @@ function Editor() {
   };
 
   const set = <K extends keyof SignatureData>(k: K, v: SignatureData[K]) => setD((p) => ({ ...p, [k]: v }));
-  const html = renderSignature(tpl, view);
+  const html = variant === "reply" && paid ? renderReplySignature(view) : renderSignature(tpl, view);
 
   const copyRich = async () => {
     try {
@@ -178,7 +187,7 @@ function Editor() {
         className="w-full rounded-xl border border-input bg-background px-3 py-2 outline-none focus:ring-2 focus:ring-ring" />
     </label>
   );
-  const toggle = (k: "bannerOn" | "bookingOn" | "qrOn" | "branding", label: string) => (
+  const toggle = (k: "bannerOn" | "bookingOn" | "qrOn" | "branding" | "docOn" | "reviewOn", label: string) => (
     <label className="flex items-center justify-between text-sm font-medium">
       {label}
       <input type="checkbox" checked={d[k]} onChange={(e) => set(k, e.target.checked)} className="h-4 w-4 accent-[var(--gold)]" />
@@ -263,6 +272,26 @@ function Editor() {
             {toggle("qrOn", "QR code carte de visite")}
             {toggle("branding", "Mention « signature.contact » (gratuit)")}
           </Card>
+          <Card title="Atouts Solo & Équipe">
+            {!paid && (
+              <p className="flex items-start gap-2 rounded-xl bg-gold/10 p-3 text-sm"><Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
+                <span>Plaquette téléchargeable, avis clients et version « réponse courte » sont inclus dans Solo et Équipe. <Link to="/tarifs" className="text-gold underline">Voir les formules</Link></span></p>
+            )}
+            <fieldset disabled={!paid} className="space-y-4 disabled:opacity-60">
+              {toggle("docOn", "Bouton « Plaquette / document » (sans pièce jointe)")}
+              {d.docOn && (
+                <div className="grid gap-3">
+                  {text("docLabel", "Texte du bouton")}
+                  {text("docUrl", "Lien du document", "https://…")}
+                  {mySlug ? (
+                    <button type="button" onClick={() => set("docUrl", `${window.location.origin}/api/public/document/${mySlug}`)} className="justify-self-start text-sm text-gold underline">Utiliser le document de mon espace (lien fixe, modifiable à tout moment)</button>
+                  ) : paid && <Link to="/compte/vitrine" className="justify-self-start text-sm text-gold underline">Importer ma plaquette dans mon espace</Link>}
+                </div>
+              )}
+              {toggle("reviewOn", "Note & avis clients")}
+              {d.reviewOn && <div className="grid gap-3 sm:grid-cols-2">{text("reviewText", "Texte affiché")}{text("reviewUrl", "Lien vers vos avis", "https://g.page/…")}</div>}
+            </fieldset>
+          </Card>
         </div>
 
         <div className="space-y-5 lg:sticky lg:top-24 lg:self-start">
@@ -274,7 +303,12 @@ function Editor() {
               </button>
             ))}
           </div>
-          <SignaturePreview template={tpl} data={view} />
+          <div className="inline-flex rounded-full border border-border bg-card p-1 text-sm" role="tablist" aria-label="Version de la signature">
+            <button role="tab" aria-selected={variant === "full"} onClick={() => setVariant("full")} className={`rounded-full px-4 py-1.5 ${variant === "full" ? "bg-primary text-primary-foreground" : ""}`}>Nouveaux e-mails</button>
+            <button role="tab" aria-selected={variant === "reply"} onClick={() => paid ? setVariant("reply") : toast("La version « réponse courte » est incluse dans Solo et Équipe.")} className={`inline-flex items-center gap-1 rounded-full px-4 py-1.5 ${variant === "reply" ? "bg-primary text-primary-foreground" : ""}`}>Réponses courtes {!paid && <Lock className="h-3 w-3" />}</button>
+          </div>
+          {variant === "reply" && paid && <p className="text-xs text-muted-foreground">Copiez cette version et choisissez-la dans votre messagerie pour les « réponses et transferts » : vos fils de discussion restent légers.</p>}
+          <SignaturePreview template={tpl} data={view} html={html} />
           {(logoLocked || colorLocked) && (
             <p className="flex items-center gap-2 text-xs text-muted-foreground"><Lock className="h-3.5 w-3.5 text-gold" /> {logoLocked && colorLocked ? "Le logo et les couleurs" : logoLocked ? "Le logo" : "Les couleurs"} sont imposés par votre équipe.</p>
           )}

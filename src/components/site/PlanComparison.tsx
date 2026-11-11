@@ -15,17 +15,21 @@ const SECTIONS: { title: string; rows: Row[] }[] = [
     ["Facturation", "—", "Personnelle", "Une facture unique pour l'entreprise"],
   ] },
   { title: "Signature & personnalisation", rows: [
-    ["Signatures", "1", "Illimitées", "Illimitées par collaborateur"],
+    ["Signatures", "1", "Jusqu'à 20 variantes", "Jusqu'à 20 par collaborateur"],
+    ["Version « réponse courte » pour les fils de discussion", false, true, true],
     ["Modèles élégants", "5", "Tous", "Tous + modèle imposé"],
     ["Mention « signature.contact »", "Oui", false, false],
     ["Réseaux sociaux, logo, photo", true, true, true],
     ["Bannière personnelle", false, true, true],
+    ["Bouton plaquette / PDF sans pièce jointe", false, true, true],
+    ["Note & avis clients sous la signature", false, true, true],
   ] },
   { title: "Rendez-vous & carte de visite", rows: [
     ["Prise de rendez-vous intégrée", false, true, "Pour chaque collaborateur"],
     ["Disponibilités libres (jours, plages, pauses)", false, true, true],
     ["Mini-page profil à votre nom", false, true, true],
     ["QR code & fiche contact (.vcf)", false, true, true],
+    ["Fond de visio HD avec QR code (Zoom, Teams, Meet)", false, true, true],
   ] },
   { title: "Confiance & disponibilité", rows: [
     ["Badge « Identité vérifiée » anti-phishing", false, true, true],
@@ -38,6 +42,7 @@ const SECTIONS: { title: string; rows: Row[] }[] = [
     ["Charte, logo et couleurs verrouillés", false, false, true],
     ["Mentions légales communes", false, false, true],
     ["Ajout d'un collaborateur en 1 clic", false, false, true],
+    ["Lien magique d'onboarding (signature prête en 15 s)", false, false, true],
     [`-${PARTNER_DISCOUNT_PERCENT} % sur Mails.contact (code unique)`, false, false, true],
   ] },
 ];

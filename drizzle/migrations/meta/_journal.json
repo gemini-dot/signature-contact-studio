@@ -36,6 +36,13 @@
       "when": 1794328718734,
       "tag": "0004_media_services_plan_guards",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1794434848193,
+      "tag": "0005_paid_features_wave2",
+      "breakpoints": true
     }
   ]
 }

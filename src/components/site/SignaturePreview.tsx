@@ -1,6 +1,6 @@
 import { renderSignature, type SignatureData, type TemplateId } from "@/lib/signature";
 
-export function SignaturePreview({ template, data }: { template: TemplateId; data: SignatureData }) {
+export function SignaturePreview({ template, data, html }: { template: TemplateId; data: SignatureData; html?: string }) {
   return (
     <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-elegant">
       <div className="flex items-center gap-1.5 border-b border-border bg-muted px-4 py-2.5">
@@ -16,7 +16,7 @@ export function SignaturePreview({ template, data }: { template: TemplateId; dat
       {/* L'aperçu e-mail est toujours sur fond clair, comme dans un vrai client mail. */}
       <div className="email-canvas px-5 py-5">
         <p className="mb-4 text-sm">Bonjour,<br />Merci pour votre temps aujourd'hui. Belle journée !</p>
-        <div className="overflow-x-auto" dangerouslySetInnerHTML={{ __html: renderSignature(template, data) }} />
+        <div className="overflow-x-auto" dangerouslySetInnerHTML={{ __html: html ?? renderSignature(template, data) }} />
       </div>
     </div>
   );
