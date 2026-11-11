@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { usePlan } from "@/hooks/use-plan";
 import { LockedFeature } from "@/components/site/LockedFeature";
 import { ratingLine } from "@/lib/member";
+import type { TablesUpdate } from "@/integrations/supabase/types";
 
 export const Route = createFileRoute("/_authenticated/compte/vitrine")({ component: VitrinePage });
 
@@ -48,7 +49,7 @@ function VitrinePage() {
   const origin = typeof window !== "undefined" ? window.location.origin : "";
   const fixedLink = `${origin}/api/public/document/${p.slug}`;
   const refresh = () => qc.invalidateQueries({ queryKey: ["my-profile"] });
-  const update = async (patch: Record<string, unknown>, ok: string) => {
+  const update = async (patch: TablesUpdate<"member_profiles">, ok: string) => {
     const { error } = await supabase.from("member_profiles").update(patch).eq("user_id", user!.id);
     if (error) { toast.error(error.message.includes("policy") ? "Fonction réservée aux formules Solo et Équipe." : error.message); return false; }
     toast.success(ok); refresh(); return true;
