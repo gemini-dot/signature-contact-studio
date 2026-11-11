@@ -33,6 +33,7 @@ import { Route as AuthenticatedCompteProfilRouteImport } from './routes/_authent
 import { Route as AuthenticatedCompteRendezVousRouteImport } from './routes/_authenticated/compte.rendez-vous'
 import { Route as AuthenticatedCompteStatutRouteImport } from './routes/_authenticated/compte.statut'
 import { Route as ApiPublicBanniereTeamIdRouteImport } from './routes/api/public/banniere.$teamId'
+import { Route as ApiPublicDocumentSlugRouteImport } from './routes/api/public/document.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -160,6 +161,11 @@ const ApiPublicBanniereTeamIdRoute = ApiPublicBanniereTeamIdRouteImport.update({
   path: '/api/public/banniere/$teamId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicDocumentSlugRoute = ApiPublicDocumentSlugRouteImport.update({
+  id: '/api/public/document/$slug',
+  path: '/api/public/document/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -185,6 +191,7 @@ export interface FileRoutesByFullPath {
   '/compte/statut': typeof AuthenticatedCompteStatutRoute
   '/compte/': typeof AuthenticatedCompteIndexRoute
   '/api/public/banniere/$teamId': typeof ApiPublicBanniereTeamIdRoute
+  '/api/public/document/$slug': typeof ApiPublicDocumentSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -209,6 +216,7 @@ export interface FileRoutesByTo {
   '/compte/statut': typeof AuthenticatedCompteStatutRoute
   '/compte': typeof AuthenticatedCompteIndexRoute
   '/api/public/banniere/$teamId': typeof ApiPublicBanniereTeamIdRoute
+  '/api/public/document/$slug': typeof ApiPublicDocumentSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -236,6 +244,7 @@ export interface FileRoutesById {
   '/_authenticated/compte/statut': typeof AuthenticatedCompteStatutRoute
   '/_authenticated/compte/': typeof AuthenticatedCompteIndexRoute
   '/api/public/banniere/$teamId': typeof ApiPublicBanniereTeamIdRoute
+  '/api/public/document/$slug': typeof ApiPublicDocumentSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -263,6 +272,7 @@ export interface FileRouteTypes {
     | '/compte/statut'
     | '/compte/'
     | '/api/public/banniere/$teamId'
+    | '/api/public/document/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -287,6 +297,7 @@ export interface FileRouteTypes {
     | '/compte/statut'
     | '/compte'
     | '/api/public/banniere/$teamId'
+    | '/api/public/document/$slug'
   id:
     | '__root__'
     | '/'
@@ -313,6 +324,7 @@ export interface FileRouteTypes {
     | '/_authenticated/compte/statut'
     | '/_authenticated/compte/'
     | '/api/public/banniere/$teamId'
+    | '/api/public/document/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -331,6 +343,7 @@ export interface RootRouteChildren {
   RdvSlugRoute: typeof RdvSlugRoute
   VerifSlugRoute: typeof VerifSlugRoute
   ApiPublicBanniereTeamIdRoute: typeof ApiPublicBanniereTeamIdRoute
+  ApiPublicDocumentSlugRoute: typeof ApiPublicDocumentSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -503,6 +516,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicBanniereTeamIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/document/$slug': {
+      id: '/api/public/document/$slug'
+      path: '/api/public/document/$slug'
+      fullPath: '/api/public/document/$slug'
+      preLoaderRoute: typeof ApiPublicDocumentSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -558,6 +578,7 @@ const rootRouteChildren: RootRouteChildren = {
   RdvSlugRoute: RdvSlugRoute,
   VerifSlugRoute: VerifSlugRoute,
   ApiPublicBanniereTeamIdRoute: ApiPublicBanniereTeamIdRoute,
+  ApiPublicDocumentSlugRoute: ApiPublicDocumentSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

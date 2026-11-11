@@ -29,6 +29,14 @@ export interface SignatureData {
   bookingUrl: string;
   qrOn: boolean;
   branding: boolean;
+  /** Bouton « Télécharger notre plaquette » (lien fixe, fichier hébergé). */
+  docOn: boolean;
+  docLabel: string;
+  docUrl: string;
+  /** Preuve sociale : note et lien vers les avis. */
+  reviewOn: boolean;
+  reviewText: string;
+  reviewUrl: string;
 }
 
 export const defaultSignature: SignatureData = {
@@ -59,6 +67,12 @@ export const defaultSignature: SignatureData = {
   bookingUrl: "https://calendly.com/camille",
   qrOn: false,
   branding: true,
+  docOn: false,
+  docLabel: "Télécharger notre plaquette (PDF)",
+  docUrl: "",
+  reviewOn: false,
+  reviewText: "★★★★★ 4,9/5 · Avis Google",
+  reviewUrl: "",
 };
 
 export const templates: { id: TemplateId; label: string }[] = [
@@ -136,7 +150,14 @@ function extras(d: SignatureData) {
     const data = encodeURIComponent(`BEGIN:VCARD\nVERSION:3.0\nFN:${d.name}\nORG:${d.company}\nTITLE:${d.title}\nTEL:${d.phone}\nEMAIL:${d.email}\nURL:${url(d.website)}\nEND:VCARD`);
     row.push(`<td style="vertical-align:middle;"><img src="https://api.qrserver.com/v1/create-qr-code/?size=144x144&margin=0&data=${data}" width="72" height="72" alt="Carte de visite" style="display:block;"></td>`);
   }
+  if (d.docOn && d.docUrl) {
+    row.push(`<td style="padding-right:12px;vertical-align:middle;"><a href="${esc(url(d.docUrl))}" style="display:inline-block;border:1px solid ${d.accent};color:${d.accent};text-decoration:none;font-weight:600;font-size:13px;padding:7px 14px;border-radius:6px;">&#128196; ${esc(d.docLabel || "Télécharger le document")}</a></td>`);
+  }
   if (row.length) html += `<table cellpadding="0" cellspacing="0" border="0" style="margin-top:12px;"><tr>${row.join("")}</tr></table>`;
+  if (d.reviewOn && d.reviewText) {
+    const txt = `<span style="color:${GOLD};font-weight:600;">${esc(d.reviewText)}</span>`;
+    html += `<div style="margin-top:10px;font-size:12px;">${d.reviewUrl ? `<a href="${esc(url(d.reviewUrl))}" style="text-decoration:none;">${txt}</a>` : txt}</div>`;
+  }
   if (d.bannerOn && (d.bannerImage || d.bannerText)) {
     const inner = d.bannerImage
       ? `<img src="${esc(d.bannerImage)}" width="460" alt="${esc(d.bannerText)}" style="display:block;width:460px;max-width:100%;border-radius:8px;">`
@@ -195,4 +216,14 @@ ${logo(d, 64)}
 <td style="vertical-align:top;border-left:1px solid #e3ddd0;padding-left:18px;font-size:12px;">${contactLines(d, "#2b2b2b")}<div style="margin-top:6px;">${socials(d)}</div></td>
 </tr></table>${extras(d)}`);
   }
+}
+
+/** Version « réponse courte » : 2 lignes légères pour les fils de discussion. */
+export function renderReplySignature(d: SignatureData): string {
+  const role = [d.title, d.company].filter(Boolean).map(esc).join(" · ");
+  const contact = [
+    d.phone ? `<a href="tel:${esc(d.phone.replace(/\s/g, ""))}" style="color:#666;text-decoration:none;">${esc(d.phone)}</a>` : "",
+    d.website ? `<a href="${esc(url(d.website))}" style="color:#666;text-decoration:none;">${esc(d.website)}</a>` : "",
+  ].filter(Boolean).join(' <span style="color:#ccc;">|</span> ');
+  return wrap(`<div style="font-size:13px;"><strong style="color:${d.accent};">${esc(d.name)}</strong>${role ? ` <span style="color:#888;">— ${role}</span>` : ""}</div>${contact ? `<div style="font-size:12px;color:#666;">${contact}</div>` : ""}`);
 }
