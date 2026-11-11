@@ -8,6 +8,8 @@ import { useAuth } from "@/hooks/use-auth";
 import { SignaturePreview } from "@/components/site/SignaturePreview";
 import { defaultSignature, templates, type SignatureData, type TemplateId } from "@/lib/signature";
 import { MailsContactPerk } from "@/components/site/MailsContactPerk";
+import { TeamMagicLink } from "@/components/site/TeamMagicLink";
+import { usePlan } from "@/hooks/use-plan";
 
 export const Route = createFileRoute("/_authenticated/compte/equipe")({ component: TeamPage });
 
@@ -16,6 +18,7 @@ type Base = Pick<SignatureData, "company" | "website" | "address" | "logoUrl" | 
 function TeamPage() {
   const { user } = useAuth();
   const qc = useQueryClient();
+  const { isTeamPlan } = usePlan();
   const teamQ = useQuery({
     queryKey: ["team", user?.id],
     enabled: !!user,
@@ -96,9 +99,8 @@ function TeamPage() {
         <p className="font-serif text-3xl">{team.name}</p>
         {!isAdmin && <p className="mt-2 text-sm text-muted-foreground">Vous êtes membre de cette équipe. Seuls les administrateurs peuvent modifier le modèle.</p>}
       </div>
+      {isAdmin && <TeamMagicLink teamId={team.id} hasPlan={isTeamPlan} />}
       <MailsContactPerk />
-      <div>
-      </div>
 
       <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
         <div className="space-y-4 rounded-3xl border border-border bg-card p-6">

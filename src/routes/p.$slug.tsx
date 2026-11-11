@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { BadgeCheck, CalendarCheck, Download, Globe, Mail, MapPin, Phone } from "lucide-react";
+import { BadgeCheck, CalendarCheck, Download, FileText, Globe, Mail, MapPin, Phone, Quote } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { buildVCard, STATUSES, type PublicProfile } from "@/lib/member";
+import { buildVCard, ratingLine, STATUSES, type PublicProfile } from "@/lib/member";
 
 export const Route = createFileRoute("/p/$slug")({
   head: () => ({
@@ -41,6 +41,15 @@ function PublicProfilePage() {
         <p className="mt-2 text-muted-foreground">{[p.job_title, p.company].filter(Boolean).join(" · ")}</p>
         <p className="mt-3 inline-flex items-center gap-2 text-sm"><span className={`h-2.5 w-2.5 rounded-full ${st.tone}`} />{st.label}{p.status_until && ` jusqu'au ${new Date(p.status_until).toLocaleDateString("fr-FR")}`}{p.status_note && ` — ${p.status_note}`}</p>
         {p.bio && <p className="mt-4 text-sm text-muted-foreground">{p.bio}</p>}
+        {p.rating != null && (p.reviews_url
+          ? <a href={p.reviews_url} target="_blank" rel="noreferrer" className="mt-4 inline-block text-sm font-medium text-gold hover:underline">{ratingLine(p.rating, p.rating_count, p.rating_source)}</a>
+          : <p className="mt-4 text-sm font-medium text-gold">{ratingLine(p.rating, p.rating_count, p.rating_source)}</p>)}
+        {p.testimonial && (
+          <figure className="mt-4 rounded-2xl bg-muted p-4 text-left text-sm">
+            <Quote className="h-4 w-4 text-gold" /><blockquote className="mt-1 italic">{p.testimonial}</blockquote>
+            {p.testimonial_author && <figcaption className="mt-2 text-xs text-muted-foreground">— {p.testimonial_author}</figcaption>}
+          </figure>
+        )}
         {(p.activity || (p.services?.length ?? 0) > 0) && (
           <div className="mt-6 text-left">
             <h2 className="font-serif text-xl">Activité & <em className="text-gold">services</em></h2>
@@ -58,6 +67,7 @@ function PublicProfilePage() {
         <button onClick={vcf} className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 font-medium text-primary-foreground"><Download className="h-4 w-4" /> Ajouter à mes contacts</button>
         <div className="mt-6 space-y-2 text-left">
           {p.booking_slug && <a href={`/rdv/${p.booking_slug}`} className={row}><CalendarCheck className="h-4 w-4 text-gold" /> Prendre rendez-vous</a>}
+          {p.has_document && <a href={`/api/public/document/${slug}`} target="_blank" rel="noreferrer" className={row}><FileText className="h-4 w-4 text-gold" /> {p.document_label || "Télécharger le document"}</a>}
           {p.email && <a href={`mailto:${p.email}`} className={row}><Mail className="h-4 w-4 text-gold" /> {p.email}</a>}
           {p.phone && <a href={`tel:${p.phone}`} className={row}><Phone className="h-4 w-4 text-gold" /> {p.phone}</a>}
           {p.website && <a href={p.website} target="_blank" rel="noreferrer" className={row}><Globe className="h-4 w-4 text-gold" /> {p.website.replace(/^https?:\/\//, "")}</a>}
