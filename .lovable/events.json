@@ -181,10 +181,10 @@
         "type": "object",
         "additionalProperties": false,
         "required": [
-          "with_phone"
+          "profile_complete"
         ],
         "properties": {
-          "with_phone": {
+          "profile_complete": {
             "type": "boolean"
           }
         }

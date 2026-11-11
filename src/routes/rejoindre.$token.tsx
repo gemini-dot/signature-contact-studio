@@ -60,7 +60,7 @@ function JoinPage() {
     const { error: e2 } = await supabase.from("signatures").insert({ user_id: user!.id, name: `Signature ${info.team_name}`.slice(0, 80), template: r.template, data: sig as unknown as Json });
     setBusy(false);
     if (e2 && !e2.message.includes("20 signatures")) toast.error(e2.message);
-    window.__lovableEvents?.track?.("project.team_joined_magic_link", { with_phone: !!phone.trim() });
+    window.__lovableEvents?.track?.("project.team_joined_magic_link", { profile_complete: !!phone.trim() });
     toast.success(`Bienvenue chez ${info.team_name} ! Votre signature est prête.`);
     navigate({ to: "/compte" });
   };
