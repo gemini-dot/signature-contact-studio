@@ -1,3 +1,8 @@
+export const ECO_PRESETS = [
+  "🌿 N'imprimez ce message que si nécessaire.",
+  "♻️ Signature éco-conçue : images légères, zéro pièce jointe inutile.",
+];
+
 export type TemplateId = "classique" | "moderne" | "minimal" | "elegant" | "compact";
 
 export interface SignatureData {
@@ -37,6 +42,11 @@ export interface SignatureData {
   reviewOn: boolean;
   reviewText: string;
   reviewUrl: string;
+  /** Rendu protégé pour les messageries en mode sombre. */
+  darkSafe: boolean;
+  /** Mention éco-responsable / RSE. */
+  ecoOn: boolean;
+  ecoText: string;
 }
 
 export const defaultSignature: SignatureData = {
@@ -73,6 +83,9 @@ export const defaultSignature: SignatureData = {
   reviewOn: false,
   reviewText: "★★★★★ 4,9/5 · Avis Google",
   reviewUrl: "",
+  darkSafe: false,
+  ecoOn: false,
+  ecoText: "🌿 N'imprimez ce message que si nécessaire.",
 };
 
 export const templates: { id: TemplateId; label: string }[] = [
@@ -137,7 +150,8 @@ function logo(d: SignatureData, _size = 64) {
   const radius = shape === "cercle" ? "50%" : shape === "carre" ? "0" : "8px";
   const h = shape === "cercle" ? `height="${size}" ` : "";
   const hs = shape === "cercle" ? `height:${size}px;object-fit:cover;` : "height:auto;";
-  return `<img src="${esc(d.logoUrl)}" alt="${esc(d.company)}" width="${size}" ${h}style="display:block;width:${size}px;${hs}border-radius:${radius};">`;
+  const halo = d.darkSafe ? "background:#ffffff;padding:3px;box-shadow:0 0 0 1px #e3ddd0;" : "";
+  return `<img src="${esc(d.logoUrl)}" alt="${esc(d.company)}" width="${size}" ${h}style="display:block;width:${size}px;${hs}border-radius:${radius};${halo}">`;
 }
 
 function extras(d: SignatureData) {
@@ -164,6 +178,9 @@ function extras(d: SignatureData) {
       : `<span style="display:block;background:${d.accent};background-image:linear-gradient(90deg,${d.accent},${GOLD});color:#ffffff;font-size:13px;font-weight:600;padding:12px 16px;border-radius:8px;width:428px;max-width:100%;">${esc(d.bannerText)}</span>`;
     html += `<div style="margin-top:14px;"><a href="${esc(url(d.bannerLink))}" style="text-decoration:none;">${inner}</a></div>`;
   }
+  if (d.ecoOn && d.ecoText.trim()) {
+    html += `<div style="margin-top:10px;font-size:11px;color:#5f7f5a;">${esc(d.ecoText.trim().slice(0, 140))}</div>`;
+  }
   if (d.branding) {
     html += `<div style="margin-top:10px;font-size:10px;color:#9a9a9a;">Créée avec <a href="https://signature.contact" style="color:#9a9a9a;">signature.contact</a></div>`;
   }
@@ -174,6 +191,16 @@ const wrap = (inner: string) =>
   `<table cellpadding="0" cellspacing="0" border="0" style="font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.5;color:#2b2b2b;"><tr><td>${inner}</td></tr></table>`;
 
 export function renderSignature(t: TemplateId, d: SignatureData): string {
+  return darkCard(d, renderBase(t, d));
+}
+
+/** Mode sombre garanti : fond clair stable autour de la signature, lisible quel que soit le thème du destinataire. */
+function darkCard(d: SignatureData, html: string) {
+  if (!d.darkSafe) return html;
+  return `<table cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="background:#ffffff;border-radius:10px;"><tr><td style="padding:14px 16px;background:#ffffff;border-radius:10px;">${html}</td></tr></table>`;
+}
+
+function renderBase(t: TemplateId, d: SignatureData): string {
   const name = esc(d.name);
   const role = [d.title, d.company].filter(Boolean).map(esc).join(" · ");
   switch (t) {
@@ -225,5 +252,5 @@ export function renderReplySignature(d: SignatureData): string {
     d.phone ? `<a href="tel:${esc(d.phone.replace(/\s/g, ""))}" style="color:#666;text-decoration:none;">${esc(d.phone)}</a>` : "",
     d.website ? `<a href="${esc(url(d.website))}" style="color:#666;text-decoration:none;">${esc(d.website)}</a>` : "",
   ].filter(Boolean).join(' <span style="color:#ccc;">|</span> ');
-  return wrap(`<div style="font-size:13px;"><strong style="color:${d.accent};">${esc(d.name)}</strong>${role ? ` <span style="color:#888;">— ${role}</span>` : ""}</div>${contact ? `<div style="font-size:12px;color:#666;">${contact}</div>` : ""}`);
+  return darkCard(d, wrap(`<div style="font-size:13px;"><strong style="color:${d.accent};">${esc(d.name)}</strong>${role ? ` <span style="color:#888;">— ${role}</span>` : ""}</div>${contact ? `<div style="font-size:12px;color:#666;">${contact}</div>` : ""}`));
 }

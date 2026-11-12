@@ -43,6 +43,13 @@
       "when": 1794434848193,
       "tag": "0005_paid_features_wave2",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1794490328585,
+      "tag": "0006_team_bulk_import",
+      "breakpoints": true
     }
   ]
 }

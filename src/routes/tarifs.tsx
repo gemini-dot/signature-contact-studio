@@ -25,6 +25,7 @@ const COMPARE: [string, string, string][] = [
   ["Signature vivante", "Votre bannière personnelle", "Une bannière changée pour toute l'équipe en 1 clic"],
   ["Mentions légales", "Saisies par vous", "Communes et verrouillées pour tous"],
   ["Nouveau collaborateur", "—", "Un lien magique : il saisit nom, poste et mobile, sa signature est prête en 15 secondes"],
+  ["Toute une équipe", "—", "Import d'un fichier CSV / Excel : toute l'équipe ajoutée en une fois"],
   ["Facturation", "Un abonnement par personne", "Une facture unique pour l'entreprise"],
 ];
 
@@ -41,8 +42,8 @@ function Tarifs() {
   const [seats, setSeats] = useState(5);
   const plans = [
     { name: "Gratuit", price: `${PRICES.free} €`, note: "pour toujours", features: ["1 signature", "5 modèles", "Mention « signature.contact »"], cta: "Commencer" },
-    { name: "Solo", price: yearly ? `${PRICES.soloYearly} €` : `${PRICES.soloMonthly} €`, note: yearly ? "par an" : "par mois", features: ["Sans mention « signature.contact »", "Prise de rendez-vous intégrée", "Carte de visite & QR code vCard", "Fond de visio avec QR code", "Version « réponse courte » + variantes", "Plaquette PDF sans pièce jointe", "Note & avis clients", "Badge « Identité vérifiée »", "Statut de disponibilité en direct"], cta: "Choisir Solo", featured: true },
-    { name: "Équipe", price: `${teamMonthlyPrice(seats)} €`, note: `par mois · ${seats} collaborateurs`, features: ["Tout Solo, pour chaque collaborateur", "Smart Bannières programmables", "Lien magique : collaborateur prêt en 15 s", "Charte verrouillée & gestion centralisée", `${PRICES.teamBase} € + ${PRICES.teamPerSeat} €/collaborateur/mois`, `Inclus : -${PARTNER_DISCOUNT_PERCENT} % sur Mails.contact (code unique)`], cta: "Découvrir Équipe", team: true },
+    { name: "Solo", price: yearly ? `${PRICES.soloYearly} €` : `${PRICES.soloMonthly} €`, note: yearly ? "par an" : "par mois", features: ["Sans mention « signature.contact »", "Prise de rendez-vous intégrée", "Carte de visite & QR code vCard", "Fond de visio avec QR code", "Version « réponse courte » + variantes", "Plaquette PDF sans pièce jointe", "Note & avis clients", "Mode sombre garanti", "Mention éco-responsable / RSE", "Badge « Identité vérifiée »", "Statut de disponibilité en direct"], cta: "Choisir Solo", featured: true },
+    { name: "Équipe", price: `${teamMonthlyPrice(seats)} €`, note: `par mois · ${seats} collaborateurs`, features: ["Tout Solo, pour chaque collaborateur", "Smart Bannières programmables", "Lien magique : collaborateur prêt en 15 s", "Import groupé CSV / Excel express", "Guide d'installation pas-à-pas par messagerie", "Charte verrouillée & gestion centralisée", `${PRICES.teamBase} € + ${PRICES.teamPerSeat} €/collaborateur/mois`, `Inclus : -${PARTNER_DISCOUNT_PERCENT} % sur Mails.contact (code unique)`], cta: "Découvrir Équipe", team: true },
   ];
   return (
     <section className="mx-auto max-w-6xl px-5 py-16">
