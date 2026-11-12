@@ -131,6 +131,11 @@
   background-image: var(--gradient-hero);
 }
 /* Email preview canvas: emails render on light backgrounds in real clients. */
+@utility email-canvas-dark {
+  background-color: oklch(0.2 0 0);
+  color: oklch(0.92 0 0);
+}
+
 @utility email-canvas {
   background-color: oklch(1 0 0);
   color: oklch(0.25 0 0);

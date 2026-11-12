@@ -85,7 +85,7 @@ export const defaultSignature: SignatureData = {
   reviewUrl: "",
   darkSafe: false,
   ecoOn: false,
-  ecoText: ECO_PRESETS[0],
+  ecoText: "🌿 N'imprimez ce message que si nécessaire.",
 };
 
 export const templates: { id: TemplateId; label: string }[] = [
@@ -188,9 +188,19 @@ function extras(d: SignatureData) {
 }
 
 const wrap = (inner: string) =>
-  `<meta name="color-scheme" content="light dark"><meta name="supported-color-schemes" content="light dark"><table cellpadding="0" cellspacing="0" border="0" style="font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.5;color:#2b2b2b;"><tr><td>${inner}</td></tr></table>`;
+  `<table cellpadding="0" cellspacing="0" border="0" style="font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.5;color:#2b2b2b;"><tr><td>${inner}</td></tr></table>`;
 
 export function renderSignature(t: TemplateId, d: SignatureData): string {
+  return darkCard(d, renderBase(t, d));
+}
+
+/** Mode sombre garanti : fond clair stable autour de la signature, lisible quel que soit le thème du destinataire. */
+function darkCard(d: SignatureData, html: string) {
+  if (!d.darkSafe) return html;
+  return `<table cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="background:#ffffff;border-radius:10px;"><tr><td style="padding:14px 16px;background:#ffffff;border-radius:10px;">${html}</td></tr></table>`;
+}
+
+function renderBase(t: TemplateId, d: SignatureData): string {
   const name = esc(d.name);
   const role = [d.title, d.company].filter(Boolean).map(esc).join(" · ");
   switch (t) {
@@ -242,5 +252,5 @@ export function renderReplySignature(d: SignatureData): string {
     d.phone ? `<a href="tel:${esc(d.phone.replace(/\s/g, ""))}" style="color:#666;text-decoration:none;">${esc(d.phone)}</a>` : "",
     d.website ? `<a href="${esc(url(d.website))}" style="color:#666;text-decoration:none;">${esc(d.website)}</a>` : "",
   ].filter(Boolean).join(' <span style="color:#ccc;">|</span> ');
-  return wrap(`<div style="font-size:13px;"><strong style="color:${d.accent};">${esc(d.name)}</strong>${role ? ` <span style="color:#888;">— ${role}</span>` : ""}</div>${contact ? `<div style="font-size:12px;color:#666;">${contact}</div>` : ""}`);
+  return darkCard(d, wrap(`<div style="font-size:13px;"><strong style="color:${d.accent};">${esc(d.name)}</strong>${role ? ` <span style="color:#888;">— ${role}</span>` : ""}</div>${contact ? `<div style="font-size:12px;color:#666;">${contact}</div>` : ""}`));
 }
