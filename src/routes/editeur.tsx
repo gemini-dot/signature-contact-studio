@@ -9,7 +9,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import { Copy, Code2 } from "lucide-react";
 import { SignaturePreview } from "@/components/site/SignaturePreview";
-import { defaultSignature, LOGO_MIN, LOGO_MAX, clampLogoSize, cropRect, ZOOM_MAX, renderSignature, renderReplySignature, templates, type SignatureData, type TemplateId } from "@/lib/signature";
+import { ECO_PRESETS, defaultSignature, LOGO_MIN, LOGO_MAX, clampLogoSize, cropRect, ZOOM_MAX, renderSignature, renderReplySignature, templates, type SignatureData, type TemplateId } from "@/lib/signature";
 
 export const Route = createFileRoute("/editeur")({
   validateSearch: (s: Record<string, unknown>): { id?: string } => (typeof s['id'] === "string" ? { id: s['id'] } : {}),
@@ -24,29 +24,66 @@ export const Route = createFileRoute("/editeur")({
   component: Editor,
 });
 
-const guides: Record<string, string[]> = {
-  Gmail: [
+type Guide = { steps: string[]; tip?: string };
+const guides: Record<string, Guide> = {
+  Gmail: { steps: [
     "Cliquez sur « Copier la signature » ci-dessus.",
     "Dans Gmail, ouvrez ⚙️ Paramètres → Voir tous les paramètres.",
     "Onglet « Général », section « Signature » : cliquez sur « Créer ».",
     "Collez (Ctrl/Cmd + V) dans la zone de texte.",
-    "Descendez en bas de la page et cliquez sur « Enregistrer les modifications ».",
-  ],
-  Outlook: [
+    "En bas de la page, cliquez sur « Enregistrer les modifications ».",
+  ], tip: "Choisissez aussi votre version « réponse courte » dans « Pour les réponses/transferts »." },
+  "Outlook Web": { steps: [
     "Cliquez sur « Copier la signature ».",
-    "Dans Outlook, allez dans Paramètres → Comptes → Signatures.",
-    "Cliquez sur « Nouvelle signature » et donnez-lui un nom.",
-    "Collez dans l'éditeur puis choisissez-la par défaut pour les nouveaux messages.",
-    "Enregistrez.",
-  ],
-  "Apple Mail": [
+    "Sur outlook.com ou Microsoft 365 : ⚙️ Paramètres → Comptes → Signatures.",
+    "Cliquez sur « + Nouvelle signature » et nommez-la.",
+    "Collez avec Ctrl/Cmd + V, puis choisissez-la par défaut pour les nouveaux messages.",
+    "Cliquez sur « Enregistrer ».",
+  ] },
+  "Outlook PC": { steps: [
+    "Cliquez sur « Copier la signature ».",
+    "Dans Outlook : Fichier → Options → Courrier → Signatures…",
+    "Cliquez sur « Nouveau » et nommez la signature.",
+    "Collez avec Ctrl + V dans la zone de modification.",
+    "Choisissez-la pour les nouveaux messages et les réponses, puis « OK ».",
+  ], tip: "Nouvel Outlook pour Windows : suivez plutôt le guide « Outlook Web »." },
+  "Outlook Mac": { steps: [
+    "Cliquez sur « Copier la signature ».",
+    "Dans Outlook : menu Outlook → Réglages → Signatures.",
+    "Cliquez sur « + » et nommez la signature.",
+    "Collez avec Cmd + V, puis fermez la fenêtre pour enregistrer.",
+    "Dans « Signature par défaut », choisissez-la pour votre compte.",
+  ] },
+  "Apple Mail Mac": { steps: [
     "Cliquez sur « Copier la signature » (avec Safari de préférence).",
-    "Dans Mail, ouvrez Réglages → Signatures.",
+    "Dans Mail, ouvrez Mail → Réglages → Signatures.",
     "Cliquez sur « + » et décochez « Toujours utiliser ma police par défaut ».",
-    "Collez dans la zone de droite.",
+    "Collez avec Cmd + V dans la zone de droite.",
     "Fermez la fenêtre : la signature est enregistrée.",
-  ],
+  ], tip: "Si la mise en page se déforme, collez avec Cmd + V (et non « Coller et adapter le style »)." },
+  "iPhone / iPad": { steps: [
+    "Ouvrez cette page sur votre iPhone et touchez « Copier la signature ».",
+    "Allez dans Réglages → Apps → Mail → Signature.",
+    "Effacez le texte existant et collez votre signature.",
+    "Secouez l'iPhone et touchez « Annuler » si l'iPhone a ajouté une mise en forme : la version d'origine s'affiche.",
+    "Revenez en arrière : c'est enregistré.",
+  ] },
+  Thunderbird: { steps: [
+    "Cliquez sur « Code HTML » puis « Copier le code ».",
+    "Dans Thunderbird : ☰ → Paramètres des comptes → votre adresse.",
+    "Cochez « Utiliser HTML » à côté de « Texte de signature ».",
+    "Collez le code dans la zone de texte.",
+    "Fermez l'onglet : la signature est enregistrée.",
+  ] },
 };
+
+/** Devine la messagerie la plus probable selon l'appareil du visiteur. */
+function detectGuide(ua: string): string {
+  if (/iPhone|iPad|iPod/i.test(ua)) return "iPhone / iPad";
+  if (/Macintosh/i.test(ua)) return /Safari/i.test(ua) && !/Chrome/i.test(ua) ? "Apple Mail Mac" : "Gmail";
+  if (/Windows/i.test(ua)) return "Outlook PC";
+  return "Gmail";
+}
 
 const STORAGE = "signature-editor-v1";
 
@@ -55,6 +92,8 @@ function Editor() {
   const [tpl, setTpl] = useState<TemplateId>("classique");
   const [guide, setGuide] = useState("Gmail");
   const [showCode, setShowCode] = useState(false);
+  const [darkPreview, setDarkPreview] = useState(false);
+  useEffect(() => { setGuide(detectGuide(navigator.userAgent)); }, []);
 
   useEffect(() => {
     try {
@@ -103,6 +142,7 @@ function Editor() {
   const colorLocked = !!team && !team.is_admin && team.lock_colors;
   const view: SignatureData = {
     ...d,
+    ...(paid ? {} : { docOn: false, reviewOn: false, darkSafe: false, ecoOn: false }),
     ...(logoLocked ? { logoUrl: team!.base_data['logoUrl'] ?? "", logoSrc: "" } : {}),
     ...(colorLocked && team!.base_data['accent'] ? { accent: team!.base_data['accent'] } : {}),
   };
@@ -187,7 +227,7 @@ function Editor() {
         className="w-full rounded-xl border border-input bg-background px-3 py-2 outline-none focus:ring-2 focus:ring-ring" />
     </label>
   );
-  const toggle = (k: "bannerOn" | "bookingOn" | "qrOn" | "branding" | "docOn" | "reviewOn", label: string) => (
+  const toggle = (k: "bannerOn" | "bookingOn" | "qrOn" | "branding" | "docOn" | "reviewOn" | "darkSafe" | "ecoOn", label: string) => (
     <label className="flex items-center justify-between text-sm font-medium">
       {label}
       <input type="checkbox" checked={d[k]} onChange={(e) => set(k, e.target.checked)} className="h-4 w-4 accent-[var(--gold)]" />
@@ -275,7 +315,7 @@ function Editor() {
           <Card title="Atouts Solo & Équipe">
             {!paid && (
               <p className="flex items-start gap-2 rounded-xl bg-gold/10 p-3 text-sm"><Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
-                <span>Plaquette téléchargeable, avis clients et version « réponse courte » sont inclus dans Solo et Équipe. <Link to="/tarifs" className="text-gold underline">Voir les formules</Link></span></p>
+                <span>Plaquette, avis clients, réponse courte, mode sombre garanti et mention RSE sont inclus dans Solo et Équipe. <Link to="/tarifs" className="text-gold underline">Voir les formules</Link></span></p>
             )}
             <fieldset disabled={!paid} className="space-y-4 disabled:opacity-60">
               {toggle("docOn", "Bouton « Plaquette / document » (sans pièce jointe)")}
@@ -290,6 +330,22 @@ function Editor() {
               )}
               {toggle("reviewOn", "Note & avis clients")}
               {d.reviewOn && <div className="grid gap-3 sm:grid-cols-2">{text("reviewText", "Texte affiché")}{text("reviewUrl", "Lien vers vos avis", "https://g.page/…")}</div>}
+              {toggle("darkSafe", "Mode sombre garanti")}
+              <p className="-mt-2 text-xs text-muted-foreground">Un fond clair discret protège votre logo et vos textes chez les destinataires en mode sombre. Testez avec « Fond sombre » au-dessus de l'aperçu.</p>
+              {toggle("ecoOn", "Mention éco-responsable / RSE")}
+              {d.ecoOn && (
+                <div className="grid gap-2">
+                  <div className="flex flex-wrap gap-2">
+                    {ECO_PRESETS.map((p) => (
+                      <button key={p} type="button" onClick={() => set("ecoText", p)} className={`rounded-full border px-3 py-1 text-left text-xs ${d.ecoText === p ? "border-primary bg-primary text-primary-foreground" : "border-border"}`}>{p}</button>
+                    ))}
+                  </div>
+                  <label className="block text-sm">
+                    <span className="mb-1 block text-muted-foreground">Ou votre propre engagement (140 caractères max)</span>
+                    <input value={d.ecoText} maxLength={140} onChange={(e) => set("ecoText", e.target.value)} className="w-full rounded-xl border border-input bg-background px-3 py-2 outline-none focus:ring-2 focus:ring-ring" />
+                  </label>
+                </div>
+              )}
             </fieldset>
           </Card>
         </div>
@@ -308,7 +364,14 @@ function Editor() {
             <button role="tab" aria-selected={variant === "reply"} onClick={() => paid ? setVariant("reply") : toast("La version « réponse courte » est incluse dans Solo et Équipe.")} className={`inline-flex items-center gap-1 rounded-full px-4 py-1.5 ${variant === "reply" ? "bg-primary text-primary-foreground" : ""}`}>Réponses courtes {!paid && <Lock className="h-3 w-3" />}</button>
           </div>
           {variant === "reply" && paid && <p className="text-xs text-muted-foreground">Copiez cette version et choisissez-la dans votre messagerie pour les « réponses et transferts » : vos fils de discussion restent légers.</p>}
-          <SignaturePreview template={tpl} data={view} html={html} />
+          <div className="flex items-center gap-2 text-sm">
+            <span className="text-muted-foreground">Aperçu :</span>
+            <div className="inline-flex rounded-full border border-border bg-card p-1" role="tablist" aria-label="Fond de l'aperçu">
+              <button role="tab" aria-selected={!darkPreview} onClick={() => setDarkPreview(false)} className={`rounded-full px-3 py-1 ${!darkPreview ? "bg-primary text-primary-foreground" : ""}`}>☀️ Fond clair</button>
+              <button role="tab" aria-selected={darkPreview} onClick={() => setDarkPreview(true)} className={`rounded-full px-3 py-1 ${darkPreview ? "bg-primary text-primary-foreground" : ""}`}>🌙 Fond sombre</button>
+            </div>
+          </div>
+          <SignaturePreview template={tpl} data={view} html={html} dark={darkPreview} />
           {(logoLocked || colorLocked) && (
             <p className="flex items-center gap-2 text-xs text-muted-foreground"><Lock className="h-3.5 w-3.5 text-gold" /> {logoLocked && colorLocked ? "Le logo et les couleurs" : logoLocked ? "Le logo" : "Les couleurs"} sont imposés par votre équipe.</p>
           )}
@@ -331,19 +394,21 @@ function Editor() {
             </div>
           )}
           <Card title="Installation guidée">
-            <div className="flex gap-2">
+            <p className="text-sm text-muted-foreground">Nous avons présélectionné la messagerie la plus probable sur votre appareil. Choisissez la vôtre :</p>
+            <div className="flex flex-wrap gap-2">
               {Object.keys(guides).map((g) => (
                 <button key={g} onClick={() => setGuide(g)} className={`rounded-full px-3 py-1 text-sm ${guide === g ? "bg-gold text-gold-foreground" : "border border-border"}`}>{g}</button>
               ))}
             </div>
             <ol className="space-y-2 text-sm">
-              {(guides[guide] ?? []).map((s, i) => (
+              {(guides[guide]?.steps ?? []).map((s, i) => (
                 <li key={i} className="flex gap-3">
                   <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">{i + 1}</span>
                   <span className="pt-0.5">{s}</span>
                 </li>
               ))}
             </ol>
+            {guides[guide]?.tip && <p className="rounded-xl bg-gold/10 p-3 text-sm">💡 {guides[guide]?.tip}</p>}
           </Card>
         </div>
       </div>
