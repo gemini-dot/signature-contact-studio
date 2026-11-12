@@ -30,6 +30,9 @@ const SECTIONS: { title: string; rows: Row[] }[] = [
     ["Mini-page profil à votre nom", false, true, true],
     ["QR code & fiche contact (.vcf)", false, true, true],
     ["Fond de visio HD avec QR code (Zoom, Teams, Meet)", false, true, true],
+    ["Mode sombre garanti (logo et textes toujours lisibles)", false, true, true],
+    ["Mention éco-responsable / RSE personnalisable", false, true, true],
+    ["Guide d'installation pas-à-pas (Gmail, Outlook, Apple Mail, iPhone, Thunderbird)", true, true, true],
   ] },
   { title: "Confiance & disponibilité", rows: [
     ["Badge « Identité vérifiée » anti-phishing", false, true, true],
@@ -43,6 +46,7 @@ const SECTIONS: { title: string; rows: Row[] }[] = [
     ["Mentions légales communes", false, false, true],
     ["Ajout d'un collaborateur en 1 clic", false, false, true],
     ["Lien magique d'onboarding (signature prête en 15 s)", false, false, true],
+    ["Import groupé CSV / Excel (jusqu'à 500 collaborateurs)", false, false, true],
     [`-${PARTNER_DISCOUNT_PERCENT} % sur Mails.contact (code unique)`, false, false, true],
   ] },
 ];
