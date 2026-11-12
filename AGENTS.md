@@ -18,3 +18,4 @@
 - Team onboarding uses a per-team token in `team_join_links` (admin-only read); joining goes only through `join_team` (confirmed e-mail, active Équipe plan, seat limit) — why: a leaked link cannot exceed paid seats or bypass the plan.
 - Member PDF documents are served through the fixed `/api/public/document/$slug` redirect via `get_member_document` (paid members only) — why: signatures keep one link while the file changes.
 - Signature count is capped by the `signature_quota` trigger (Free = 1, paid = 20) — why: multi-variant signatures are a paid right enforced in the database.
+- Import groupé d'équipe : uniquement via `import_team_members` (admin, plan Équipe actif, places respectées, 500 lignes max) — why: le navigateur ne peut pas dépasser les places payées.
