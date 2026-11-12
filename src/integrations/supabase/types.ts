@@ -541,6 +541,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      import_team_members: {
+        Args: { _emails: string[]; _team: string }
+        Returns: Json
+      }
       is_booking_eligible: { Args: { _user: string }; Returns: boolean }
       is_team_admin: {
         Args: { _team: string; _user: string }
