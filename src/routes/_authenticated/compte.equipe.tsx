@@ -9,6 +9,7 @@ import { SignaturePreview } from "@/components/site/SignaturePreview";
 import { defaultSignature, templates, type SignatureData, type TemplateId } from "@/lib/signature";
 import { MailsContactPerk } from "@/components/site/MailsContactPerk";
 import { TeamMagicLink } from "@/components/site/TeamMagicLink";
+import { TeamCsvImport } from "@/components/site/TeamCsvImport";
 import { usePlan } from "@/hooks/use-plan";
 
 export const Route = createFileRoute("/_authenticated/compte/equipe")({ component: TeamPage });
@@ -29,6 +30,11 @@ function TeamPage() {
     queryKey: ["members", team?.id],
     enabled: !!team,
     queryFn: async () => (await supabase.from("team_members").select("*").eq("team_id", team!.id).order("created_at")).data ?? [],
+  });
+  const seatsQ = useQuery({
+    queryKey: ["team-seats", team?.owner_id],
+    enabled: !!team,
+    queryFn: async () => (await supabase.from("subscriptions").select("seats").eq("user_id", team!.owner_id).maybeSingle()).data?.seats ?? 0,
   });
   const isAdmin = !!team && !!user && (team.owner_id === user.id || (membersQ.data ?? []).some((m) => m.user_id === user.id && m.role === "admin"));
 
@@ -100,6 +106,7 @@ function TeamPage() {
         {!isAdmin && <p className="mt-2 text-sm text-muted-foreground">Vous êtes membre de cette équipe. Seuls les administrateurs peuvent modifier le modèle.</p>}
       </div>
       {isAdmin && <TeamMagicLink teamId={team.id} hasPlan={isTeamPlan} />}
+      {isAdmin && <TeamCsvImport teamId={team.id} hasPlan={isTeamPlan} existing={(membersQ.data ?? []).map((m) => m.email)} seats={seatsQ.data ?? 0} onDone={refresh} />}
       <MailsContactPerk />
 
       <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">

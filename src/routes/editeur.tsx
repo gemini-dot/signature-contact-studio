@@ -65,7 +65,7 @@ const guides: Record<string, Guide> = {
     "Ouvrez cette page sur votre iPhone et touchez « Copier la signature ».",
     "Allez dans Réglages → Apps → Mail → Signature.",
     "Effacez le texte existant et collez votre signature.",
-    "Secouez l'iPhone et touchez « Annuler » si l'iPhone a ajouté une mise en forme : la version d'origine s'affiche.",
+    "Si la mise en forme disparaît, secouez l'iPhone et touchez « Annuler » : la version d'origine revient.",
     "Revenez en arrière : c'est enregistré.",
   ] },
   Thunderbird: { steps: [
