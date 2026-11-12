@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { BadgeCheck, Building2, CalendarCheck, Check, FileText, Link2, Lock, Megaphone, MonitorPlay, Percent, Radio, Star } from "lucide-react";
+import { BadgeCheck, Building2, CalendarCheck, Check, FileText, Link2, Lock, Megaphone, MonitorPlay, Percent, Radio, Star, Upload, Wrench, Moon, Leaf } from "lucide-react";
 import { PARTNER_DISCOUNT_PERCENT, PRICES, teamMonthlyPrice } from "@/lib/pricing";
 
 export const Route = createFileRoute("/entreprises")({
