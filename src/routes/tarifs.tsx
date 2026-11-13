@@ -43,7 +43,7 @@ function Tarifs() {
   const plans = [
     { name: "Gratuit", price: `${PRICES.free} €`, note: "pour toujours", features: ["1 signature", "5 modèles", "Mention « signature.contact »"], cta: "Commencer" },
     { name: "Solo", price: yearly ? `${PRICES.soloYearly} €` : `${PRICES.soloMonthly} €`, note: yearly ? "par an" : "par mois", features: ["Sans mention « signature.contact »", "Prise de rendez-vous intégrée", "Carte de visite & QR code vCard", "Fond de visio avec QR code", "Version « réponse courte » + variantes", "Plaquette PDF sans pièce jointe", "Note & avis clients", "Mode sombre garanti", "Mention éco-responsable / RSE", "Badge « Identité vérifiée »", "Statut de disponibilité en direct"], cta: "Choisir Solo", featured: true },
-    { name: "Équipe", price: `${teamMonthlyPrice(seats)} €`, note: `par mois · ${seats} collaborateurs`, features: ["Tout Solo, pour chaque collaborateur", "Smart Bannières programmables", "Lien magique : collaborateur prêt en 15 s", "Import groupé CSV / Excel express", "Guide d'installation pas-à-pas par messagerie", "Charte verrouillée & gestion centralisée", `${PRICES.teamBase} € + ${PRICES.teamPerSeat} €/collaborateur/mois`, `Inclus : -${PARTNER_DISCOUNT_PERCENT} % sur Mails.contact (code unique)`], cta: "Découvrir Équipe", team: true },
+    { name: "Équipe", price: `${teamMonthlyPrice(seats)} €`, note: `par mois · ${seats} collaborateurs`, features: ["Tout Solo, pour chaque collaborateur", "Smart Bannières programmables", "Lien magique : collaborateur prêt en 15 s", "Import groupé CSV / Excel express", "Guide d'installation pas-à-pas par messagerie", "Charte verrouillée & gestion centralisée", `${PRICES.teamBase} € + ${PRICES.teamPerSeat} €/collaborateur/mois`, `Inclus : -${PARTNER_DISCOUNT_PERCENT} % sur Mails.contact (code unique)`], cta: "Choisir Équipe", team: true },
   ];
   return (
     <section className="mx-auto max-w-6xl px-5 py-16">
@@ -69,11 +69,11 @@ function Tarifs() {
             <ul className="mt-6 flex-1 space-y-2 text-sm">
               {p.features.map((f) => <li key={f} className="flex gap-2"><Check className="h-4 w-4 shrink-0 text-gold" />{f}</li>)}
             </ul>
-            <Link to={p.team ? "/entreprises" : "/editeur"} className={`mt-8 rounded-full px-5 py-2.5 text-center font-medium ${p.featured ? "bg-primary text-primary-foreground" : "border border-border hover:bg-accent"}`}>{p.cta}</Link>
+            <Link to={p.team ? "/souscription" : p.featured ? "/souscription" : "/editeur"} search={p.team ? { plan: "equipe", cycle: "mensuel", seats } : p.featured ? { plan: "solo", cycle: yearly ? "annuel" : "mensuel", seats: 1 } : undefined} className={`mt-8 rounded-full px-5 py-2.5 text-center font-medium ${p.featured ? "bg-primary text-primary-foreground" : "border border-border hover:bg-accent"}`}>{p.cta}</Link>
           </div>
         ))}
       </div>
-      <p className="mt-6 text-center text-xs text-muted-foreground">Prix TTC. Le paiement en ligne arrive bientôt.</p>
+      <p className="mt-6 text-center text-xs text-muted-foreground">Prix TTC. Code de réduction accepté à l'étape suivante.</p>
       <div className="mt-8 text-center"><a href="#comparatif" className="inline-flex rounded-full border border-primary px-5 py-2 text-sm font-medium text-primary hover:bg-primary hover:text-primary-foreground">Voir le comparatif détaillé ↓</a></div>
       <PlanComparison />
 
