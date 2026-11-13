@@ -18,6 +18,7 @@ import { Route as EditeurRouteImport } from './routes/editeur'
 import { Route as EntreprisesRouteImport } from './routes/entreprises'
 import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
 import { Route as ReinitialiserMotDePasseRouteImport } from './routes/reinitialiser-mot-de-passe'
+import { Route as SouscriptionRouteImport } from './routes/souscription'
 import { Route as TableauDeBordRouteImport } from './routes/tableau-de-bord'
 import { Route as TarifsRouteImport } from './routes/tarifs'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
@@ -80,6 +81,11 @@ const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
 const ReinitialiserMotDePasseRoute = ReinitialiserMotDePasseRouteImport.update({
   id: '/reinitialiser-mot-de-passe',
   path: '/reinitialiser-mot-de-passe',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SouscriptionRoute = SouscriptionRouteImport.update({
+  id: '/souscription',
+  path: '/souscription',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TableauDeBordRoute = TableauDeBordRouteImport.update({
@@ -196,6 +202,7 @@ export interface FileRoutesByFullPath {
   '/entreprises': typeof EntreprisesRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
+  '/souscription': typeof SouscriptionRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
   '/tarifs': typeof TarifsRoute
   '/admin': typeof AuthenticatedAdminRoute
@@ -225,6 +232,7 @@ export interface FileRoutesByTo {
   '/entreprises': typeof EntreprisesRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
+  '/souscription': typeof SouscriptionRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
   '/tarifs': typeof TarifsRoute
   '/admin': typeof AuthenticatedAdminRoute
@@ -255,6 +263,7 @@ export interface FileRoutesById {
   '/entreprises': typeof EntreprisesRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
+  '/souscription': typeof SouscriptionRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
   '/tarifs': typeof TarifsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
@@ -286,6 +295,7 @@ export interface FileRouteTypes {
     | '/entreprises'
     | '/mentions-legales'
     | '/reinitialiser-mot-de-passe'
+    | '/souscription'
     | '/tableau-de-bord'
     | '/tarifs'
     | '/admin'
@@ -315,6 +325,7 @@ export interface FileRouteTypes {
     | '/entreprises'
     | '/mentions-legales'
     | '/reinitialiser-mot-de-passe'
+    | '/souscription'
     | '/tableau-de-bord'
     | '/tarifs'
     | '/admin'
@@ -344,6 +355,7 @@ export interface FileRouteTypes {
     | '/entreprises'
     | '/mentions-legales'
     | '/reinitialiser-mot-de-passe'
+    | '/souscription'
     | '/tableau-de-bord'
     | '/tarifs'
     | '/_authenticated/admin'
@@ -375,6 +387,7 @@ export interface RootRouteChildren {
   EntreprisesRoute: typeof EntreprisesRoute
   MentionsLegalesRoute: typeof MentionsLegalesRoute
   ReinitialiserMotDePasseRoute: typeof ReinitialiserMotDePasseRoute
+  SouscriptionRoute: typeof SouscriptionRoute
   TableauDeBordRoute: typeof TableauDeBordRoute
   TarifsRoute: typeof TarifsRoute
   PSlugRoute: typeof PSlugRoute
@@ -448,6 +461,13 @@ declare module '@tanstack/react-router' {
       path: '/reinitialiser-mot-de-passe'
       fullPath: '/reinitialiser-mot-de-passe'
       preLoaderRoute: typeof ReinitialiserMotDePasseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/souscription': {
+      id: '/souscription'
+      path: '/souscription'
+      fullPath: '/souscription'
+      preLoaderRoute: typeof SouscriptionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tableau-de-bord': {
@@ -636,6 +656,7 @@ const rootRouteChildren: RootRouteChildren = {
   EntreprisesRoute: EntreprisesRoute,
   MentionsLegalesRoute: MentionsLegalesRoute,
   ReinitialiserMotDePasseRoute: ReinitialiserMotDePasseRoute,
+  SouscriptionRoute: SouscriptionRoute,
   TableauDeBordRoute: TableauDeBordRoute,
   TarifsRoute: TarifsRoute,
   PSlugRoute: PSlugRoute,
