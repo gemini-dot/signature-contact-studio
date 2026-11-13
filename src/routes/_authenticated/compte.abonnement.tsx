@@ -6,6 +6,7 @@ import { Download } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { PRICES, teamMonthlyPrice } from "@/lib/pricing";
+import { discountedCents, type Discount } from "@/lib/discount";
 
 export const Route = createFileRoute("/_authenticated/compte/abonnement")({ component: Billing });
 
@@ -19,6 +20,10 @@ function Billing() {
   const qc = useQueryClient();
   const [choice, setChoice] = useState<Choice | null>(null);
   const [busy, setBusy] = useState(false);
+  const [codeIn, setCodeIn] = useState("");
+  const [codeErr, setCodeErr] = useState("");
+  const [promo, setPromo] = useState<{ code: string; discount: Discount } | null>(null);
+  const openChoice = (c: Choice | null) => { setChoice(c); if (!c || c.plan !== choice?.plan) { setPromo(null); setCodeErr(""); setCodeIn(""); } };
   const sub = useQuery({
     queryKey: ["subscription"],
     queryFn: async () => (await supabase.from("subscriptions").select("*").maybeSingle()).data,
@@ -36,13 +41,24 @@ function Billing() {
   const pay = async () => {
     if (!choice) return;
     setBusy(true);
-    const { error } = await supabase.rpc("subscribe_test", { _plan: choice.plan, _cycle: choice.cycle, _seats: choice.seats });
+    const { error } = await supabase.rpc("subscribe_with_code", { _plan: choice.plan, _cycle: choice.cycle, _seats: choice.plan === "equipe" ? choice.seats : 0, _code: promo?.code ?? "" });
     setBusy(false);
     if (error) { toast.error(error.message); return; }
     toast.success("Abonnement activé (mode test)");
-    setChoice(null);
+    openChoice(null);
     refresh();
   };
+  const applyCode = async () => {
+    if (!choice) return;
+    setCodeErr("");
+    if (!codeIn.trim()) return;
+    const { data, error } = await supabase.rpc("check_discount_code", { _code: codeIn, _plan: choice.plan });
+    const r = data as { ok: boolean; error?: string; code?: string; kind?: "percent" | "amount"; value?: number; months?: number | null } | null;
+    if (error || !r) return setCodeErr("Vérification impossible. Réessayez.");
+    if (!r.ok) return setCodeErr(r.error ?? "Code invalide.");
+    setPromo({ code: r.code!, discount: { kind: r.kind!, value: Number(r.value), months: r.months ?? null } });
+  };
+  const total = (c: Choice) => { const b = price(c) * 100; return (promo ? discountedCents(b, promo.discount) : b) / 100; };
   const toggleRenew = async () => {
     const { error } = await supabase.rpc("set_auto_renew", { _on: !s?.auto_renew });
     if (error) { toast.error(error.message); return; }
@@ -80,10 +96,10 @@ function Billing() {
         </div>
         <div className="space-y-3 rounded-3xl border border-border bg-card p-6">
           <p className="font-medium">Changer de formule</p>
-          <button onClick={() => setChoice({ plan: "solo", cycle: "mensuel", seats: 0 })} className="block w-full rounded-xl border border-border px-4 py-3 text-left hover:bg-accent">
+          <button onClick={() => openChoice({ plan: "solo", cycle: "mensuel", seats: 0 })} className="block w-full rounded-xl border border-border px-4 py-3 text-left hover:bg-accent">
             <span className="font-medium">Solo</span> <span className="text-sm text-muted-foreground">— 6 €/mois ou 59 €/an</span>
           </button>
-          <button onClick={() => setChoice({ plan: "equipe", cycle: "mensuel", seats: 5 })} className="block w-full rounded-xl border border-border px-4 py-3 text-left hover:bg-accent">
+          <button onClick={() => openChoice({ plan: "equipe", cycle: "mensuel", seats: 5 })} className="block w-full rounded-xl border border-border px-4 py-3 text-left hover:bg-accent">
             <span className="font-medium">Équipe</span> <span className="text-sm text-muted-foreground">— 19 €/mois + 1 €/collaborateur</span>
           </button>
         </div>
@@ -109,7 +125,7 @@ function Billing() {
         )}
       </div>
 
-      <Dialog open={!!choice} onOpenChange={(o) => !o && setChoice(null)}>
+      <Dialog open={!!choice} onOpenChange={(o) => !o && openChoice(null)}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Paiement — {choice && PLAN_LABEL[choice.plan]}</DialogTitle>
@@ -130,13 +146,28 @@ function Billing() {
                   <input type="number" min={0} value={choice.seats} onChange={(e) => setChoice({ ...choice, seats: Math.max(0, Number(e.target.value) || 0) })} className="mt-1 w-full rounded-xl border border-input bg-background px-3 py-2" />
                 </label>
               )}
+              <div>
+                <label className="text-sm font-medium" htmlFor="promo">Code promo</label>
+                {promo ? (
+                  <div className="mt-1 flex items-center justify-between rounded-xl border border-primary/40 bg-accent px-3 py-2 text-sm">
+                    <span><strong>{promo.code}</strong> — {promo.discount.kind === "percent" ? `-${promo.discount.value} %` : `-${promo.discount.value} €`}{promo.discount.months ? ` pendant ${promo.discount.months} mois` : ""}</span>
+                    <button type="button" onClick={() => { setPromo(null); setCodeIn(""); }} className="text-muted-foreground underline">Retirer</button>
+                  </div>
+                ) : (
+                  <div className="mt-1 flex gap-2">
+                    <input id="promo" value={codeIn} onChange={(e) => setCodeIn(e.target.value.toUpperCase())} onKeyDown={(e) => e.key === "Enter" && applyCode()} placeholder="Ex. BIENVENUE20" className="flex-1 rounded-xl border border-input bg-background px-3 py-2 font-mono text-sm" />
+                    <button type="button" onClick={applyCode} className="rounded-xl border border-border px-4 text-sm hover:bg-accent">Appliquer</button>
+                  </div>
+                )}
+                {codeErr && <p className="mt-1 text-sm text-destructive">{codeErr}</p>}
+              </div>
               <input readOnly value="4242 4242 4242 4242" className="w-full rounded-xl border border-input bg-muted px-3 py-2 font-mono text-sm" />
               <div className="flex gap-2">
                 <input readOnly value="12/34" className="w-1/2 rounded-xl border border-input bg-muted px-3 py-2 font-mono text-sm" />
                 <input readOnly value="123" className="w-1/2 rounded-xl border border-input bg-muted px-3 py-2 font-mono text-sm" />
               </div>
               <button disabled={busy} onClick={pay} className="w-full rounded-full bg-primary py-2.5 font-medium text-primary-foreground disabled:opacity-60">
-                Payer {price(choice)} € {choice.cycle === "annuel" ? "/ an" : "/ mois"}
+                {promo && <s className="mr-1 opacity-70">{price(choice)} €</s>}Payer {total(choice)} € {choice.cycle === "annuel" ? "/ an" : "/ mois"}
               </button>
             </div>
           )}
