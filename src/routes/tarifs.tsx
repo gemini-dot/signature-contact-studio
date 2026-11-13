@@ -69,7 +69,11 @@ function Tarifs() {
             <ul className="mt-6 flex-1 space-y-2 text-sm">
               {p.features.map((f) => <li key={f} className="flex gap-2"><Check className="h-4 w-4 shrink-0 text-gold" />{f}</li>)}
             </ul>
-            <Link to={p.team ? "/souscription" : p.featured ? "/souscription" : "/editeur"} search={p.team ? { plan: "equipe", cycle: "mensuel", seats } : p.featured ? { plan: "solo", cycle: yearly ? "annuel" : "mensuel", seats: 1 } : undefined} className={`mt-8 rounded-full px-5 py-2.5 text-center font-medium ${p.featured ? "bg-primary text-primary-foreground" : "border border-border hover:bg-accent"}`}>{p.cta}</Link>
+            {p.team || p.featured ? (
+              <Link to="/souscription" search={{ plan: p.team ? "equipe" : "solo", cycle: !p.team && yearly ? "annuel" : "mensuel", seats: p.team ? seats : 1 }} className={`mt-8 rounded-full px-5 py-2.5 text-center font-medium ${p.featured ? "bg-primary text-primary-foreground" : "border border-border hover:bg-accent"}`}>{p.cta}</Link>
+            ) : (
+              <Link to="/editeur" className="mt-8 rounded-full border border-border px-5 py-2.5 text-center font-medium hover:bg-accent">{p.cta}</Link>
+            )}
           </div>
         ))}
       </div>
