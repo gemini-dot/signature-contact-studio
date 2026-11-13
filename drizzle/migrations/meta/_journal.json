@@ -57,6 +57,13 @@
       "when": 1794561466021,
       "tag": "0007_discount_codes_and_checkout",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1794561478807,
+      "tag": "0008_discount_code_random_fix",
+      "breakpoints": true
     }
   ]
 }
