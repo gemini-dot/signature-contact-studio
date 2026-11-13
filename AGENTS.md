@@ -19,3 +19,4 @@
 - Member PDF documents are served through the fixed `/api/public/document/$slug` redirect via `get_member_document` (paid members only) — why: signatures keep one link while the file changes.
 - Signature count is capped by the `signature_quota` trigger (Free = 1, paid = 20) — why: multi-variant signatures are a paid right enforced in the database.
 - Import groupé d'équipe : uniquement via `import_team_members` (admin, plan Équipe actif, places respectées, 500 lignes max) — why: le navigateur ne peut pas dépasser les places payées.
+- Discount codes live in `discount_codes` (admin-only RLS); created via `admin_create_discount`, checked via `check_discount_code`, consumed only inside `subscribe_with_code` which recomputes the price server-side — why: the browser never decides the discount.
