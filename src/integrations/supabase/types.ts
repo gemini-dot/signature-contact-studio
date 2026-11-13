@@ -104,10 +104,57 @@ export type Database = {
         }
         Relationships: []
       }
+      discount_codes: {
+        Row: {
+          active: boolean
+          code: string
+          created_at: string
+          created_by: string | null
+          kind: string
+          max_uses: number | null
+          months: number | null
+          plans: string[]
+          reason: string
+          uses: number
+          valid_until: string
+          value: number
+        }
+        Insert: {
+          active?: boolean
+          code: string
+          created_at?: string
+          created_by?: string | null
+          kind: string
+          max_uses?: number | null
+          months?: number | null
+          plans?: string[]
+          reason?: string
+          uses?: number
+          valid_until: string
+          value: number
+        }
+        Update: {
+          active?: boolean
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          kind?: string
+          max_uses?: number | null
+          months?: number | null
+          plans?: string[]
+          reason?: string
+          uses?: number
+          valid_until?: string
+          value?: number
+        }
+        Relationships: []
+      }
       invoices: {
         Row: {
           amount_cents: number
           cycle: string
+          discount_cents: number
+          discount_code: string | null
           id: string
           issued_at: string
           number: string
@@ -119,6 +166,8 @@ export type Database = {
         Insert: {
           amount_cents: number
           cycle: string
+          discount_cents?: number
+          discount_code?: string | null
           id?: string
           issued_at?: string
           number: string
@@ -130,6 +179,8 @@ export type Database = {
         Update: {
           amount_cents?: number
           cycle?: string
+          discount_cents?: number
+          discount_code?: string | null
           id?: string
           issued_at?: string
           number?: string
@@ -517,6 +568,18 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_create_discount: {
+        Args: {
+          _kind: string
+          _max_uses: number
+          _months: number
+          _plans: string[]
+          _reason: string
+          _valid_until: string
+          _value: number
+        }
+        Returns: string
+      }
       book_appointment: {
         Args: {
           _email: string
@@ -527,6 +590,10 @@ export type Database = {
           _starts_at: string
         }
         Returns: string
+      }
+      check_discount_code: {
+        Args: { _code: string; _plan: string }
+        Returns: Json
       }
       current_team_banner: { Args: { _team: string }; Returns: Json }
       get_booking_page: { Args: { _slug: string }; Returns: Json }
@@ -582,6 +649,10 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      subscribe_with_code: {
+        Args: { _code: string; _cycle: string; _plan: string; _seats: number }
+        Returns: Json
       }
       team_has_plan: { Args: { _team: string }; Returns: boolean }
     }

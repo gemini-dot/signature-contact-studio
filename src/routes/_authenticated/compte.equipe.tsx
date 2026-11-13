@@ -11,6 +11,7 @@ import { MailsContactPerk } from "@/components/site/MailsContactPerk";
 import { TeamMagicLink } from "@/components/site/TeamMagicLink";
 import { TeamCsvImport } from "@/components/site/TeamCsvImport";
 import { usePlan } from "@/hooks/use-plan";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 export const Route = createFileRoute("/_authenticated/compte/equipe")({ component: TeamPage });
 
@@ -81,8 +82,13 @@ function TeamPage() {
     await supabase.from("team_members").update({ role }).eq("id", id);
     refresh();
   };
-  const removeMember = async (id: string) => {
-    await supabase.from("team_members").delete().eq("id", id);
+  const [toRemove, setToRemove] = useState<{ id: string; email: string } | null>(null);
+  const removeMember = async () => {
+    if (!toRemove) return;
+    const { error } = await supabase.from("team_members").delete().eq("id", toRemove.id);
+    if (error) { toast.error(error.message); return; }
+    toast.success(`${toRemove.email} a été retiré(e). Une place est libérée.`);
+    setToRemove(null);
     refresh();
   };
 
@@ -136,7 +142,10 @@ function TeamPage() {
       </div>
 
       <div className="rounded-3xl border border-border bg-card p-6">
-        <p className="font-medium">Collaborateurs</p>
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <p className="font-medium">Collaborateurs</p>
+          {isAdmin && isTeamPlan && <p className="text-sm text-muted-foreground"><strong className="text-foreground">{(membersQ.data ?? []).length}</strong> / {seatsQ.data ?? 0} places utilisées · <span className="text-gold">{Math.max(0, (seatsQ.data ?? 0) - (membersQ.data ?? []).length)} disponible(s)</span></p>}
+        </div>
         {isAdmin && (
           <form onSubmit={sendInvite} className="mt-3 flex gap-2">
             <input required type="email" value={invite} onChange={(e) => setInvite(e.target.value)} placeholder="collaborateur@entreprise.fr" className={field} />
@@ -153,7 +162,9 @@ function TeamPage() {
                   <select value={m.role} onChange={(e) => setRole(m.id, e.target.value as "admin" | "member")} className="rounded-lg border border-border bg-background px-2 py-1 text-xs">
                     <option value="member">Membre</option><option value="admin">Admin</option>
                   </select>
-                  <button onClick={() => removeMember(m.id)} aria-label="Retirer" className="p-1 text-muted-foreground hover:text-foreground"><Trash2 className="h-4 w-4" /></button>
+                  {m.user_id && m.user_id === team.owner_id ? <span className="w-[72px] text-right text-xs text-muted-foreground">Titulaire</span> : (
+                    <button onClick={() => setToRemove({ id: m.id, email: m.email })} className="inline-flex items-center gap-1 rounded-full border border-border px-2.5 py-1 text-xs text-muted-foreground hover:border-destructive hover:text-destructive"><Trash2 className="h-3.5 w-3.5" />Retirer</button>
+                  )}
                 </>
               ) : <span className="text-xs text-muted-foreground">{m.role === "admin" ? "Admin" : "Membre"}</span>}
             </li>
@@ -161,6 +172,20 @@ function TeamPage() {
           {(membersQ.data ?? []).length === 0 && <li className="py-2 text-muted-foreground">Aucun collaborateur invité.</li>}
         </ul>
       </div>
+      <AlertDialog open={!!toRemove} onOpenChange={(o) => !o && setToRemove(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Retirer ce collaborateur ?</AlertDialogTitle>
+            <AlertDialogDescription>
+              {toRemove?.email} n'aura plus accès au modèle, aux bannières et aux avantages de l'équipe. Sa place est libérée immédiatement et peut être attribuée à quelqu'un d'autre. Ses signatures personnelles ne sont pas supprimées.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction onClick={removeMember} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Retirer et libérer la place</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
