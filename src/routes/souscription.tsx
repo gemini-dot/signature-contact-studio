@@ -1,3 +1,4 @@
+import { withLang } from "@/lib/lang-url";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Check, Lock, PartyPopper, Tag, X } from "lucide-react";
@@ -86,7 +87,7 @@ function Subscribe() {
         } else {
           if (f.pw.length < 8) return setErr("Le mot de passe doit contenir au moins 8 caractères.");
           if (f.pw !== f.pw2) return setErr("Les deux mots de passe ne correspondent pas.");
-          const { data, error } = await supabase.auth.signUp({ email: f.email, password: f.pw, options: { emailRedirectTo: window.location.href, data: { full_name: f.name } } });
+          const { data, error } = await supabase.auth.signUp({ email: f.email, password: f.pw, options: { emailRedirectTo: withLang(window.location.href), data: { full_name: f.name } } });
           if (error) { if (/registered|exists/i.test(error.message)) { setMode("login"); return setErr("Un compte existe déjà avec cette adresse : connectez-vous pour continuer."); } return setErr(error.message); }
           if (!data.session) { setPending(true); return; }
         }

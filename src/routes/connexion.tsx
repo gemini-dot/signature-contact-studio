@@ -1,3 +1,4 @@
+import { withLang } from "@/lib/lang-url";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { toast } from "sonner";
@@ -39,15 +40,15 @@ function Login() {
         if (error) throw error;
         navigate({ to: target });
       } else if (mode === "inscription") {
-        const { error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: window.location.origin + target, data: { full_name: name } } });
+        const { error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: withLang(window.location.origin + target), data: { full_name: name } } });
         if (error) throw error;
         toast.success("Compte créé : cliquez sur le lien reçu par e-mail pour le confirmer.");
       } else if (mode === "lien") {
-        const { error } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: window.location.origin + target } });
+        const { error } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: withLang(window.location.origin + target) } });
         if (error) throw error;
         toast.success("Lien de connexion envoyé : vérifiez votre boîte mail.");
       } else {
-        const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + "/reinitialiser-mot-de-passe" });
+        const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: withLang(window.location.origin + "/reinitialiser-mot-de-passe") });
         if (error) throw error;
         toast.success("E-mail de réinitialisation envoyé.");
       }
