@@ -9,7 +9,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import { Copy, Code2 } from "lucide-react";
 import { SignaturePreview } from "@/components/site/SignaturePreview";
-import { ECO_PRESETS, defaultSignature, LOGO_MIN, LOGO_MAX, clampLogoSize, cropRect, ZOOM_MAX, renderSignature, renderReplySignature, templates, type SignatureData, type TemplateId } from "@/lib/signature";
+import { ECO_PRESETS, LEGAL_PRESETS, defaultSignature, LOGO_MIN, LOGO_MAX, clampLogoSize, cropRect, ZOOM_MAX, renderSignature, renderReplySignature, templates, type SignatureData, type TemplateId } from "@/lib/signature";
 
 export const Route = createFileRoute("/editeur")({
   validateSearch: (s: Record<string, unknown>): { id?: string } => (typeof s['id'] === "string" ? { id: s['id'] } : {}),
@@ -343,6 +343,29 @@ function Editor() {
                   <label className="block text-sm">
                     <span className="mb-1 block text-muted-foreground">Ou votre propre engagement (140 caractères max)</span>
                     <input value={d.ecoText} maxLength={140} onChange={(e) => set("ecoText", e.target.value)} className="w-full rounded-xl border border-input bg-background px-3 py-2 outline-none focus:ring-2 focus:ring-ring" />
+                  </label>
+                </div>
+              )}
+              {toggle("visioOn", "Salle visio en 1 clic")}
+              {d.visioOn && <div className="grid gap-3 sm:grid-cols-2">{text("visioLabel", "Texte du bouton")}{text("visioUrl", "Lien de votre salle (Meet, Teams, Zoom…)", "https://meet.google.com/…")}</div>}
+              {toggle("audioOn", "Pitch audio de présentation")}
+              {d.audioOn && <div className="grid gap-3 sm:grid-cols-2">{text("audioLabel", "Texte affiché")}{text("audioUrl", "Lien vers votre enregistrement", "https://…/ma-presentation.mp3")}</div>}
+              {d.audioOn && <p className="-mt-2 text-xs text-muted-foreground">Enregistrez 20 à 30 secondes avec votre téléphone, déposez le fichier (Drive, SoundCloud, votre site…) et collez le lien.</p>}
+              {toggle("tzOn", "Fuseau horaire & disponibilités")}
+              {d.tzOn && text("tzText", "Fuseau et horaires", "Paris (UTC+1) · Lun–Ven 9h–18h")}
+              {toggle("a11yOn", "Mode accessible (texte agrandi, contrastes renforcés)")}
+              <p className="-mt-2 text-xs text-muted-foreground">Recommandé pour les appels d'offres publics et les lecteurs malvoyants.</p>
+              {toggle("legalOn", "Mentions réglementaires de votre profession")}
+              {d.legalOn && (
+                <div className="grid gap-2">
+                  <div className="flex flex-wrap gap-2">
+                    {LEGAL_PRESETS.map((p) => (
+                      <button key={p.label} type="button" onClick={() => set("legalText", p.text)} className={`rounded-full border px-3 py-1 text-xs ${d.legalText === p.text ? "border-primary bg-primary text-primary-foreground" : "border-border"}`}>{p.label}</button>
+                    ))}
+                  </div>
+                  <label className="block text-sm">
+                    <span className="mb-1 block text-muted-foreground">Texte (remplacez les [crochets] par vos informations, 400 caractères max)</span>
+                    <textarea value={d.legalText} maxLength={400} rows={3} onChange={(e) => set("legalText", e.target.value)} className="w-full rounded-xl border border-input bg-background px-3 py-2 outline-none focus:ring-2 focus:ring-ring" />
                   </label>
                 </div>
               )}
