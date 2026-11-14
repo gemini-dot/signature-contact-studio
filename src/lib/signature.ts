@@ -63,6 +63,33 @@ export interface SignatureData {
   /** Mentions réglementaires propres à la profession. */
   legalOn: boolean;
   legalText: string;
+  /** Touche saisonnière (vœux, anniversaire…). */
+  seasonOn: boolean;
+  season: SeasonId;
+  seasonText: string;
+  /** Signature manuscrite / paraphe (image hébergée). */
+  handOn: boolean;
+  handImage: string;
+  /** Bouton WhatsApp direct avec message pré-rempli. */
+  waOn: boolean;
+  waNumber: string;
+  waMessage: string;
+}
+
+export type SeasonId = "voeux" | "anniversaire" | "printemps" | "rentree";
+export const SEASONS: Record<SeasonId, { label: string; icon: string; text: string }> = {
+  voeux: { label: "Vœux de fin d'année", icon: "&#10052;", text: "Belles fêtes et très heureuse année !" },
+  anniversaire: { label: "Anniversaire d'entreprise", icon: "&#127881;", text: "Merci pour ces années de confiance !" },
+  printemps: { label: "Printemps", icon: "&#127800;", text: "Un printemps lumineux à vous." },
+  rentree: { label: "Rentrée", icon: "&#127810;", text: "Excellente rentrée !" },
+};
+
+/** Lien WhatsApp : numéro réduit aux chiffres (indicatif inclus), message encodé. */
+export function whatsappLink(num: string, msg: string): string {
+  const digits = num.replace(/^00/, "").replace(/\D/g, "");
+  if (digits.length < 8 || digits.length > 15) return "";
+  const t = msg.trim().slice(0, 300);
+  return `https://wa.me/${digits}${t ? `?text=${encodeURIComponent(t)}` : ""}`;
 }
 
 export const defaultSignature: SignatureData = {
@@ -113,6 +140,14 @@ export const defaultSignature: SignatureData = {
   a11yOn: false,
   legalOn: false,
   legalText: "",
+  seasonOn: false,
+  season: "voeux",
+  seasonText: "",
+  handOn: false,
+  handImage: "",
+  waOn: false,
+  waNumber: "",
+  waMessage: "Bonjour, je fais suite à votre e-mail.",
 };
 
 /** Modèles de mentions réglementaires par profession (à compléter par le membre). */
@@ -217,6 +252,10 @@ function extras(d: SignatureData) {
   if (d.visioOn && d.visioUrl) {
     row.push(`<td style="padding-right:12px;vertical-align:middle;"><a href="${esc(url(d.visioUrl))}" style="display:inline-block;border:1px solid ${d.accent};color:${d.accent};text-decoration:none;font-weight:600;font-size:13px;padding:7px 14px;border-radius:6px;">&#127909; ${esc(d.visioLabel || "Rejoindre ma salle visio")}</a></td>`);
   }
+  if (d.waOn) {
+    const wa = whatsappLink(d.waNumber, d.waMessage);
+    if (wa) row.push(`<td style="padding-right:12px;vertical-align:middle;"><a href="${esc(wa)}" style="display:inline-block;background:#1f8f4e;color:#ffffff;text-decoration:none;font-weight:600;font-size:13px;padding:8px 16px;border-radius:6px;">&#128172; WhatsApp</a></td>`);
+  }
   if (row.length) html += `<table cellpadding="0" cellspacing="0" border="0" style="margin-top:12px;"><tr>${row.join("")}</tr></table>`;
   const chips: string[] = [];
   if (d.audioOn && d.audioUrl) chips.push(`<a href="${esc(url(d.audioUrl))}" style="color:${d.accent};text-decoration:none;font-weight:600;">&#127911; ${esc(d.audioLabel || "Écouter ma présentation")}</a>`);
@@ -231,6 +270,11 @@ function extras(d: SignatureData) {
       ? `<img src="${esc(d.bannerImage)}" width="460" alt="${esc(d.bannerText)}" style="display:block;width:460px;max-width:100%;border-radius:8px;">`
       : `<span style="display:block;background:${d.accent};background-image:linear-gradient(90deg,${d.accent},${GOLD});color:#ffffff;font-size:13px;font-weight:600;padding:12px 16px;border-radius:8px;width:428px;max-width:100%;">${esc(d.bannerText)}</span>`;
     html += `<div style="margin-top:14px;"><a href="${esc(url(d.bannerLink))}" style="text-decoration:none;">${inner}</a></div>`;
+  }
+  if (d.seasonOn && SEASONS[d.season]) {
+    const se = SEASONS[d.season];
+    const txt = esc((d.seasonText.trim() || se.text).slice(0, 90));
+    html += `<table cellpadding="0" cellspacing="0" border="0" style="margin-top:12px;"><tr><td style="border:1px solid ${GOLD};border-radius:999px;padding:5px 14px;font-family:Georgia,serif;font-style:italic;font-size:13px;color:${d.accent};"><span style="color:${GOLD};">${se.icon}</span>&nbsp; ${txt}</td></tr></table>`;
   }
   if (d.ecoOn && d.ecoText.trim()) {
     html += `<div style="margin-top:10px;font-size:11px;color:#5f7f5a;">${esc(d.ecoText.trim().slice(0, 140))}</div>`;
@@ -248,8 +292,13 @@ const wrap = (inner: string) =>
   `<table cellpadding="0" cellspacing="0" border="0" style="font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.5;color:#2b2b2b;"><tr><td>${inner}</td></tr></table>`;
 
 export function renderSignature(t: TemplateId, d: SignatureData): string {
-  const html = darkCard(d, renderBase(t, d));
+  const html = darkCard(d, handBlock(d) + renderBase(t, d));
   return d.a11yOn ? accessible(html) : html;
+}
+
+function handBlock(d: SignatureData) {
+  if (!d.handOn || !/^https:\/\//.test(d.handImage)) return "";
+  return `<img src="${esc(d.handImage)}" alt="Signature de ${esc(d.name)}" width="160" style="display:block;width:160px;height:auto;margin-bottom:6px;">`;
 }
 
 /** Mode sombre garanti : fond clair stable autour de la signature, lisible quel que soit le thème du destinataire. */

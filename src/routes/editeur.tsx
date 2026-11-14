@@ -9,6 +9,8 @@ import { useEffect, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import { Copy, Code2 } from "lucide-react";
 import { SignaturePreview } from "@/components/site/SignaturePreview";
+import { SEASONS, type SeasonId } from "@/lib/signature";
+import { HandSignaturePad } from "@/components/site/HandSignaturePad";
 import { ECO_PRESETS, LEGAL_PRESETS, defaultSignature, LOGO_MIN, LOGO_MAX, clampLogoSize, cropRect, ZOOM_MAX, renderSignature, renderReplySignature, templates, type SignatureData, type TemplateId } from "@/lib/signature";
 
 export const Route = createFileRoute("/editeur")({
@@ -142,7 +144,7 @@ function Editor() {
   const colorLocked = !!team && !team.is_admin && team.lock_colors;
   const view: SignatureData = {
     ...d,
-    ...(paid ? {} : { docOn: false, reviewOn: false, darkSafe: false, ecoOn: false, audioOn: false, tzOn: false, visioOn: false, a11yOn: false, legalOn: false }),
+    ...(paid ? {} : { docOn: false, reviewOn: false, darkSafe: false, ecoOn: false, audioOn: false, tzOn: false, visioOn: false, a11yOn: false, legalOn: false, seasonOn: false, handOn: false, waOn: false }),
     ...(logoLocked ? { logoUrl: team!.base_data['logoUrl'] ?? "", logoSrc: "" } : {}),
     ...(colorLocked && team!.base_data['accent'] ? { accent: team!.base_data['accent'] } : {}),
   };
@@ -227,7 +229,7 @@ function Editor() {
         className="w-full rounded-xl border border-input bg-background px-3 py-2 outline-none focus:ring-2 focus:ring-ring" />
     </label>
   );
-  const toggle = (k: "bannerOn" | "bookingOn" | "qrOn" | "branding" | "docOn" | "reviewOn" | "darkSafe" | "ecoOn" | "audioOn" | "tzOn" | "visioOn" | "a11yOn" | "legalOn", label: string) => (
+  const toggle = (k: "bannerOn" | "bookingOn" | "qrOn" | "branding" | "docOn" | "reviewOn" | "darkSafe" | "ecoOn" | "audioOn" | "tzOn" | "visioOn" | "a11yOn" | "legalOn" | "seasonOn" | "handOn" | "waOn", label: string) => (
     <label className="flex items-center justify-between text-sm font-medium">
       {label}
       <input type="checkbox" checked={d[k]} onChange={(e) => set(k, e.target.checked)} className="h-4 w-4 accent-[var(--gold)]" />
@@ -369,6 +371,21 @@ function Editor() {
                   </label>
                 </div>
               )}
+              {toggle("waOn", "Bouton WhatsApp direct")}
+              {d.waOn && <div className="grid gap-3 sm:grid-cols-2">{text("waNumber", "Numéro avec indicatif", "+33 6 12 34 56 78")}{text("waMessage", "Message pré-rempli")}</div>}
+              {toggle("seasonOn", "Touche saisonnière (vœux, anniversaire…)")}
+              {d.seasonOn && (
+                <div className="grid gap-2">
+                  <div className="flex flex-wrap gap-2">
+                    {(Object.keys(SEASONS) as SeasonId[]).map((k) => (
+                      <button key={k} type="button" onClick={() => set("season", k)} className={`rounded-full border px-3 py-1 text-xs ${d.season === k ? "border-primary bg-primary text-primary-foreground" : "border-border"}`}>{SEASONS[k].label}</button>
+                    ))}
+                  </div>
+                  {text("seasonText", "Message (facultatif)", SEASONS[d.season]?.text)}
+                </div>
+              )}
+              {toggle("handOn", "Signature manuscrite / paraphe")}
+              {d.handOn && user && <HandSignaturePad userId={user.id} name={d.name} value={d.handImage} onChange={(u) => set("handImage", u)} />}
             </fieldset>
           </Card>
         </div>

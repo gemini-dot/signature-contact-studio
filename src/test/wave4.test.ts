@@ -17,3 +17,15 @@ describe("wave4", () => {
     expect(h).not.toMatch(/font-size:1[0-2]px/);
   });
 });
+
+import { whatsappLink } from "@/lib/signature";
+import { returnDate } from "@/lib/absence";
+describe("wave5", () => {
+  it("lien WhatsApp : chiffres seulement, message encodé", () => {
+    expect(whatsappLink("+33 6 12 34 56 78", "Bonjour")).toBe("https://wa.me/33612345678?text=Bonjour");
+    expect(whatsappLink("123", "x")).toBe("");
+  });
+  it("retour = lendemain du dernier jour", () => {
+    expect(returnDate("2026-12-31")).toBe("2027-01-01");
+  });
+});
