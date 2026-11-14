@@ -29,7 +29,9 @@ import { Route as RejoindreTokenRouteImport } from './routes/rejoindre.$token'
 import { Route as VerifSlugRouteImport } from './routes/verif.$slug'
 import { Route as AuthenticatedCompteIndexRouteImport } from './routes/_authenticated/compte.index'
 import { Route as AuthenticatedCompteAbonnementRouteImport } from './routes/_authenticated/compte.abonnement'
+import { Route as AuthenticatedCompteAbsenceRouteImport } from './routes/_authenticated/compte.absence'
 import { Route as AuthenticatedCompteBannieresRouteImport } from './routes/_authenticated/compte.bannieres'
+import { Route as AuthenticatedCompteEnteteRouteImport } from './routes/_authenticated/compte.entete'
 import { Route as AuthenticatedCompteEquipeRouteImport } from './routes/_authenticated/compte.equipe'
 import { Route as AuthenticatedCompteProfilRouteImport } from './routes/_authenticated/compte.profil'
 import { Route as AuthenticatedCompteRendezVousRouteImport } from './routes/_authenticated/compte.rendez-vous'
@@ -140,10 +142,22 @@ const AuthenticatedCompteAbonnementRoute =
     path: '/abonnement',
     getParentRoute: () => AuthenticatedCompteRoute,
   } as any)
+const AuthenticatedCompteAbsenceRoute =
+  AuthenticatedCompteAbsenceRouteImport.update({
+    id: '/absence',
+    path: '/absence',
+    getParentRoute: () => AuthenticatedCompteRoute,
+  } as any)
 const AuthenticatedCompteBannieresRoute =
   AuthenticatedCompteBannieresRouteImport.update({
     id: '/bannieres',
     path: '/bannieres',
+    getParentRoute: () => AuthenticatedCompteRoute,
+  } as any)
+const AuthenticatedCompteEnteteRoute =
+  AuthenticatedCompteEnteteRouteImport.update({
+    id: '/entete',
+    path: '/entete',
     getParentRoute: () => AuthenticatedCompteRoute,
   } as any)
 const AuthenticatedCompteEquipeRoute =
@@ -212,7 +226,9 @@ export interface FileRoutesByFullPath {
   '/rejoindre/$token': typeof RejoindreTokenRoute
   '/verif/$slug': typeof VerifSlugRoute
   '/compte/abonnement': typeof AuthenticatedCompteAbonnementRoute
+  '/compte/absence': typeof AuthenticatedCompteAbsenceRoute
   '/compte/bannieres': typeof AuthenticatedCompteBannieresRoute
+  '/compte/entete': typeof AuthenticatedCompteEnteteRoute
   '/compte/equipe': typeof AuthenticatedCompteEquipeRoute
   '/compte/profil': typeof AuthenticatedCompteProfilRoute
   '/compte/rendez-vous': typeof AuthenticatedCompteRendezVousRoute
@@ -241,7 +257,9 @@ export interface FileRoutesByTo {
   '/rejoindre/$token': typeof RejoindreTokenRoute
   '/verif/$slug': typeof VerifSlugRoute
   '/compte/abonnement': typeof AuthenticatedCompteAbonnementRoute
+  '/compte/absence': typeof AuthenticatedCompteAbsenceRoute
   '/compte/bannieres': typeof AuthenticatedCompteBannieresRoute
+  '/compte/entete': typeof AuthenticatedCompteEnteteRoute
   '/compte/equipe': typeof AuthenticatedCompteEquipeRoute
   '/compte/profil': typeof AuthenticatedCompteProfilRoute
   '/compte/rendez-vous': typeof AuthenticatedCompteRendezVousRoute
@@ -273,7 +291,9 @@ export interface FileRoutesById {
   '/rejoindre/$token': typeof RejoindreTokenRoute
   '/verif/$slug': typeof VerifSlugRoute
   '/_authenticated/compte/abonnement': typeof AuthenticatedCompteAbonnementRoute
+  '/_authenticated/compte/absence': typeof AuthenticatedCompteAbsenceRoute
   '/_authenticated/compte/bannieres': typeof AuthenticatedCompteBannieresRoute
+  '/_authenticated/compte/entete': typeof AuthenticatedCompteEnteteRoute
   '/_authenticated/compte/equipe': typeof AuthenticatedCompteEquipeRoute
   '/_authenticated/compte/profil': typeof AuthenticatedCompteProfilRoute
   '/_authenticated/compte/rendez-vous': typeof AuthenticatedCompteRendezVousRoute
@@ -305,7 +325,9 @@ export interface FileRouteTypes {
     | '/rejoindre/$token'
     | '/verif/$slug'
     | '/compte/abonnement'
+    | '/compte/absence'
     | '/compte/bannieres'
+    | '/compte/entete'
     | '/compte/equipe'
     | '/compte/profil'
     | '/compte/rendez-vous'
@@ -334,7 +356,9 @@ export interface FileRouteTypes {
     | '/rejoindre/$token'
     | '/verif/$slug'
     | '/compte/abonnement'
+    | '/compte/absence'
     | '/compte/bannieres'
+    | '/compte/entete'
     | '/compte/equipe'
     | '/compte/profil'
     | '/compte/rendez-vous'
@@ -365,7 +389,9 @@ export interface FileRouteTypes {
     | '/rejoindre/$token'
     | '/verif/$slug'
     | '/_authenticated/compte/abonnement'
+    | '/_authenticated/compte/absence'
     | '/_authenticated/compte/bannieres'
+    | '/_authenticated/compte/entete'
     | '/_authenticated/compte/equipe'
     | '/_authenticated/compte/profil'
     | '/_authenticated/compte/rendez-vous'
@@ -540,11 +566,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCompteAbonnementRouteImport
       parentRoute: typeof AuthenticatedCompteRoute
     }
+    '/_authenticated/compte/absence': {
+      id: '/_authenticated/compte/absence'
+      path: '/absence'
+      fullPath: '/compte/absence'
+      preLoaderRoute: typeof AuthenticatedCompteAbsenceRouteImport
+      parentRoute: typeof AuthenticatedCompteRoute
+    }
     '/_authenticated/compte/bannieres': {
       id: '/_authenticated/compte/bannieres'
       path: '/bannieres'
       fullPath: '/compte/bannieres'
       preLoaderRoute: typeof AuthenticatedCompteBannieresRouteImport
+      parentRoute: typeof AuthenticatedCompteRoute
+    }
+    '/_authenticated/compte/entete': {
+      id: '/_authenticated/compte/entete'
+      path: '/entete'
+      fullPath: '/compte/entete'
+      preLoaderRoute: typeof AuthenticatedCompteEnteteRouteImport
       parentRoute: typeof AuthenticatedCompteRoute
     }
     '/_authenticated/compte/equipe': {
@@ -608,7 +648,9 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedCompteRouteChildren {
   AuthenticatedCompteAbonnementRoute: typeof AuthenticatedCompteAbonnementRoute
+  AuthenticatedCompteAbsenceRoute: typeof AuthenticatedCompteAbsenceRoute
   AuthenticatedCompteBannieresRoute: typeof AuthenticatedCompteBannieresRoute
+  AuthenticatedCompteEnteteRoute: typeof AuthenticatedCompteEnteteRoute
   AuthenticatedCompteEquipeRoute: typeof AuthenticatedCompteEquipeRoute
   AuthenticatedCompteProfilRoute: typeof AuthenticatedCompteProfilRoute
   AuthenticatedCompteRendezVousRoute: typeof AuthenticatedCompteRendezVousRoute
@@ -620,7 +662,9 @@ interface AuthenticatedCompteRouteChildren {
 
 const AuthenticatedCompteRouteChildren: AuthenticatedCompteRouteChildren = {
   AuthenticatedCompteAbonnementRoute: AuthenticatedCompteAbonnementRoute,
+  AuthenticatedCompteAbsenceRoute: AuthenticatedCompteAbsenceRoute,
   AuthenticatedCompteBannieresRoute: AuthenticatedCompteBannieresRoute,
+  AuthenticatedCompteEnteteRoute: AuthenticatedCompteEnteteRoute,
   AuthenticatedCompteEquipeRoute: AuthenticatedCompteEquipeRoute,
   AuthenticatedCompteProfilRoute: AuthenticatedCompteProfilRoute,
   AuthenticatedCompteRendezVousRoute: AuthenticatedCompteRendezVousRoute,
