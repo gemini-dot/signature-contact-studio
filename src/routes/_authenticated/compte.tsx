@@ -1,6 +1,7 @@
 import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
 import { BadgeCheck, CalendarCheck, CreditCard, FileText, FileSignature, Megaphone, Plane, MonitorPlay, PenLine, Radio, Users } from "lucide-react";
 import { usePlan } from "@/hooks/use-plan";
+import { TabIntro } from "@/components/site/TabIntro";
 
 export const Route = createFileRoute("/_authenticated/compte")({
   head: () => ({
@@ -44,6 +45,7 @@ function Layout() {
           <Link to="/compte/abonnement" className={tab} activeProps={active}><CreditCard className="h-4 w-4" />Abonnement</Link>
         </div>
       </nav>
+      <TabIntro />
       <div className="mt-8"><Outlet /></div>
     </section>
   );
