@@ -1,5 +1,5 @@
 import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
-import { BadgeCheck, CalendarCheck, CreditCard, FileText, Megaphone, MonitorPlay, PenLine, Radio, Users } from "lucide-react";
+import { BadgeCheck, CalendarCheck, CreditCard, FileText, FileSignature, Megaphone, Plane, MonitorPlay, PenLine, Radio, Users } from "lucide-react";
 import { usePlan } from "@/hooks/use-plan";
 
 export const Route = createFileRoute("/_authenticated/compte")({
@@ -33,6 +33,8 @@ function Layout() {
           <Link to="/compte/vitrine" className={tab} activeProps={active}><FileText className="h-4 w-4" />Plaquette & avis {lock(paid)}</Link>
           <Link to="/compte/visio" className={tab} activeProps={active}><MonitorPlay className="h-4 w-4" />Fond visio {lock(paid)}</Link>
           <Link to="/compte/statut" className={tab} activeProps={active}><Radio className="h-4 w-4" />Statut {lock(paid)}</Link>
+ <Link to="/compte/absence" className={tab} activeProps={active}><Plane className="h-4 w-4" />Absence {lock(paid)}</Link>
+          <Link to="/compte/entete" className={tab} activeProps={active}><FileSignature className="h-4 w-4" />En-tête {lock(paid)}</Link>
           <Link to="/compte/rendez-vous" className={tab} activeProps={active}><CalendarCheck className="h-4 w-4" />Rendez-vous {lock(paid)}</Link>
         </div>
         <div className="flex gap-2 overflow-x-auto pb-1">
