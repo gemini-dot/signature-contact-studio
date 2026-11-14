@@ -4,6 +4,7 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { AdminDiscounts } from "@/components/site/AdminDiscounts";
+import { AdminEmailPreview } from "@/components/site/AdminEmailPreview";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
@@ -96,6 +97,7 @@ function Admin() {
         </table>
       </div>
       <AdminDiscounts />
+      <AdminEmailPreview />
     </section>
   );
 }
