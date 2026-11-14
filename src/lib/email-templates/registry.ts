@@ -1,4 +1,6 @@
 import type { ComponentType } from 'react'
+import { template as teamInvite } from './team-invite'
+import { template as subscriptionConfirmed } from './subscription-confirmed'
 
 export interface TemplateEntry {
   component: ComponentType<any>
@@ -18,6 +20,6 @@ export interface TemplateEntry {
  *   // then add to TEMPLATES: 'welcome': welcomeTemplate
  */
 export const TEMPLATES: Record<string, TemplateEntry> = {
-  // Add templates here as they are created, e.g.:
-  // 'welcome': welcomeTemplate,
+  'team-invite': teamInvite,
+  'subscription-confirmed': subscriptionConfirmed,
 }
