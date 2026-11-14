@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/use-auth";
 
 /** Formule de l'utilisateur et accès aux fonctions payantes (Solo/Équipe, y compris membre d'une équipe). */
 export function usePlan() {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const q = useQuery({
     queryKey: ["plan-access", user?.id],
     enabled: !!user,
@@ -18,5 +18,5 @@ export function usePlan() {
       return { plan, paid: !!elig.data, team: team.data, isTeamPlan: plan === "equipe" || (!!team.data && !!elig.data) };
     },
   });
-  return { loading: q.isLoading, ...(q.data ?? { plan: "gratuit", paid: false, team: null, isTeamPlan: false }) };
+  return { loading: authLoading || (!!user && q.isLoading), ...(q.data ?? { plan: "gratuit", paid: false, team: null, isTeamPlan: false }) };
 }
