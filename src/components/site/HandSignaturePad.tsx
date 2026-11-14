@@ -14,7 +14,7 @@ const INKS = [
 export function HandSignaturePad({ userId, name, value, onChange }: { userId: string; name: string; value: string; onChange: (url: string) => void }) {
   const ref = useRef<HTMLCanvasElement>(null);
   const drawing = useRef(false);
-  const [ink, setInk] = useState(INKS[0].value);
+  const [ink, setInk] = useState("#14213d");
   const [busy, setBusy] = useState(false);
   const [dirty, setDirty] = useState(false);
 

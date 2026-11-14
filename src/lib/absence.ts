@@ -15,14 +15,14 @@ function esc(s: string) {
 export function frDate(iso: string): string {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
   if (!m) return "";
-  const d = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3]));
+  const d = new Date(Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3])));
   return d.toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 }
 /** Date de retour = lendemain du dernier jour d'absence. */
 export function returnDate(to: string): string {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(to);
   if (!m) return "";
-  const d = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3] + 1));
+  const d = new Date(Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3]) + 1));
   return d.toISOString().slice(0, 10);
 }
 
