@@ -22,7 +22,7 @@ const TeamInvite = ({ lang, team, inviter, url }: Props) => {
 
 export const template = {
   component: TeamInvite,
-  subject: (d: Record<string, any>) => PREFIX + fill(INVITE[asLang(d.lang)].subject, { team: d.team || 'Signature.Contact' }),
+  subject: (d: Record<string, any>) => PREFIX + fill(INVITE[asLang(d['lang'])].subject, { team: d['team'] || 'Signature.Contact' }),
   displayName: "Invitation d'équipe",
   previewData: { lang: 'fr', team: 'Cabinet Martin', inviter: 'Claire Martin', url: 'https://signature.contact/rejoindre/exemple' },
 } satisfies TemplateEntry

@@ -32,7 +32,7 @@ const SubscriptionConfirmed = ({ lang, plan, cycle, amount, seats, url }: Props)
 
 export const template = {
   component: SubscriptionConfirmed,
-  subject: (d: Record<string, any>) => PREFIX + fill(SUB[asLang(d.lang)].subject, { plan: d.plan || 'Solo' }),
+  subject: (d: Record<string, any>) => PREFIX + fill(SUB[asLang(d['lang'])].subject, { plan: d['plan'] || 'Solo' }),
   displayName: 'Abonnement confirmé',
   previewData: { lang: 'fr', plan: 'Équipe', cycle: 'month', amount: '24,00 €', seats: 5, url: 'https://signature.contact/compte/abonnement' },
 } satisfies TemplateEntry
