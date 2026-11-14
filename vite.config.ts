@@ -14,11 +14,13 @@ export default defineViteConfig((configEnv) => {
   return defineConfig({
   vite: {
     resolve: {
-      alias: {
-        "entities/lib/decode.js": path.resolve("node_modules/entities/lib/decode.js"),
-        "entities/lib/encode.js": path.resolve("node_modules/entities/lib/encode.js"),
-        entities: path.resolve("node_modules/entities"),
-      },
+      alias: [
+        { find: /^entities\/lib\/decode\.js$/, replacement: path.resolve("node_modules/entities/lib/esm/decode.js") },
+        { find: /^entities\/lib\/encode\.js$/, replacement: path.resolve("node_modules/entities/lib/esm/encode.js") },
+        // Match only the root import. Modern entities/decode and entities/escape
+        // must resolve through their caller's own version (htmlparser2 uses v7).
+        { find: /^entities$/, replacement: path.resolve("node_modules/entities/lib/esm/index.js") },
+      ],
     },
   },
   tanstackStart: {
