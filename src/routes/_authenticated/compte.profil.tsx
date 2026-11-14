@@ -35,14 +35,14 @@ function ProfilePage() {
   useEffect(() => {
     const p = q.data;
     if (p) {
-      setF({ slug: p.slug, full_name: p.full_name, job_title: p.job_title, company: p.company, email: p.email, phone: p.phone, website: p.website, address: p.address, bio: p.bio, photo_url: p.photo_url });
-      setLinks((p.links as ProfileLink[]) ?? []); setServices((p.services as ProfileService[]) ?? []); setActivity(p.activity ?? ""); setEnabled(p.profile_enabled); setBadge(p.badge_enabled);
+      setF({ slug: p.slug ?? "", full_name: p.full_name ?? "", job_title: p.job_title ?? "", company: p.company ?? "", email: p.email ?? "", phone: p.phone ?? "", website: p.website ?? "", address: p.address ?? "", bio: p.bio ?? "", photo_url: p.photo_url ?? "" });
+      setLinks(Array.isArray(p.links) ? (p.links as ProfileLink[]) : []); setServices(Array.isArray(p.services) ? (p.services as ProfileService[]) : []); setActivity(p.activity ?? ""); setEnabled(p.profile_enabled); setBadge(p.badge_enabled);
     } else if (user && q.isFetched) {
       setF((x) => ({ ...x, email: user.email ?? "", slug: slugify((user.email ?? "").split("@")[0] ?? "") }));
     }
   }, [q.data, q.isFetched, user]);
 
-  if (loading) return null;
+  if (loading || !user) return null;
   if (!paid) return <LockedFeature title="Carte de visite & badge vérifié" plan="Solo" benefits={["Mini-page profil élégante à votre nom", "QR code et fiche contact (.vcf) en un scan", "Badge « Identité vérifiée » anti-usurpation"]} />;
 
   const origin = typeof window !== "undefined" ? window.location.origin : "";
@@ -55,7 +55,7 @@ function ProfilePage() {
     if (s.length < 2) { toast.error("Choisissez une adresse de profil (2 caractères minimum)."); return; }
     if (!f.full_name.trim()) { toast.error("Indiquez votre nom."); return; }
     const { data, error } = await supabase.from("member_profiles").upsert({
-      user_id: user!.id, ...f, slug: s, links: links.filter((l) => l.label && l.url),
+      user_id: user.id, ...f, slug: s, links: links.filter((l) => l.label && l.url),
       activity: activity.slice(0, 1500), services: services.filter((x) => x.name.trim()).slice(0, 12),
       profile_enabled: enabled, badge_enabled: badge,
     }).select().single();
@@ -99,7 +99,7 @@ function ProfilePage() {
               Photo de profil
               <div className="flex items-center gap-3">
                 {f.photo_url ? <img src={f.photo_url} alt="" className="h-14 w-14 rounded-full object-cover ring-2 ring-gold" /> : <div className="h-14 w-14 rounded-full bg-muted" />}
-                <ImageUpload userId={user!.id} folder="photo" label={f.photo_url ? "Changer la photo" : "Importer ma photo"} onUploaded={(url) => setF((x) => ({ ...x, photo_url: url }))} />
+                <ImageUpload userId={user.id} folder="photo" label={f.photo_url ? "Changer la photo" : "Importer ma photo"} onUploaded={(url) => setF((x) => ({ ...x, photo_url: url }))} />
                 {f.photo_url && <button type="button" onClick={() => setF({ ...f, photo_url: "" })} className="text-xs text-muted-foreground underline">Retirer</button>}
               </div>
             </div>
