@@ -22,7 +22,7 @@ const money = (n: number) => n.toLocaleString("fr-FR", { minimumFractionDigits: 
 /** Lignes « description ; quantité ; prix » → lignes chiffrées + totaux HT/TVA 20 %/TTC. */
 export function parseQuoteLines(body: string) {
   const lines = body.split("\n").map((r) => r.split(";").map((c) => c.trim())).filter((c) => c[0])
-    .map(([d, q, p]) => { const qty = Number((q || "1").replace(",", ".")) || 0; const unit = Number((p || "0").replace(",", ".")) || 0; return { d, qty, unit, total: Math.round(qty * unit * 100) / 100 }; });
+    .map(([d = "", q, p]) => { const qty = Number((q || "1").replace(",", ".")) || 0; const unit = Number((p || "0").replace(",", ".")) || 0; return { d, qty, unit, total: Math.round(qty * unit * 100) / 100 }; });
   const ht = Math.round(lines.reduce((s, l) => s + l.total, 0) * 100) / 100;
   const tva = Math.round(ht * 20) / 100;
   return { lines, ht, tva, ttc: Math.round((ht + tva) * 100) / 100 };
@@ -52,7 +52,7 @@ function content(l: LetterheadData, accent: string) {
   }
   if (kind === "proposition") {
     const parts = l.body.split("\n").map((line) => line.startsWith("#") ? h(line.replace(/^#+\s*/, "")) : line.trim() ? `<p style="margin:0 0 8px;">${esc(line)}</p>` : "").join("");
-    return `<div style="text-align:center;margin:30px 0 36px;"><div style="font-size:10pt;letter-spacing:3px;text-transform:uppercase;color:${GOLD};">Proposition commerciale</div><div style="font-family:Georgia,serif;font-size:30px;color:${accent};margin-top:8px;">${esc(l.title?.trim() || "Votre projet")}</div>${l.recipient?.trim() ? `<div style="margin-top:8px;color:#666;">Pour ${esc(l.recipient.split("\n")[0])}</div>` : ""}<div style="margin-top:4px;color:#999;font-size:10pt;">${date}</div></div>${parts}`;
+    return `<div style="text-align:center;margin:30px 0 36px;"><div style="font-size:10pt;letter-spacing:3px;text-transform:uppercase;color:${GOLD};">Proposition commerciale</div><div style="font-family:Georgia,serif;font-size:30px;color:${accent};margin-top:8px;">${esc(l.title?.trim() || "Votre projet")}</div>${l.recipient?.trim() ? `<div style="margin-top:8px;color:#666;">Pour ${esc(l.recipient.split("\n")[0] ?? "")}</div>` : ""}<div style="margin-top:4px;color:#999;font-size:10pt;">${date}</div></div>${parts}`;
   }
   const body = l.body.trim() ? esc(l.body).replace(/\n/g, "<br>") : "";
   return `${to}<div style="text-align:right;color:#666;margin-bottom:18px;">Le ${date}</div>${l.title?.trim() ? `<div style="margin-bottom:16px;"><b>Objet :</b> ${esc(l.title)}</div>` : ""}${body}`;
