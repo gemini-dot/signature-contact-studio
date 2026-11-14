@@ -40,6 +40,7 @@ import { Route as AuthenticatedCompteVisioRouteImport } from './routes/_authenti
 import { Route as AuthenticatedCompteVitrineRouteImport } from './routes/_authenticated/compte.vitrine'
 import { Route as ApiPublicBanniereTeamIdRouteImport } from './routes/api/public/banniere.$teamId'
 import { Route as ApiPublicDocumentSlugRouteImport } from './routes/api/public/document.$slug'
+import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -206,6 +207,12 @@ const ApiPublicDocumentSlugRoute = ApiPublicDocumentSlugRouteImport.update({
   path: '/api/public/document/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LovableEmailTransactionalPreviewRoute =
+  LovableEmailTransactionalPreviewRouteImport.update({
+    id: '/lovable/email/transactional/preview',
+    path: '/lovable/email/transactional/preview',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -238,6 +245,7 @@ export interface FileRoutesByFullPath {
   '/compte/': typeof AuthenticatedCompteIndexRoute
   '/api/public/banniere/$teamId': typeof ApiPublicBanniereTeamIdRoute
   '/api/public/document/$slug': typeof ApiPublicDocumentSlugRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -269,6 +277,7 @@ export interface FileRoutesByTo {
   '/compte': typeof AuthenticatedCompteIndexRoute
   '/api/public/banniere/$teamId': typeof ApiPublicBanniereTeamIdRoute
   '/api/public/document/$slug': typeof ApiPublicDocumentSlugRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -303,6 +312,7 @@ export interface FileRoutesById {
   '/_authenticated/compte/': typeof AuthenticatedCompteIndexRoute
   '/api/public/banniere/$teamId': typeof ApiPublicBanniereTeamIdRoute
   '/api/public/document/$slug': typeof ApiPublicDocumentSlugRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -337,6 +347,7 @@ export interface FileRouteTypes {
     | '/compte/'
     | '/api/public/banniere/$teamId'
     | '/api/public/document/$slug'
+    | '/lovable/email/transactional/preview'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -368,6 +379,7 @@ export interface FileRouteTypes {
     | '/compte'
     | '/api/public/banniere/$teamId'
     | '/api/public/document/$slug'
+    | '/lovable/email/transactional/preview'
   id:
     | '__root__'
     | '/'
@@ -401,6 +413,7 @@ export interface FileRouteTypes {
     | '/_authenticated/compte/'
     | '/api/public/banniere/$teamId'
     | '/api/public/document/$slug'
+    | '/lovable/email/transactional/preview'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -422,6 +435,7 @@ export interface RootRouteChildren {
   VerifSlugRoute: typeof VerifSlugRoute
   ApiPublicBanniereTeamIdRoute: typeof ApiPublicBanniereTeamIdRoute
   ApiPublicDocumentSlugRoute: typeof ApiPublicDocumentSlugRoute
+  LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -643,6 +657,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicDocumentSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/lovable/email/transactional/preview': {
+      id: '/lovable/email/transactional/preview'
+      path: '/lovable/email/transactional/preview'
+      fullPath: '/lovable/email/transactional/preview'
+      preLoaderRoute: typeof LovableEmailTransactionalPreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -709,6 +730,7 @@ const rootRouteChildren: RootRouteChildren = {
   VerifSlugRoute: VerifSlugRoute,
   ApiPublicBanniereTeamIdRoute: ApiPublicBanniereTeamIdRoute,
   ApiPublicDocumentSlugRoute: ApiPublicDocumentSlugRoute,
+  LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
