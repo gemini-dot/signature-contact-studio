@@ -47,6 +47,22 @@ export interface SignatureData {
   /** Mention éco-responsable / RSE. */
   ecoOn: boolean;
   ecoText: string;
+  /** Pitch audio de présentation (lien vers un fichier ou une page d'écoute). */
+  audioOn: boolean;
+  audioLabel: string;
+  audioUrl: string;
+  /** Fuseau horaire et horaires de disponibilité. */
+  tzOn: boolean;
+  tzText: string;
+  /** Salle de visioconférence permanente en 1 clic. */
+  visioOn: boolean;
+  visioLabel: string;
+  visioUrl: string;
+  /** Mode accessible : texte agrandi, contrastes renforcés. */
+  a11yOn: boolean;
+  /** Mentions réglementaires propres à la profession. */
+  legalOn: boolean;
+  legalText: string;
 }
 
 export const defaultSignature: SignatureData = {
@@ -86,7 +102,38 @@ export const defaultSignature: SignatureData = {
   darkSafe: false,
   ecoOn: false,
   ecoText: "🌿 N'imprimez ce message que si nécessaire.",
+  audioOn: false,
+  audioLabel: "Écouter ma présentation (30 s)",
+  audioUrl: "",
+  tzOn: false,
+  tzText: "Paris (UTC+1) · Lun–Ven 9h–18h",
+  visioOn: false,
+  visioLabel: "Rejoindre ma salle visio",
+  visioUrl: "",
+  a11yOn: false,
+  legalOn: false,
+  legalText: "",
 };
+
+/** Modèles de mentions réglementaires par profession (à compléter par le membre). */
+export const LEGAL_PRESETS: { label: string; text: string }[] = [
+  { label: "Avocat", text: "Avocat au Barreau de [ville] · Toque [n°] · Ce message est couvert par le secret professionnel." },
+  { label: "Assurance (ORIAS)", text: "Intermédiaire en assurance immatriculé à l'ORIAS sous le n° [n°] · www.orias.fr" },
+  { label: "Immobilier (loi Hoguet)", text: "Carte professionnelle T n° [n°] délivrée par la CCI de [ville] · Garantie financière [organisme]" },
+  { label: "Expert-comptable", text: "Membre de l'Ordre des experts-comptables de [région] · Inscription n° [n°]" },
+  { label: "Santé", text: "Inscrit(e) à l'Ordre des [médecins/kinés…] · RPPS [n°] · Ne pas transmettre de données de santé par e-mail." },
+  { label: "Conseil financier (AMF)", text: "Conseiller en investissements financiers, membre de [association] agréée par l'AMF · ORIAS [n°]" },
+  { label: "Confidentialité", text: "Ce message et ses pièces jointes sont confidentiels. Si vous l'avez reçu par erreur, merci de le supprimer et d'en avertir l'expéditeur." },
+];
+
+/** Mode accessible : remplace les gris trop clairs par des tons à fort contraste et agrandit le texte. */
+export function accessible(html: string): string {
+  return html
+    .replace(/#(9a9a9a|888|777|666|ccc)\b/gi, "#333333")
+    .replace(/#5f7f5a/gi, "#2f5a2a")
+    .replace(/font-size:(10|11|12)px/g, "font-size:14px")
+    .replace(/font-size:13px/g, "font-size:15px");
+}
 
 export const templates: { id: TemplateId; label: string }[] = [
   { id: "classique", label: "Classique" },
@@ -167,7 +214,14 @@ function extras(d: SignatureData) {
   if (d.docOn && d.docUrl) {
     row.push(`<td style="padding-right:12px;vertical-align:middle;"><a href="${esc(url(d.docUrl))}" style="display:inline-block;border:1px solid ${d.accent};color:${d.accent};text-decoration:none;font-weight:600;font-size:13px;padding:7px 14px;border-radius:6px;">&#128196; ${esc(d.docLabel || "Télécharger le document")}</a></td>`);
   }
+  if (d.visioOn && d.visioUrl) {
+    row.push(`<td style="padding-right:12px;vertical-align:middle;"><a href="${esc(url(d.visioUrl))}" style="display:inline-block;border:1px solid ${d.accent};color:${d.accent};text-decoration:none;font-weight:600;font-size:13px;padding:7px 14px;border-radius:6px;">&#127909; ${esc(d.visioLabel || "Rejoindre ma salle visio")}</a></td>`);
+  }
   if (row.length) html += `<table cellpadding="0" cellspacing="0" border="0" style="margin-top:12px;"><tr>${row.join("")}</tr></table>`;
+  const chips: string[] = [];
+  if (d.audioOn && d.audioUrl) chips.push(`<a href="${esc(url(d.audioUrl))}" style="color:${d.accent};text-decoration:none;font-weight:600;">&#127911; ${esc(d.audioLabel || "Écouter ma présentation")}</a>`);
+  if (d.tzOn && d.tzText.trim()) chips.push(`<span style="color:#555;">&#128339; ${esc(d.tzText.trim().slice(0, 80))}</span>`);
+  if (chips.length) html += `<div style="margin-top:10px;font-size:12px;">${chips.join(' <span style="color:#ccc;">&nbsp;|&nbsp;</span> ')}</div>`;
   if (d.reviewOn && d.reviewText) {
     const txt = `<span style="color:${GOLD};font-weight:600;">${esc(d.reviewText)}</span>`;
     html += `<div style="margin-top:10px;font-size:12px;">${d.reviewUrl ? `<a href="${esc(url(d.reviewUrl))}" style="text-decoration:none;">${txt}</a>` : txt}</div>`;
@@ -181,6 +235,9 @@ function extras(d: SignatureData) {
   if (d.ecoOn && d.ecoText.trim()) {
     html += `<div style="margin-top:10px;font-size:11px;color:#5f7f5a;">${esc(d.ecoText.trim().slice(0, 140))}</div>`;
   }
+  if (d.legalOn && d.legalText.trim()) {
+    html += `<div style="margin-top:10px;font-size:10px;line-height:1.4;color:#777;max-width:460px;">${esc(d.legalText.trim().slice(0, 400))}</div>`;
+  }
   if (d.branding) {
     html += `<div style="margin-top:10px;font-size:10px;color:#9a9a9a;">Créée avec <a href="https://signature.contact" style="color:#9a9a9a;">signature.contact</a></div>`;
   }
@@ -191,7 +248,8 @@ const wrap = (inner: string) =>
   `<table cellpadding="0" cellspacing="0" border="0" style="font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.5;color:#2b2b2b;"><tr><td>${inner}</td></tr></table>`;
 
 export function renderSignature(t: TemplateId, d: SignatureData): string {
-  return darkCard(d, renderBase(t, d));
+  const html = darkCard(d, renderBase(t, d));
+  return d.a11yOn ? accessible(html) : html;
 }
 
 /** Mode sombre garanti : fond clair stable autour de la signature, lisible quel que soit le thème du destinataire. */

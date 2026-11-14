@@ -142,7 +142,7 @@ function Editor() {
   const colorLocked = !!team && !team.is_admin && team.lock_colors;
   const view: SignatureData = {
     ...d,
-    ...(paid ? {} : { docOn: false, reviewOn: false, darkSafe: false, ecoOn: false }),
+    ...(paid ? {} : { docOn: false, reviewOn: false, darkSafe: false, ecoOn: false, audioOn: false, tzOn: false, visioOn: false, a11yOn: false, legalOn: false }),
     ...(logoLocked ? { logoUrl: team!.base_data['logoUrl'] ?? "", logoSrc: "" } : {}),
     ...(colorLocked && team!.base_data['accent'] ? { accent: team!.base_data['accent'] } : {}),
   };
@@ -227,7 +227,7 @@ function Editor() {
         className="w-full rounded-xl border border-input bg-background px-3 py-2 outline-none focus:ring-2 focus:ring-ring" />
     </label>
   );
-  const toggle = (k: "bannerOn" | "bookingOn" | "qrOn" | "branding" | "docOn" | "reviewOn" | "darkSafe" | "ecoOn", label: string) => (
+  const toggle = (k: "bannerOn" | "bookingOn" | "qrOn" | "branding" | "docOn" | "reviewOn" | "darkSafe" | "ecoOn" | "audioOn" | "tzOn" | "visioOn" | "a11yOn" | "legalOn", label: string) => (
     <label className="flex items-center justify-between text-sm font-medium">
       {label}
       <input type="checkbox" checked={d[k]} onChange={(e) => set(k, e.target.checked)} className="h-4 w-4 accent-[var(--gold)]" />
