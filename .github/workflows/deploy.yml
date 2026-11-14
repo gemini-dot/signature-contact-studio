@@ -27,7 +27,10 @@ jobs:
             cd ~/signature-contact-studio
             git fetch --all
             git reset --hard origin/main
-            npm install --no-audit --no-fund
-            NITRO_PRESET=node-server npm run build
+            # bun installe exactement les versions du fichier bun.lock (identiques à l'aperçu)
+            export PATH="$HOME/.bun/bin:$HOME/.bun-npm/node_modules/.bin:$PATH"
+            command -v bun >/dev/null || npm install --no-audit --no-fund --prefix "$HOME/.bun-npm" bun
+            bun install --frozen-lockfile || bun install
+            NITRO_PRESET=node-server bun run build
             pm2 restart signature-contact --update-env || PORT=3005 pm2 start .output/server/index.mjs --name signature-contact
             pm2 save
