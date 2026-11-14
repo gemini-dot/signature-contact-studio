@@ -5,13 +5,13 @@
 //     React/TanStack dedupe, error logger plugins, and sandbox detection (port/host/strictPort).
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
-import { loadEnv } from "vite";
+import { defineConfig as defineViteConfig, loadEnv } from "vite";
 import path from "node:path";
 
-export default defineConfig(({ mode }) => {
+export default defineViteConfig((configEnv) => {
   // Server secrets remain server-only; the shared config handles VITE_* injection.
-  Object.assign(process.env, loadEnv(mode, process.cwd(), ""));
-  return {
+  Object.assign(process.env, loadEnv(configEnv.mode, process.cwd(), ""));
+  return defineConfig({
   vite: {
     resolve: {
       alias: {
@@ -26,5 +26,5 @@ export default defineConfig(({ mode }) => {
     // nitro/vite builds from this
     server: { entry: "server" },
   },
-  };
+  })(configEnv);
 });
